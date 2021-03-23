@@ -1,10 +1,6 @@
-package com.newgen.reusableObject;
+package com.newgen.Utils;
 
 import com.newgen.iforms.custom.IFormReference;
-import com.newgen.utils.Constants;
-import com.newgen.utils.DbConnect;
-import com.newgen.utils.LogGen;
-import com.newgen.utils.Query;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

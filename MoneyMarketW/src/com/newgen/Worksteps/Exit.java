@@ -1,4 +1,4 @@
-package com.newgen.worksteps;
+package com.newgen.Worksteps;
 
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
@@ -9,7 +9,7 @@ import org.json.simple.JSONArray;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class BranchInitiator implements IFormServerEventHandler {
+public class Exit implements IFormServerEventHandler {
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference iFormReference) {
 
