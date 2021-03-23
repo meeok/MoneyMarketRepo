@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/dmsapi.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/iforms.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/jsf-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/json.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/ngejbcallbroker.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/nglogger.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/omnishared.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sn029216/git/MoneyMarketRepo/MoneyMarketW/lib/wfdesktop.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
