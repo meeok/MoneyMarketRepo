@@ -77,7 +77,7 @@ public class Commons implements Constants {
     }
     public String getCpMarket(IFormReference ifr){return  (String) ifr.getValue(cpSelectMarketLocal);}
     public String getProcess(IFormReference ifr){
-        return (String)ifr.getValue(selectProcessLocal);
+        return getFieldValue(ifr,selectProcessLocal);
     }
     public String getCurrentDateTime (String format){
         return new SimpleDateFormat(format).format(new Date());
@@ -85,9 +85,7 @@ public class Commons implements Constants {
     public String getCurrentDateTime (){
         return new SimpleDateFormat(dbDateTimeFormat).format(new Date());
     }
-    public String getCpDecision (IFormReference ifr){
-        return (String) ifr.getValue(cpDecisionLocal);
-    }
+    public String getCpDecision (IFormReference ifr){ return getFieldValue(ifr,cpDecisionLocal);}
     public String getWorkItemNumber (IFormReference ifr){
         return (String)ifr.getControlValue(wiNameLocal);
     }
@@ -162,21 +160,51 @@ public class Commons implements Constants {
     }
     public void hideCpSections (IFormReference ifr){
         setInvisible(ifr,new String []{cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
-        cpTerminationSection,cpCutOffTimeSection,cpDecisionSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection,cpSetupSection});
+        cpTerminationSection,cpCutOffTimeSection,cpDecisionSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection,cpSetupSection,cpCustomerDetailsSection});
     }
     public void disableCpSections (IFormReference ifr){
         disableFields(ifr,new String []{cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection, cpTerminationSection,
                 cpDecisionSection,cpCutOffTimeSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection,cpSetupSection});
     }
     public void hideShowLandingMessageLabel(IFormReference ifr,String state){ifr.setStyle(landMsgLabelLocal,visible,state);}
-    public void disableFields(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setStyle(field,disable,True); }
-    public void clearFields(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setValue(field,empty); }
-    public void setVisible(IFormReference ifr, String[] fields) { for(String field: fields) ifr.setStyle(field,visible,True);}
     public void hideShow (IFormReference ifr, String[] fields,String state) { for(String field: fields) ifr.setStyle(field,visible,state);}
-    public void setInvisible(IFormReference ifr, String [] fields ) { for(String field: fields) ifr.setStyle(field,visible,False); }
-    public void enableFields(IFormReference ifr, String [] fields) {for(String field: fields) ifr.setStyle(field,disable,False);}
-    public void setMandatory(IFormReference ifr, String []fields) { for(String field: fields) ifr.setStyle(field,mandatory,True);}
-    public void undoMandatory(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setStyle(field,mandatory,False); }
+    public static void setFields (IFormReference ifr, String [] locals,String [] values){
+        for (int i = 0; i < locals.length; i++) ifr.setValue(locals[i], values[i]);
+    }
+    public static void setFields (IFormReference ifr, String local,String value){
+        ifr.setValue(local,value);
+    }
+    public void setDropDown (IFormReference ifr,String local, String [] values){
+        ifr.clearCombo(local);
+        for (String value: values) ifr.addItemInCombo(local,value,value);
+    }
+    public void setDropDown (IFormReference ifr,String local,String [] labels, String [] values){
+        ifr.clearCombo(local);
+        for (int i = 0; i < values.length; i++) ifr.addItemInCombo(local,labels[i],values[i]);
+    }
+    public void setDecision (IFormReference ifr,String decisionLocal, String [] values){
+        ifr.clearCombo(decisionLocal);
+        for (String value: values) ifr.addItemInCombo(decisionLocal,value,value);
+        clearFields(ifr,new String[]{decisionLocal});
+    }
+    public void setDecision (IFormReference ifr,String decisionLocal,String [] labels, String [] values){
+        ifr.clearCombo(decisionLocal);
+        for (int i = 0; i < values.length; i++) ifr.addItemInCombo(decisionLocal,labels[i],values[i]);
+        clearFields(ifr,new String[]{decisionLocal});
+    }
+    public void addToDropDown (IFormReference ifr,String local,String [] labels, String [] values){
+        for (int i = 0; i < values.length; i++) ifr.addItemInCombo(local,labels[i],values[i]);
+    }
+    public static void disableFields(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setStyle(field,disable, True); }
+    public static void clearFields(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setValue(field, empty); }
+    public static void setVisible(IFormReference ifr, String[] fields) { for(String field: fields) ifr.setStyle(field,visible, True);}
+    public static void hideShowFields(IFormReference ifr, String[] fields, String [] states) {for (int i = 0; i < fields.length; i++) ifr.setStyle(fields[i],visible,states[i]); }
+    public static void setInvisible(IFormReference ifr, String [] fields ) { for(String field: fields) ifr.setStyle(field,visible, False); }
+    public static void enableFields(IFormReference ifr, String [] fields) {for(String field: fields) ifr.setStyle(field,disable, False);}
+    public static void setMandatory(IFormReference ifr, String []fields) { for(String field: fields) ifr.setStyle(field,mandatory, True);}
+    public static void undoMandatory(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setStyle(field,mandatory, False); }
+    public static void clearTables(IFormReference ifr, String [] tables){for (String table: tables) ifr.clearTable(table);}
+    public static String getFieldValue(IFormReference ifr, String local){return ifr.getValue(local).toString();}
     public boolean isEmpty(String s) {return s == null || s.trim().isEmpty();}
     public void backToDashboard(IFormReference ifr){
         hideProcess(ifr);
@@ -184,23 +212,19 @@ public class Commons implements Constants {
         hideShowBackToDashboard(ifr,False);
     }
     public void clearDecHisFlag (IFormReference ifr){clearFields(ifr,new String[]{decHisFlagLocal});}
-    public String getSetupFlag(IFormReference ifr){return (String)ifr.getValue(windowSetupFlagLocal);}
+    public String getSetupFlag(IFormReference ifr){return getFieldValue(ifr,windowSetupFlagLocal);}
     public void setCpCategory(IFormReference ifr, String [] values){
         ifr.clearCombo(cpCategoryLocal);
         for (String value: values)
             ifr.addItemInCombo(cpCategoryLocal,value,value);
     }
-    public void setDecision (IFormReference ifr,String decisionLocal, String [] values){
-        ifr.clearCombo(decisionLocal);
-        for (String value: values) ifr.addItemInCombo(decisionLocal,value,value);
-    }
-    public String getCpCategory(IFormReference ifr){return (String) ifr.getValue(cpCategoryLocal);}
+    public String getCpCategory(IFormReference ifr){return getFieldValue(ifr,cpCategoryLocal);}
     public void cpSetDecisionValue (IFormReference ifr, String value){ifr.setValue(cpDecisionLocal,value);}
-    public String getCpUpdateMsg (IFormReference ifr){return (String) ifr.getValue(cpUpdateLocal);}
+    public String getCpUpdateMsg (IFormReference ifr){return getFieldValue(ifr,cpUpdateLocal);}
     public String getCpMarketName (IFormReference ifr){
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) return primary;
         else if (getProcess(ifr).equalsIgnoreCase(cpSecondaryMarket)) return secondary;
-        return null;
+        return empty;
     }
     public boolean compareDate(String startDate, String endDate){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dbDateTimeFormat);

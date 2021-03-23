@@ -38,6 +38,7 @@ public interface Constants {
 	String cpPostSection = "cp_post_section";
 	String cpSetupSection="cp_setup_section";
 	String cpCutOffTimeSection = "cp_cutoff_section";
+	String cpCustomerDetailsSection ="cp_custDetails_section";
 	// end of cp sections
 
 	//general process Ids

@@ -18,9 +18,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     private Logger logger = LogGen.getLoggerInstance(TreasuryOfficerInitiator.class);
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
-        try { 
-        	
-        	//cpFormLoadActivity(ifr);
+        try {
         	beforeFormLoadActivity(ifr);
         }
         catch (Exception e){ logger.error("Exception-- "+ e.getMessage());}
@@ -48,11 +46,11 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                     switch (controlName){
                         case goToDashBoard:{
                             backToDashboard(ifr);
-                            clearFields(ifr,new String[] {selectProcessLocal});
                             if (getProcess(ifr).equalsIgnoreCase(commercialProcess))
                                 cpBackToDashboard(ifr);
-                            if (getProcess(ifr).equalsIgnoreCase(treasuryProcess))
+                           else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess))
                                 tbBackToDashboard(ifr);
+                            clearFields(ifr,new String[] {selectProcessLocal});
                             break;
                         }
                     }
@@ -138,14 +136,13 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
 
     @Override
     public void cpSetDecision(IFormReference ifr) {
-        ifr.addItemInCombo(cpDecisionLocal,decSubmit,decSubmit);
-        ifr.addItemInCombo(cpDecisionLocal,decDiscard,decDiscard);
+        setDecision(ifr,cpDecisionLocal,new String[]{decSubmit,decDiscard});
     }
 
 
     private void cpBackToDashboard(IFormReference ifr) {
         undoMandatory(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal});
-        clearFields(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal});
+        clearFields(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal,cpRemarksLocal});
     }
 
     @Override

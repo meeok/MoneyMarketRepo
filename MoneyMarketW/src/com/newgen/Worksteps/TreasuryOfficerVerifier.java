@@ -21,8 +21,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         clearDecHisFlag(ifr);
         if (!isEmpty(getProcess(ifr))) showSelectedProcessSheet(ifr);
         if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
-        else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess))
-        	tbFormLoadActivity(ifr);
+        else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) tbFormLoadActivity(ifr);
     }
 
     @Override
@@ -71,7 +70,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 message = "Landing Message has been approved by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to setup market.";
                 new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
             }
-            else {
+            else if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
                 message = "Landing Message has been rejected by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to make necessary corrections.";
                 new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
             }
