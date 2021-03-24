@@ -93,10 +93,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 
     @Override
     public void cpSetDecision(IFormReference ifr) {
-        ifr.clearCombo(cpDecisionLocal);
-        clearFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
-        ifr.addItemInCombo(cpDecisionLocal, decApprove, decApprove);
-        ifr.addItemInCombo(cpDecisionLocal, decReject, decReject);
+        setDecision(ifr, cpDecisionLocal,new String[]{decApprove,decReject});
     }
     
     //*************** Treasury Start *************************/

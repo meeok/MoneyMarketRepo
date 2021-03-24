@@ -236,8 +236,8 @@ public class Commons implements Constants {
         } catch (Exception e){logger.error("Exception occurred in compareDate method-- "+ e.getMessage());return false;}
         return false;
     }
-    public String getCpOpenDate(IFormReference ifr){return (String)ifr.getValue(cpOpenDateLocal);}
-    public String getCpCloseDate(IFormReference ifr){return (String)ifr.getValue(cpCloseDateLocal);}
+    public String getCpOpenDate(IFormReference ifr){return getFieldValue(ifr,cpOpenDateLocal);}
+    public String getCpCloseDate(IFormReference ifr){return getFieldValue(ifr,cpCloseDateLocal);}
     public String getCpPmWinRefNo(IFormReference ifr){
         return null;
     }
@@ -248,20 +248,40 @@ public class Commons implements Constants {
     public String getCpSmCusRefNo(IFormReference ifr){
         return null;
     }
+    public String getCpLandingMsg (IFormReference ifr){return getFieldValue(ifr,cpLandMsgLocal);}
+    public String getPmMinPrincipal(IFormReference ifr){return getFieldValue(ifr,cpPmMinPriAmtLocal);}
+    public void cpSetUpPrimaryMarketWindow(IFormReference ifr){
+        String winRefNo =  generateCpWinRefNo(cpPmLabel);
+       int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,primary,getCpLandingMsg(ifr),getPmMinPrincipal(ifr),empty,empty,empty,empty,getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
+       if (validate >= 0) {
+           setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
+           logger.info("record saved just for checking");
+       }
+    }
+    public void cpSetUpSecondaryMarketWindow(IFormReference ifr){
+        String winRefNo =  generateCpWinRefNo(cpSmLabel);
+       int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,secondary,getCpLandingMsg(ifr),getPmMinPrincipal(ifr),empty,empty,empty,empty,getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
+       if (validate >= 0) {
+           setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
+           logger.info("record saved just for checking");
+       }
+    }
+    private String generateCpWinRefNo(String cpLabel) {
+        return cpLabel + new SimpleDateFormat(cpRefNoDateFormat).format(new Date());
+    }
+
     
     /******************  TREASURY BILL CODE BEGINS *********************************/
-    
     public void hideTbSections (IFormReference ifr){hideFields(ifr,allTbSections);}
     public void disableTbSections (IFormReference ifr){disableFields(ifr,allTbSections);}
     public void disableField(IFormReference ifr, String field) {ifr.setStyle(field,disable,True);}
-    public void clearField(IFormReference ifr, String field) {ifr.setValue(field,empty);}
+    public void clearFields(IFormReference ifr, String field) {ifr.setValue(field,empty);}
     public void setVisible(IFormReference ifr, String field) { ifr.setStyle(field,visible,True);}
     public void hideField(IFormReference ifr, String field) {ifr.setStyle(field,visible,False);}
     public void hideFields(IFormReference ifr, String [] fields ) { for(String field: fields) ifr.setStyle(field,visible,False); }
     public void enableField(IFormReference ifr, String field) {ifr.setStyle(field,disable,False);}
     public void setMandatory(IFormReference ifr, String field) { ifr.setStyle(field,mandatory,True); }
     public void undoMandatory(IFormReference ifr, String field) { ifr.setStyle(field,mandatory,False); }
-    
     public String getTbMarketName (IFormReference ifr){
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) 
         	return primary;
@@ -272,7 +292,6 @@ public class Commons implements Constants {
     public String getTbMarket(IFormReference ifr){
     	return  (String) ifr.getValue(tbSelectMarketLocal);
     }
-    
     public void setTbDecisionHistory (IFormReference ifr){
         String marketType = getCpMarketName(ifr);
         String remarks = (String)ifr.getValue(tbRemarksLocal);
@@ -281,13 +300,11 @@ public class Commons implements Constants {
         setDecisionHistory(ifr,getLoginUser(ifr),treasuryProcessName,marketType,getCpDecision(ifr),remarks,getActivityName(ifr),entryDate,exitDate,getTat(entryDate,exitDate));
         ifr.setValue(decHisFlagLocal,flag);
     }
-    
     public void porpulateCombo(IFormReference ifr, String comboCntrlName, String [] values){
         ifr.clearCombo(comboCntrlName);
         for (String value: values)
             ifr.addItemInCombo(comboCntrlName,value,value);
     }
-    
     public boolean getTbUpdateLocal(IFormReference ifr){ return (boolean) ifr.getValue(tbUpdateLocal); }
     public String getTbDecision (IFormReference ifr){return (String) ifr.getValue(tbDecisionLocal);}
     public String getTbCategory(IFormReference ifr){return (String) ifr.getValue(tbCategoryLocal);}
@@ -296,7 +313,6 @@ public class Commons implements Constants {
     public String getTbOpenDate(IFormReference ifr){return (String)ifr.getValue(tbOpenDateLocal);}
     public String getTbCloseDate(IFormReference ifr){return (String)ifr.getValue(tbCloseDateLocal);}
     public String getTbUniqueRef(IFormReference ifr){return (String)ifr.getValue(tbUniqueRef);}
-    
     public String getDateWithoutTime() {
     	SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
     	try {

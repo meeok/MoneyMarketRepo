@@ -91,6 +91,8 @@ public interface Constants {
 	String cpOpenDateLocal = "cp_open_window_date";
 	String cpCloseDateLocal = "cp_close_window_date";
 	String cpPmMinPriAmtLocal = "cp_mp_amount";
+	String cpPmWinRefNoLocal = "cp_pmwu_ref";
+
 
 	//common variables
 	String omoProcess = "omo_market";
@@ -117,6 +119,9 @@ public interface Constants {
 	String mailSubject = "Money Market Workflow Notification";
 	String primary = "Primary";
 	String secondary = "Secondary";
+	String cpPmLabel = "CPPMA";
+	String cpSmLabel = "CPSMA";
+	String cpRefNoDateFormat ="ddMMyyyy";
 
 
 	//eventName/controlName

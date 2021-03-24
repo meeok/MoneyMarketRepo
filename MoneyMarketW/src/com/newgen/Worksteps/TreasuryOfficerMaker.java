@@ -126,16 +126,11 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     private String setupCpWindow (IFormReference ifr){
         if (isEmpty(getSetupFlag(ifr))){
             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
-                if (compareDate(getCpOpenDate(ifr),getCpCloseDate(ifr))){
-
-                }
-                else {
-                    return "Close date cannot be before open date.";
-                }
+                if (compareDate(getCpOpenDate(ifr),getCpCloseDate(ifr))) cpSetUpPrimaryMarketWindow(ifr);
+                else return "Close date cannot be before Open date.";
             }
             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){}
         }
-
         return null;
     }
     private void cpUpdateLandingMsg(IFormReference ifr){

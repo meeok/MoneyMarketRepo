@@ -183,7 +183,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
         hideShowBackToDashboard(ifr,False);
         setGenDetails(ifr);
         tbSetDecision(ifr);
-        clearField(ifr,selectProcessLocal);
+        clearFields(ifr,selectProcessLocal);
         setMandatory(ifr, selectProcessLocal);
         ifr.setValue(currWsLocal, getActivityName(ifr));
         ifr.setValue(prevWsLocal, na);
