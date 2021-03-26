@@ -83,12 +83,13 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 }
                 break;
                 case decisionHistory:{
-                	if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) setTbDecisionHistory(ifr);
-                	else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) setTbDecisionHistory(ifr); }
+                	if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) setCpDecisionHistory(ifr);
+                	else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) setTbDecisionHistory(ifr);
+                }
                 break;
                 case sendMail:{
                 	if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpSendMail(ifr);
-                	if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) tbSendMail(ifr);
+                	else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) tbSendMail(ifr);
                 	}
             }
         }
@@ -171,8 +172,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         hideCpSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
         setGenDetails(ifr);
-        hideShowBackToDashboard(ifr,False);
-        disableCpSections(ifr);
+        setInvisible(ifr,new String[]{goBackDashboardSection});
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
             if (isEmpty(getSetupFlag(ifr))) {
                 if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
@@ -180,8 +180,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         setVisible(ifr, new String [] {cpLandingMsgSection,cpDecisionSection});
                         setMandatory(ifr,new String [] {cpDecisionLocal,cpRemarksLocal,cpLandMsgLocal});
                         enableFields(ifr,new String[] {cpLandingMsgSection,cpDecisionSection});
-                    } else if (getCpDecision(ifr).equalsIgnoreCase(decApprove)) {
-                        setVisible(ifr,new String [] {cpLandingMsgSection,cpDecisionSection,cpMarketSection,cpCategoryLocal});
+                    } else if (getCpDecision(ifr).equalsIgnoreCase(decApprove) && isEmpty(getWindowSetupFlag(ifr))) {
+                        setVisible(ifr,new String [] {cpLandingMsgSection,cpMarketSection,cpCategoryLocal});
                         enableFields(ifr,new String[]{cpDecisionSection,cpCategoryLocal});
                         disableFields(ifr, new String[]{cpSelectMarketLocal});
                         setMandatory(ifr,new String[] {cpDecisionLocal,cpRemarksLocal,cpCategoryLocal});

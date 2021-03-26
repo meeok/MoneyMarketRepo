@@ -196,6 +196,9 @@ public interface Constants {
 	String tbCategoryReDiscountRate = "Re-discount Rate";
 	String tbCategoryCutOff = "Cut off time modification";
 	String tbCategoryReport = "Report";
+	String[] allTbSections = {tbMarketSection,tbLandingMsgSection ,tbTreasuryPriSection, tbTreasurySecSection,
+			tbPrimaryBidSection, tbBranchSection, tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
+			tbTreasuryOpsSection ,tbTreasurySecReportSection ,tbPostSection };
 	
 
 

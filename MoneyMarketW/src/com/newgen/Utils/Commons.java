@@ -11,9 +11,7 @@ import java.text.SimpleDateFormat;
 
 public class Commons implements Constants {
     private Logger logger = LogGen.getLoggerInstance(Commons.class);
-    String[] allTbSections = {tbMarketSection,tbLandingMsgSection ,tbTreasuryPriSection, tbTreasurySecSection,
-    		tbPrimaryBidSection, tbBranchSection, tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
-    		tbTreasuryOpsSection ,tbTreasurySecReportSection ,tbPostSection };
+
 
     private String getTat (String entryDate, String exitDate){
         SimpleDateFormat sdf = new SimpleDateFormat(dbDateTimeFormat);
@@ -269,6 +267,7 @@ public class Commons implements Constants {
     private String generateCpWinRefNo(String cpLabel) {
         return cpLabel + new SimpleDateFormat(cpRefNoDateFormat).format(new Date());
     }
+    public String getWindowSetupFlag (IFormReference ifr){return getFieldValue(ifr,windowSetupFlagLocal);}
 
     
     /******************  TREASURY BILL CODE BEGINS *********************************/
