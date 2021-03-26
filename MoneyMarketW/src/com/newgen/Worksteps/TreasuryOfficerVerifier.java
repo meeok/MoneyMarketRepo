@@ -83,6 +83,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         setGenDetails(ifr);
         disableCpSections(ifr);
         hideShowBackToDashboard(ifr,False);
+        clearFields(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)) {
             setVisible(ifr,new String[] {cpLandingMsgSection,cpDecisionSection,cpMarketSection});
             enableFields(ifr,new String[]{cpDecisionSection});

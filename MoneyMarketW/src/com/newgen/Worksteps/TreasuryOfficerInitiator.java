@@ -60,7 +60,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                     switch (controlName){
                         case onChangeProcess: {
                             selectProcessSheet(ifr);
-                            if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpInitiatorFormLoad(ifr);
+                            if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
                             else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) 
                             	tbInitiatorFormLoad(ifr);
                             break;
@@ -94,9 +94,6 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
         return null;
     }
 
-    private void cpInitiatorFormLoad (IFormReference ifr){
-        setMandatory(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal});
-    }
 
     @Override
     public void cpSendMail(IFormReference ifr){
@@ -105,17 +102,10 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     }
     @Override
     public void cpFormLoadActivity(IFormReference ifr){
-        hideProcess(ifr);
-        hideCpSections(ifr);
-        hideShowLandingMessageLabel(ifr,False);
-        hideShowBackToDashboard(ifr,False);
-        setGenDetails(ifr);
         cpSetDecision(ifr);
-        clearFields(ifr,new String [] {selectProcessLocal});
-        setMandatory(ifr, new String[]{selectProcessLocal});
-        ifr.setValue(currWsLocal, getActivityName(ifr));
-        ifr.setValue(prevWsLocal, na);
         setVisible(ifr, new String[]{cpLandingMsgSection, cpDecisionSection, cpMarketSection});
+        enableFields(ifr,new String[]{cpLandMsgLocal,cpSelectMarketLocal});
+        setMandatory(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal,cpRemarksLocal});
     }
     public void beforeFormLoadActivity(IFormReference ifr){
         hideProcess(ifr);
@@ -124,13 +114,10 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
         hideShowLandingMessageLabel(ifr,False);
         hideShowBackToDashboard(ifr,False);
         setGenDetails(ifr);
-        cpSetDecision(ifr);
         tbSetDecision(ifr);
         clearFields(ifr,new String [] {selectProcessLocal});
         setMandatory(ifr, new String[]{selectProcessLocal});
-        ifr.setValue(currWsLocal, getActivityName(ifr));
-        ifr.setValue(prevWsLocal, na);
-        setVisible(ifr, new String[]{cpLandingMsgSection, cpDecisionSection, cpMarketSection});
+        setFields(ifr, new String[]{currWsLocal,prevWsLocal},new String[]{getCurrentWorkStep(ifr),na});
         setVisible(ifr, new String[]{tbLandingMsgSection, tbDecisionSection, tbMarketSection});
     }
 
@@ -141,7 +128,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
 
 
     private void cpBackToDashboard(IFormReference ifr) {
-        undoMandatory(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal});
+        undoMandatory(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal,cpRemarksLocal});
         clearFields(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal,cpRemarksLocal});
     }
 

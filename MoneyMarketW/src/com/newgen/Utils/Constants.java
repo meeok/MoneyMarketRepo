@@ -137,7 +137,7 @@ public interface Constants {
 	String goToDashBoard = "onClickGoBackToDashboard";
 	String cpUpdateMsg = "onClickUpdateMsg";
 	String cpOnSelectCategory = "onChangeCategory";
-	String cpSetupWindow = "onClickSetup";
+	String cpSetupWindowEvent = "setupWin";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

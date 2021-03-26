@@ -248,13 +248,17 @@ public class Commons implements Constants {
     }
     public String getCpLandingMsg (IFormReference ifr){return getFieldValue(ifr,cpLandMsgLocal);}
     public String getPmMinPrincipal(IFormReference ifr){return getFieldValue(ifr,cpPmMinPriAmtLocal);}
-    public void cpSetUpPrimaryMarketWindow(IFormReference ifr){
+    public String cpSetUpPrimaryMarketWindow(IFormReference ifr){
         String winRefNo =  generateCpWinRefNo(cpPmLabel);
+        logger.info("pmWinRefNo--"+ winRefNo);
+        logger.info("Query for setup-- "+ new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,primary,getCpLandingMsg(ifr),getPmMinPrincipal(ifr),empty,empty,empty,empty,getCpOpenDate(ifr),getCpCloseDate(ifr)));
        int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,primary,getCpLandingMsg(ifr),getPmMinPrincipal(ifr),empty,empty,empty,empty,getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
        if (validate >= 0) {
            setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
            logger.info("record saved just for checking");
+           return "Window setup successful";
        }
+       else return "Unable to setup window try again later";
     }
     public void cpSetUpSecondaryMarketWindow(IFormReference ifr){
         String winRefNo =  generateCpWinRefNo(cpSmLabel);
@@ -268,6 +272,9 @@ public class Commons implements Constants {
         return cpLabel + new SimpleDateFormat(cpRefNoDateFormat).format(new Date());
     }
     public String getWindowSetupFlag (IFormReference ifr){return getFieldValue(ifr,windowSetupFlagLocal);}
+    public String getCurrentWorkStep(IFormReference ifr){
+        return ifr.getActivityName();
+    }
 
     
     /******************  TREASURY BILL CODE BEGINS *********************************/

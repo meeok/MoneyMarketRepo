@@ -43,7 +43,7 @@ public class Query {
     }
     public String getSetupMarketWindowQuery (String refId, String wiName,String process,String marketType,String landingMessage,String minPrincipalAmount,String reDiscountRateLess90,String reDiscountRateLess180,String reDiscountRateLess270,String reDiscountRateLess364,String openDate,String closeDate) {
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,REDISCOUNTRATELESS90,REDISCOUNTRATELESS180,REDISCOUNTRATELESS270,REDISCOUNTRATELESS364,OPENDATE,CLOSEDATE)" +
-                "values ('"+refId+"','"+wiName+"','"+process+"','"+marketType+"','"+landingMessage+"','"+minPrincipalAmount+"',"+reDiscountRateLess90+","+reDiscountRateLess180+","+reDiscountRateLess270+","+reDiscountRateLess364+","+openDate+","+closeDate+")";
+                "values ('"+refId+"','"+wiName+"','"+process+"','"+marketType+"','"+landingMessage+"','"+minPrincipalAmount+"','"+reDiscountRateLess90+"','"+reDiscountRateLess180+"','"+reDiscountRateLess270+"','"+reDiscountRateLess364+"','"+openDate+"','"+closeDate+"')";
     }
     public String getUpdateSetupQuery(String columnName,String value,String condition){
         return "update mm_setup_tbl set "+columnName+" = "+value+" where condition = "+condition+"";
