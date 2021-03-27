@@ -1,4 +1,4 @@
-package com.newgen.Utils;
+package com.newgen.utils;
 
 public class Query {
     public String getSolQuery(String userName){

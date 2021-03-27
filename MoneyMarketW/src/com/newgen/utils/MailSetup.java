@@ -1,4 +1,4 @@
-package com.newgen.Utils;
+package com.newgen.utils;
 
 
 import com.newgen.iforms.custom.IFormReference;

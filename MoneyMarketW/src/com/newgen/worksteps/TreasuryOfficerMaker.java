@@ -1,12 +1,12 @@
-package com.newgen.Worksteps;
+package com.newgen.worksteps;
 
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.Utils.Commons;
-import com.newgen.Utils.CommonsI;
-import com.newgen.Utils.LogGen;
+import com.newgen.utils.Commons;
+import com.newgen.utils.CommonsI;
+import com.newgen.utils.LogGen;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;

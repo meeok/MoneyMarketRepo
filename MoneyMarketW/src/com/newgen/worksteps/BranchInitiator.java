@@ -1,5 +1,7 @@
-package com.newgen.Worksteps;
+package com.newgen.worksteps;
 
+import com.newgen.utils.Commons;
+import com.newgen.utils.CommonsI;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
@@ -9,7 +11,7 @@ import org.json.simple.JSONArray;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AwaitingMaturity implements IFormServerEventHandler {
+public class BranchInitiator extends Commons implements IFormServerEventHandler, CommonsI {
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference iFormReference) {
 
@@ -53,5 +55,21 @@ public class AwaitingMaturity implements IFormServerEventHandler {
     @Override
     public String introduceWorkItemInWorkFlow(IFormReference iFormReference, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         return null;
+    }
+
+    @Override
+    public void cpSendMail(IFormReference ifr) {
+
+    }
+
+    @Override
+    public void cpFormLoadActivity(IFormReference ifr) {
+
+    }
+
+    @Override
+    public void cpSetDecision(IFormReference ifr) {
+        setDecision(ifr,cpDecisionLocal,new String[]{decSubmit,decDiscard});
+
     }
 }

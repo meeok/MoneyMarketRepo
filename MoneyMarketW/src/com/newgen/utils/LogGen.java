@@ -1,4 +1,4 @@
-package com.newgen.Utils;
+package com.newgen.utils;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

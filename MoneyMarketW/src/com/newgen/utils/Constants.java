@@ -1,4 +1,4 @@
-package com.newgen.Utils;
+package com.newgen.utils;
 
 public interface Constants {
 	String ProcessName = "MoneyMarketW";
