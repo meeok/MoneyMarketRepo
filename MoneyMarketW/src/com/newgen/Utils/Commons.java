@@ -256,7 +256,7 @@ public class Commons implements Constants {
        if (validate >= 0) {
            setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
            logger.info("record saved just for checking");
-           return "Window setup successful";
+           return "success";
        }
        else return "Unable to setup window try again later";
     }
