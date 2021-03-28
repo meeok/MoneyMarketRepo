@@ -75,14 +75,15 @@ public interface Constants {
 	String cpRemarksLocal = "cp_remarks";
 	String cpDecisionLocal = "cp_decision";
 	String cpLandMsgLocal = "cp_landingMsg";
-	String cpPrimaryMarket = "cp_primary";
-	String cpSecondaryMarket = "cp_secondary";
+	String cpPrimaryMarket = "primary";
+	String cpSecondaryMarket = "secondary";
 	String cpCategoryLocal = "cp_category";
 	String cpCategorySetup = "Setup";
 	String cpCategoryBid = "Bid";
 	String cpCategoryReDiscountRate = "Re-discount Rate";
 	String cpCategoryCutOff = "Cut off time modification";
 	String cpCategoryReport = "Report";
+	String cpCategoryMandate = "Mandate";
 	String cpSetupWindowBtn = "cp_setupWin_btn";
 	String cpUpdateCutoffTimeBtn = "cp_updateCutoff_btn";
 	String cpSetReDiscountRateBtn = "cp_rediscRate_btn";
@@ -92,6 +93,16 @@ public interface Constants {
 	String cpCloseDateLocal = "cp_close_window_date";
 	String cpPmMinPriAmtLocal = "cp_mp_amount";
 	String cpPmWinRefNoLocal = "cp_pmwu_ref";
+	String cpPmWinRefNoBranchLocal = "cp_pmwinref_br";
+	String cpPmMinPriAmtBranchLocal ="";
+	String cpPmCustomerNameLocal ="";
+	String cpPmCustomerEmailLocal = "";
+	String cpPmLienStatusLocal ="";
+	String cpPmRateTypeLocal = "cp_rate_type";
+	String cpPmPersonalRateLocal ="";
+	String cpPmPrincipalLocal ="";
+	String cpPmTenorLocal ="";
+	String cpPmCustomerIdLocal ="";
 
 
 	//common variables
@@ -121,8 +132,23 @@ public interface Constants {
 	String secondary = "Secondary";
 	String cpPmLabel = "CPPMA";
 	String cpSmLabel = "CPSMA";
+	String cpIdLabel ="CP";
 	String cpRefNoDateFormat ="ddMMyyyy";
-
+	String windowOpenFlag ="N";
+	String windowCloseFlag ="Y";
+	String windowOpen = "opened";
+	String windowClosed = "closed";
+	String windowInactiveMessage = "No Window is currently open, Try again later";
+	String invalidSchemeCode1 = "SA231";
+	String invalidSchemeCode2 = "SA310";
+	String invalidSchemeCode3 = "SA340";
+	String invalidSchemeCode4 = "SA327";
+	String cpInvalidAccountErrorMessage ="This account is not valid for CP processing";
+	String rateTypeBank ="Bank";
+	String rateTypePersonal ="Person";
+	String minPrincipalErrorMsg ="Customer principal cannot be less and window minimum principal";
+	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";
+	String cpValidateWindowErrorMsg ="This CP window has been closed. Kindly wait till the next window to initiate";
 
 	//eventName/controlName
 	String formLoad = "formLoad";
@@ -138,6 +164,12 @@ public interface Constants {
 	String cpUpdateMsg = "onClickUpdateMsg";
 	String cpOnSelectCategory = "onChangeCategory";
 	String cpSetupWindowEvent = "setupWin";
+	String cpOnSelectMarket = "onChangeMarket";
+	String cpApiCallEvent = "cpApiCall";
+	String cpOnChangeRateType ="onChangeRate";
+	String validateWindowEvent ="validateWindow";
+	String cpCheckPrincipalEvent ="onChangePrincipal";
+	String cpCheckTenorEvent="onChangeTenor";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";
@@ -148,45 +180,45 @@ public interface Constants {
 	
 	/*************TREASURY BILLS STARTS HERE********************/
 	//treasury events
-	public static final String tbCategoryChange = "tbCategoryChange";
+	String tbCategoryChange = "tbCategoryChange";
 	
 	// treasury bills control ids
-	public static final String tbSelectMarketLocal = "tb_select_market";
-	public static final String tbRemarksLocal = "tb_remarks";
-	public static final String tbDecisionLocal = "tb_decision";
-	public static final String tbLandMsgLocal = "tb_landingMsg";
-	public static final String tbPrimaryMarket = "tb_primary";
-	public static final String tbSecondaryMarket = "tb_secondary";
-	public static final String tbCategoryLocal = "tb_category";
+	String tbSelectMarketLocal = "tb_select_market";
+	String tbRemarksLocal = "tb_remarks";
+	String tbDecisionLocal = "tb_decision";
+	String tbLandMsgLocal = "tb_landingMsg";
+	String tbPrimaryMarket = "tb_primary";
+	String tbSecondaryMarket = "tb_secondary";
+	String tbCategoryLocal = "tb_category";
 	
-	public static final String tbSetupWindowBtn = "tb_setupWin_btn";
-	public static final String tbUpdateCutoffTimeBtn = "tb_updateCutoff_btn";
-	public static final String tbSetReDiscountRateBtn = "tb_rediscRate_btn";
-	public static final String tbLandingMsgSubmitBtn="tb_landMsgSubmit_btn";
-	public static final String tbUpdateLocal = "tb_updateMsg";
-	public static final String tbOpenDateLocal = "tb_open_window_date";
-	public static final String tbCloseDateLocal = "tb_close_window_date";
-	public static final String tbPmMinPriAmtLocal = "tb_mp_amount";
-	public static final String tbUniqueRef = "tb_pmwu_ref";
+	String tbSetupWindowBtn = "tb_setupWin_btn";
+	String tbUpdateCutoffTimeBtn = "tb_updateCutoff_btn";
+	String tbSetReDiscountRateBtn = "tb_rediscRate_btn";
+	String tbLandingMsgSubmitBtn="tb_landMsgSubmit_btn";
+	String tbUpdateLocal = "tb_updateMsg";
+	String tbOpenDateLocal = "tb_open_window_date";
+	String tbCloseDateLocal = "tb_close_window_date";
+	String tbPmMinPriAmtLocal = "tb_mp_amount";
+	String tbUniqueRef = "tb_pmwu_ref";
 	
-	public static final String tbCustSchemeCode ="";
+	String tbCustSchemeCode ="";
 	//public static final String 
 	
 	// tb sections
-	public static final String tbMarketSection = "tb_market_section";
-	public static final String tbLandingMsgSection = "tb_setupmsg_section";
-	public static final String tbTreasuryPriSection = "tb_treasuryPm_section";
-	public static final String tbTreasurySecSection = "tb_treasurySec_section";
-	public static final String tbPrimaryBidSection = "tb_pmBid_section";
-	public static final String tbBranchSection = "tb_branch_section";
-	public static final String tbTerminationSection = "tb_termination_section";
-	public static final String tbProofOfInvestSection = "tb_poi_section";
-	public static final String tbDecisionSection = "tb_dec_section";
-	public static final String tbTreasuryOpsSection ="tb_treasuryOps_section";
-	public static final String tbTreasurySecReportSection ="tb_secReport_section";
-	public static final String tbPostSection = "tb_post_section";
-	public static final String tbSetupSection="tb_setup_section";
-	public static final String tbCutOffTimeSection = "tb_cutoff_section";
+	String tbMarketSection = "tb_market_section";
+	String tbLandingMsgSection = "tb_setupmsg_section";
+	String tbTreasuryPriSection = "tb_treasuryPm_section";
+	String tbTreasurySecSection = "tb_treasurySec_section";
+	String tbPrimaryBidSection = "tb_pmBid_section";
+	String tbBranchSection = "tb_branch_section";
+	String tbTerminationSection = "tb_termination_section";
+	String tbProofOfInvestSection = "tb_poi_section";
+	String tbDecisionSection = "tb_dec_section";
+	String tbTreasuryOpsSection ="tb_treasuryOps_section";
+	String tbTreasurySecReportSection ="tb_secReport_section";
+	String tbPostSection = "tb_post_section";
+	String tbSetupSection="tb_setup_section";
+	String tbCutOffTimeSection = "tb_cutoff_section";
 	
 	//public static final String tbBranchPriSection = "tb_branchPm_section";
 	//public static final String tbBranchSecSection = "tb_BranchSec_section";
@@ -194,17 +226,17 @@ public interface Constants {
 	//public static final String tbTreasuryOpsPriSection = "tb_treasuryOpsPm_section";
 	
 	// categories dropdwon 
-	public static final String tbCategorySetup = "Setup";
-	public static final String tbCategoryBid = "Bid";
-	public static final String tbCategoryReDiscountRate = "Re-discount Rate";
-	public static final String tbCategoryCutOff = "Cut off time modification";
-	public static final String tbCategoryReport = "Report";
+	String tbCategorySetup = "Setup";
+	String tbCategoryBid = "Bid";
+	String tbCategoryReDiscountRate = "Re-discount Rate";
+	String tbCategoryCutOff = "Cut off time modification";
+	String tbCategoryReport = "Report";
 	
 	//schecodes not allowed
-	public static final String SA231 ="SA231";
-	public static final String SA310 ="SA310";
-	public static final String SA340 ="SA340";
-	public static final String SA327 ="SA327";
+	String SA231 ="SA231";
+	String SA310 ="SA310";
+	String SA340 ="SA340";
+	String SA327 ="SA327";
 	
 	String[] allTbSections = {tbMarketSection,tbLandingMsgSection ,tbTreasuryPriSection, tbTreasurySecSection,
 			tbPrimaryBidSection, tbBranchSection, tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,

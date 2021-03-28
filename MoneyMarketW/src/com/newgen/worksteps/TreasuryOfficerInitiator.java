@@ -35,15 +35,15 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     }
 
     @Override
-    public String executeServerEvent(IFormReference ifr, String controlName, String eventName, String data) {
+    public String executeServerEvent(IFormReference ifr, String control, String event, String data) {
         try {
-            switch (eventName){
+            switch (event){
                 case formLoad:{}
                 break;
                 case onLoad:{}
                 break;
                 case onClick:{
-                    switch (controlName){
+                    switch (control){
                         case goToDashBoard:{
                             backToDashboard(ifr);
                             if (getProcess(ifr).equalsIgnoreCase(commercialProcess))
@@ -57,7 +57,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                 }
                 break;
                 case onChange:{
-                    switch (controlName){
+                    switch (control){
                         case onChangeProcess: {
                             selectProcessSheet(ifr);
                             if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);

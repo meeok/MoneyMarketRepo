@@ -45,8 +45,23 @@ public class Query {
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,REDISCOUNTRATELESS90,REDISCOUNTRATELESS180,REDISCOUNTRATELESS270,REDISCOUNTRATELESS364,OPENDATE,CLOSEDATE)" +
                 "values ('"+refId+"','"+wiName+"','"+process+"','"+marketType+"','"+landingMessage+"','"+minPrincipalAmount+"','"+reDiscountRateLess90+"','"+reDiscountRateLess180+"','"+reDiscountRateLess270+"','"+reDiscountRateLess364+"','"+openDate+"','"+closeDate+"')";
     }
+    public String getCheckActiveWindowQuery(String process, String marketType){
+        return "select count(*) from mm_setup_tbl where process = '"+process+"' and markettype ='"+marketType+"' and  closeflag = 'N'";
+    }
+    public String getActiveWindowDetailsQuery(String process, String markType){
+        return "select refid, landingmessage, minprincipalamount from mm_setup_tbl where process = '"+process+"' and markettype ='"+markType+"' and  closeflag = 'N'";
+    }
+    public String getWinDetailsByIdQuery(String winRefId){
+        return "select * from mm_setup_tbl where refid = '"+winRefId+"";
+    }
+    public String getWinCloseFlagById (String winRefId){
+        return "select closeflag from mm_setup_tbl where refid = '"+winRefId+"'";
+    }
     public String getUpdateSetupQuery(String columnName,String value,String condition){
         return "update mm_setup_tbl set "+columnName+" = "+value+" where condition = "+condition+"";
+    }
+    public String getCheckActiveWindowByIdQuery(String winRefId){
+        return  "select COUNT(closeflag) from mm_setup_tbl where refid = '"+winRefId+"' and closeflag = 'N'";
     }
     public String getTBInsertSetupQuery (){
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE,CLOSEFLAG) values (values)";
