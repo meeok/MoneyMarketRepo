@@ -4,20 +4,24 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
+import com.newgen.utils.Commons;
+import com.newgen.utils.CommonsI;
 import org.json.simple.JSONArray;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class BranchVerifier implements IFormServerEventHandler {
+public class BranchVerifier extends Commons implements IFormServerEventHandler , CommonsI {
     @Override
-    public void beforeFormLoad(FormDef formDef, IFormReference iFormReference) {
-
+    public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
+        clearDecHisFlag(ifr);
+        if (!isEmpty(getProcess(ifr))) showSelectedProcessSheet(ifr);
+        if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
     }
 
     @Override
     public String setMaskedValue(String s, String s1) {
-        return null;
+        return s1;
     }
 
     @Override
@@ -53,5 +57,31 @@ public class BranchVerifier implements IFormServerEventHandler {
     @Override
     public String introduceWorkItemInWorkFlow(IFormReference iFormReference, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         return null;
+    }
+
+    @Override
+    public void cpSendMail(IFormReference ifr) {
+
+    }
+
+    @Override
+    public void cpFormLoadActivity(IFormReference ifr) {
+        hideCpSections(ifr);
+        hideShowLandingMessageLabel(ifr,False);
+        disableCpSections(ifr);
+        hideShowBackToDashboard(ifr,False);
+        clearFields(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
+        if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
+            if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
+                setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
+                setVisible(ifr,new String[]{cpBranchPriSection,cpCustomerDetailsSection,cpPostSection});
+                setInvisible(ifr, new String[]{cpAcctValidateBtn});
+            }
+        }
+    }
+
+    @Override
+    public void cpSetDecision(IFormReference ifr) {
+        setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReject});
     }
 }

@@ -40,8 +40,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                 case onLoad:
                 case cpApiCallEvent:{
                   String resp = CpController.fetchAccountDetailsController(ifr);
-                  if (isEmpty(resp))
-                      return CpController.fetchLienController(ifr);
+                  if (isEmpty(resp)) return CpController.fetchLienController(ifr);
+                  else if (resp.equalsIgnoreCase(cpEmailMsg)) return cpEmailMsg + "#" + CpController.fetchLienController(ifr);
                   else return resp;
                 }
                 case onClick:{
@@ -66,14 +66,15 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         case cpOnSelectMarket:{
                             setVisible(ifr,new String[]{cpCategoryLocal});
                             enableFields(ifr,new String[]{cpCategoryLocal});
+                            setMandatory(ifr,new String[]{cpCategoryLocal});
                         }
                         break;
-                        case cpOnSelectCategory:{cpSelectCategory(ifr);}
-                        break;
+                        case cpOnSelectCategory:{return cpSelectCategory(ifr);}
                         case cpOnChangeRateType:{
                             if (getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal)){
                                 setVisible(ifr,new String[]{cpPmPersonalRateLocal});
                                 setMandatory(ifr,new String[]{cpPmPersonalRateLocal});
+                                enableFields(ifr,new String[]{cpPmPersonalRateLocal});
                             }
                             else{
                                 clearFields(ifr,cpPmPersonalRateLocal);
@@ -84,7 +85,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         break;
                         case cpCheckPrincipalEvent:{
                             if (getCpPmCustomerPrincipal(ifr) < getCpPmWinPrincipalAmt(ifr)) {
-                                clearFields(ifr,cpPmMinPriAmtBranchLocal);
+                                clearFields(ifr,cpPmPrincipalLocal);
                                 return minPrincipalErrorMsg;
                             }
                         }
@@ -136,9 +137,13 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
                 if (isCpWindowActive(ifr)) {
-                    setVisible(ifr,new String[]{cpBranchPriSection});
+                    setVisible(ifr,new String[]{cpBranchPriSection,cpCustomerDetailsSection});
+                    setMandatory(ifr,new String[]{cpCustomerAcctNoLocal,cpPmTenorLocal,cpPmPrincipalLocal,cpPmRateTypeLocal});
+                    enableFields(ifr,new String[]{cpCustomerAcctNoLocal,cpPmTenorLocal,cpPmPrincipalLocal,cpPmRateTypeLocal});
+                    setDropDown(ifr,cpPmReqTypeLocal,new String[]{cpPmReqFreshLabel},new String[]{cpPmReqFreshValue});
+                    setFields(ifr,cpPmReqTypeLocal,cpPmReqFreshValue);
+                    setFields(ifr,new String[]{cpPmReqTypeLocal, cpPmInvestmentTypeLocal},new String[]{cpPmReqFreshValue,cpPmInvestmentPrincipal});
                     setCpPmWindowDetails(ifr);
-
                 } else return windowInactiveMessage;
             }
         }
@@ -172,7 +177,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 
 
     private void cpBackToDashboard(IFormReference ifr) {
-        undoMandatory(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal,cpRemarksLocal});
+        undoMandatory(ifr,new String [] {cpSelectMarketLocal,cpDecisionLocal,cpRemarksLocal});
         clearFields(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal,cpRemarksLocal});
     }
 
