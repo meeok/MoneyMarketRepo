@@ -6,8 +6,12 @@ import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.utils.Commons;
 import com.newgen.utils.CommonsI;
+import com.newgen.utils.DBCalls;
+import com.newgen.utils.DbConnect;
 import com.newgen.utils.LogGen;
 import com.newgen.utils.MailSetup;
+import com.newgen.utils.Query;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 
@@ -16,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class TreasuryOfficerVerifier extends Commons implements IFormServerEventHandler, CommonsI {
     private static Logger logger = LogGen.getLoggerInstance(TreasuryOfficerVerifier.class);
+    DBCalls dbc = new DBCalls();
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
         clearDecHisFlag(ifr);
@@ -48,9 +53,14 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 break;
                 case custom:{}
                 break;
-                case onDone:{}
+                case onDone:{
+                	if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) {tbOnDone(ifr);} 
+                }
                 break;
-                case decisionHistory:{if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) setCpDecisionHistory(ifr); }
+                case decisionHistory:{
+                	if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) setCpDecisionHistory(ifr);
+                	else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) setTbDecisionHistory(ifr); 
+                }
                 break;
                 case sendMail:{ if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpSendMail(ifr);}
             }
@@ -62,7 +72,9 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         return null;
     }
 
-    @Override
+    
+
+	@Override
     public void cpSendMail(IFormReference ifr) {
         String message;
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)){
@@ -98,12 +110,14 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     }
     
     //*************** Treasury Start *************************/
-    
+    /*
+     * set controls for task to be performed before the formloads
+     */
     private void tbFormLoadActivity(IFormReference ifr){
         hideTbSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
         setGenDetails(ifr);
-        disableCpSections(ifr);
+        disableTbSections(ifr);
         hideShowBackToDashboard(ifr,False);
         //set controls for task to be performed
         //approving of landing message 
@@ -112,18 +126,33 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
             enableField(ifr,tbDecisionSection);
             setMandatory(ifr, new String[]{tbDecisionLocal,tbRemarksLocal});
         }
-        //Modification of Primary Market Cut-off Time 
-       // else if()
-       // tbSetDecision(ifr);
-    }
-
-    private void tbSetDecision(IFormReference ifr) {
-        ifr.clearCombo(tbDecisionLocal);
-        clearFields(ifr,new String[]{tbDecisionLocal,tbRemarksLocal});
-        ifr.addItemInCombo(tbDecisionLocal, decApprove, decApprove);
-        ifr.addItemInCombo(tbDecisionLocal, decReject, decReject);
+        else {//Modification of Primary Market Cut-off Time 
+        	
+        }
+        setDecision(ifr, tbDecisionLocal,new String[]{decApprove,decReject});
     }
     
+    /*
+     * save unique ref and landing msg if appoved
+     * update landing msg if update is approve
+     */
+    private void tbOnDone(IFormReference ifr) {
+    	tbSendMail(ifr);
+    	
+	}
+    
+    public void tbSendMail(IFormReference ifr) {
+        String message = "";
+        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)){
+            if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
+                message = "Landing Message has been approved by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to setup market.";
+            }
+            else if (getTbDecision(ifr).equalsIgnoreCase(decReject)){
+                message = "Landing Message has been rejected by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to make necessary corrections.";
+            }
+            new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
+    }
+    }
     //*************** Treasury End *************************/
 
     @Override
