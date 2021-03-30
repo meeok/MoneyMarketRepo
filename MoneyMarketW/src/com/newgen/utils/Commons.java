@@ -326,34 +326,40 @@ public class Commons implements Constants {
     public String getTbMarketName (IFormReference ifr){
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) 
         	return primary;
-        else if (getProcess(ifr).equalsIgnoreCase(tbSecondaryMarket)) 
+        else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) 
         	return secondary;
         return null;
     }
     public String getTbMarket(IFormReference ifr){
-    	return  (String) ifr.getValue(tbSelectMarketLocal);
+    	return  (String) ifr.getValue(tbMarketTypedd);
     }
     public void setTbDecisionHistory (IFormReference ifr){
-        String marketType = getCpMarketName(ifr);
-        String remarks = (String)ifr.getValue(tbRemarksLocal);
+        String marketType = getTbMarketName(ifr);
+        String remarks = (String)ifr.getValue(tbRemarkstbx);
         String entryDate = (String)ifr.getValue(entryDateLocal);
         String exitDate = getCurrentDateTime();
         setDecisionHistory(ifr,getLoginUser(ifr),treasuryProcessName,marketType,getCpDecision(ifr),remarks,getActivityName(ifr),entryDate,exitDate,getTat(entryDate,exitDate));
         ifr.setValue(decHisFlagLocal,flag);
     }
-    public void porpulateCombo(IFormReference ifr, String comboCntrlName, String [] values){
-        ifr.clearCombo(comboCntrlName);
-        for (String value: values)
-            ifr.addItemInCombo(comboCntrlName,value,value);
+    public boolean getTbUpdateLandingMsg(IFormReference ifr){ return (boolean) ifr.getValue(tbUpdateLandingMsgcbx); }
+    public void setTbUpdateLandingMsg(IFormReference ifr, String value){ ifr.setValue(tbUpdateLandingMsgcbx,value); }
+    public String getTbDecision (IFormReference ifr){return (String) ifr.getValue(tbDecisiondd);}
+    public void setTbDecisiondd (IFormReference ifr, String value){ifr.setValue(tbDecisiondd,value);}
+    public String getTbCategorydd (IFormReference ifr){return (String) ifr.getValue(tbCategorydd);}
+    public void setTbCategorydd  (IFormReference ifr, String value){ifr.setValue(tbCategorydd,value);}
+    public String getTbPriOpenDate(IFormReference ifr){return (String)ifr.getValue(tbPriOpenDate);}
+    public String getTbPriCloseDate(IFormReference ifr){return (String)ifr.getValue(tbPriCloseDate);}
+    public String getTbUniqueRef(IFormReference ifr){return (String)ifr.getValue(tbUniqueReftbx);}
+    public void setTbSetUpFlg(IFormReference ifr,String value){ifr.setValue(windowSetupFlagLocal,value);}
+    public String getTbSetUpFlg(IFormReference ifr){return (String)ifr.getValue(windowSetupFlagLocal);}
+    public void setTbUniqueRef(IFormReference ifr,String value){
+    	if(isEmpty(getTbUniqueRef(ifr)))
+    		ifr.setValue(tbUniqueReftbx,value);
     }
-    public boolean getTbUpdateLocal(IFormReference ifr){ return (boolean) ifr.getValue(tbUpdateLocal); }
-    public String getTbDecision (IFormReference ifr){return (String) ifr.getValue(tbDecisionLocal);}
-    public String getTbCategory(IFormReference ifr){return (String) ifr.getValue(tbCategoryLocal);}
-    public String getTbUpdateMsg (IFormReference ifr){return (String) ifr.getValue(tbUpdateLocal);}
-    public void setTbDecisionValue (IFormReference ifr, String value){ifr.setValue(tbDecisionLocal,value);}
-    public String getTbOpenDate(IFormReference ifr){return (String)ifr.getValue(tbOpenDateLocal);}
-    public String getTbCloseDate(IFormReference ifr){return (String)ifr.getValue(tbCloseDateLocal);}
-    public String getTbUniqueRef(IFormReference ifr){return (String)ifr.getValue(tbUniqueRef);}
+    public String getTbLandingMsgApprovedFlg(IFormReference ifr){return getFieldValue(ifr,tbLandingMsgApprovedFlg);}
+    public void setTbLandingMsgApprovedFlg(IFormReference ifr, String value){ ifr.setValue(value,tbLandingMsgApprovedFlg);}
+    public String getTbLandingMsg (IFormReference ifr){return getFieldValue(ifr,tbLandMsgtbx);}
+    
     public String getDateWithoutTime() {
     	SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
     	try {
@@ -364,6 +370,35 @@ public class Commons implements Constants {
 			return null;
 		}
 	}
+    public void clearDropDown(IFormReference ifr, String controlName){
+        ifr.clearCombo(controlName);
+    }
+    // window setup
+    public String setUpTbMarketWindow(IFormReference ifr){
+    	String qry = new Query().getSetupMarketWindowQuery(getTbUniqueRef(ifr),  getWorkItemNumber(ifr), treasuryProcessName, getTbMarket(ifr), 
+    			getTbLandingMsg(ifr), getTbPriOpenDate(ifr), getTbPriCloseDate(ifr));
+        logger.info("setUpTbMarketWindow Query>> "+qry);
+        int insertVal = new DbConnect(ifr,qry).saveQuery();
+        if (insertVal >= 0) {
+        	setTbSetUpFlg(ifr,flag);
+           logger.info("record saved successfully");
+           return "";
+       }
+       else 
+    	   return "Unable to setup window try again later";
+    }
+    
+
+    public String setUpTbMarketWindowold(IFormReference ifr){ //primary market
+    	DBCalls dbc = new DBCalls();
+    	int insertVal = dbc.insertSetupDetails(getTbUniqueRef(ifr),  getWorkItemNumber(ifr), treasuryProcessName, getTbMarket(ifr), 
+    			getTbLandingMsg(ifr), getTbPriOpenDate(ifr), getTbPriCloseDate(ifr));
+    	if (insertVal >= 0) {
+           logger.info("record saved into db");
+           return "success";
+       }
+       else return "Unable to setup window try again later";
+    }
 
     //testing merge changes made on branch
     

@@ -82,8 +82,9 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                 case sendMail:{
                     if (getProcess(ifr).equalsIgnoreCase(commercialProcess))
                         cpSendMail(ifr);
-                    else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) 
-                    	tbSendMail(ifr);
+                    else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) {
+                    	//tbSendMail(ifr);
+                    }
                 }
             }
         }
@@ -117,7 +118,6 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
         clearFields(ifr,new String [] {selectProcessLocal});
         setMandatory(ifr, new String[]{selectProcessLocal});
         setFields(ifr, new String[]{currWsLocal,prevWsLocal},new String[]{getCurrentWorkStep(ifr),na});
-        setVisible(ifr, new String[]{tbLandingMsgSection, tbDecisionSection, tbMarketSection});
     }
 
     @Override
@@ -159,20 +159,18 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     /******************  TREASURY BILL CODE BEGINS *********************************/
     
     private void tbBackToDashboard(IFormReference ifr) {
-        undoMandatory(ifr,new String [] {tbSelectMarketLocal,tbLandMsgLocal,tbDecisionLocal});
-        clearFields(ifr,new String [] {tbSelectMarketLocal,tbLandMsgLocal,tbDecisionLocal});
+        undoMandatory(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd});
+        clearFields(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd});
     }
    
-    public void tbSetDecision(IFormReference ifr) {
-        ifr.addItemInCombo(tbDecisionLocal,decSubmit,decSubmit);
-        ifr.addItemInCombo(tbDecisionLocal,decDiscard,decDiscard);
-    }
     private void tbFormLoad (IFormReference ifr){
-    	setDecision(ifr,tbDecisionLocal,new String[]{decSubmit,decDiscard});
+    	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
+    	setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
+    	setTbCategorydd(ifr,tbCategorySetup);
     	setVisible(ifr, new String[]{tbLandingMsgSection, tbDecisionSection, tbMarketSection});
-    	setMandatory(ifr,new String [] {tbSelectMarketLocal,tbLandMsgLocal,tbDecisionLocal,tbRemarksLocal});
-    	enableFields(ifr,new String[]{tbLandMsgLocal,tbSelectMarketLocal});
-    	hideField(ifr,tbUpdateLocal);
+    	setMandatory(ifr,new String [] {tbMarketTypedd,tbCategorydd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
+    	enableFields(ifr,new String[]{tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+    	hideField(ifr,tbUpdateLandingMsgcbx);
     }
     public void tbSendMail(IFormReference ifr){
         String message = "A window open request for "+treasuryProcessName+" has been Initiated with ref number "+getWorkItemNumber(ifr)+".";

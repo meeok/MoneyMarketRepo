@@ -121,37 +121,38 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         hideShowBackToDashboard(ifr,False);
         //set controls for task to be performed
         //approving of landing message 
-        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) || getTbUpdateLocal(ifr)) { // for approval of landing page
+        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) || getTbUpdateLandingMsg(ifr)) { // for approval of landing page
             setVisible(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
             enableField(ifr,tbDecisionSection);
-            setMandatory(ifr, new String[]{tbDecisionLocal,tbRemarksLocal});
+            setMandatory(ifr, new String[]{tbDecisiondd,tbRemarkstbx});
         }
         else {//Modification of Primary Market Cut-off Time 
         	
         }
-        setDecision(ifr, tbDecisionLocal,new String[]{decApprove,decReject});
+        setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
     }
     
     /*
-     * save unique ref and landing msg if appoved
-     * update landing msg if update is approve
+     * update landingMsgApprovedFlg based on decision
+     * set the message to be sent out as a mail
      */
     private void tbOnDone(IFormReference ifr) {
-    	tbSendMail(ifr);
-    	
+    	 String message = "";
+    	 if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)){
+             if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
+            	 setTbLandingMsgApprovedFlg(ifr,yesFlag);
+            	  message = "Landing Message has been approved by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to setup market.";
+             }
+             else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {
+            	 setTbLandingMsgApprovedFlg(ifr,noFlag);
+                 message = "Landing Message has been rejected by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to make necessary corrections.";
+             }
+         }
+    	tbSendMail(ifr,message);
 	}
     
-    public void tbSendMail(IFormReference ifr) {
-        String message = "";
-        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)){
-            if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
-                message = "Landing Message has been approved by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to setup market.";
-            }
-            else if (getTbDecision(ifr).equalsIgnoreCase(decReject)){
-                message = "Landing Message has been rejected by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to make necessary corrections.";
-            }
-            new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
-    }
+    public void tbSendMail(IFormReference ifr, String message) {
+    	new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
     }
     //*************** Treasury End *************************/
 
