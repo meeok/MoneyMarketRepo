@@ -6,6 +6,7 @@ import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.utils.Commons;
 import com.newgen.utils.CommonsI;
+import com.newgen.utils.DBCalls;
 import com.newgen.utils.LogGen;
 
 import org.apache.log4j.Logger;
@@ -25,7 +26,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         if (getProcess(ifr).equalsIgnoreCase(commercialProcess))
             cpFormLoadActivity(ifr);
         else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess))
-        	tbFormLoadActivity(ifr);
+        	tbFormLoad(ifr);
     }
 
     @Override
@@ -54,7 +55,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         case cpSetupWindowEvent:{ return setupCpWindow(ifr);}
                         
                         /**** Treasury onClick Start ****/
-                        
+                        case tbOnClickUpdateMsg:{tbUpdateLandingMsg(ifr);}
+                        break;
                         /**** Treasury onClick End ****/
                     }
                 }
@@ -65,7 +67,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         break;
                         
                         /**** Treasury Onchange Start ****/
-                        case tbCategoryChange:{
+                        case tbCategoryddChange:{
                         	tbCategoryChange(ifr);
                         }
                         break;
@@ -207,87 +209,86 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     }
     
     /******************  TREASURY BILL CODE BEGINS *********************************/
-    
-    private void tbFormLoadActivity(IFormReference ifr) {
-    	//hide all sections except market, decision and lnading message
-    	//disable landing msg section
+    /*hide all sections except market, decision and lnading message
+     * disable landing msg section
+     */
+    private void tbMarketTypeOnChange() {
+    	
+    }
+    private void tbFormLoad(IFormReference ifr) {
     	setGenDetails(ifr);
-    	String[] tbSections = {tbMarketSection,tbLandingMsgSection ,tbTreasuryPriSection, tbTreasurySecSection,
-    		tbPrimaryBidSection, tbBranchSection, tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
-    		tbTreasuryOpsSection ,tbTreasurySecReportSection ,tbPostSection };
     	hideTbSections(ifr);
-        hideField(ifr,goBackDashboardSection);
-        disableTbSections(ifr);
-        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
-            if (isEmpty(getSetupFlag(ifr))) {
-                if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
-                    if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {
-                        setVisible(ifr, new String [] {tbLandingMsgSection,tbDecisionSection});
-                        setMandatory(ifr,new String [] {tbDecisionLocal,tbRemarksLocal,tbLandMsgLocal});
-                        enableFields(ifr,new String[] {tbLandingMsgSection,tbDecisionSection});
-                        hideField(ifr,tbCategoryLocal);
-                    } else if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) { //landing msg has been set up
-                        setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbCategoryLocal});
-                        enableFields(ifr,new String[]{tbDecisionSection,tbCategoryLocal});
-                        disableFields(ifr, new String[]{tbSelectMarketLocal,tbLandingMsgSection});
-                        setMandatory(ifr,new String[] {tbDecisionLocal,tbRemarksLocal,tbCategoryLocal});
-                        porpulateCombo(ifr,tbCategoryLocal , new String[]{tbCategorySetup});
-                    }
-                } 
-                else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) {
-                	
-                	
-                }
-            }
-            else { //code for when when setup has already been done
-                if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){}
-                else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){}
-            }
+        setVisible(ifr,goBackDashboardSection);
+        //disableTbSections(ifr);
+        setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
+    	setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
+    	
+        //tb primary Market
+        if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
+        	if(getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)){ // ready to set Market(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbTreasuryPriSetupSection});
+        		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbTreasuryPriSetupSection});
+        		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection});
+        		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate});
+                disableFields(ifr, new String[]{tbLandingMsgSection,tbUniqueReftbx,tbMarketTypedd});
+        	}
+        	else { //landing msg is not approved
+        		clearDropDown(ifr,tbCategorydd);
+        		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+                enableFields(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbLandingMsgSection,tbMarketTypedd});
+                setMandatory(ifr,new String [] {tbDecisiondd,tbRemarkstbx,tbLandMsgtbx});
+                setTbUpdateLandingMsg(ifr,True);
+                disableFields(ifr, new String[]{tbMarketTypedd,tbCategorydd});
+        	}
+        } 
+        
+        //tb secondary market
+        else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) {
         }
-        tbSetDecision(ifr);
     }
-    
-    private void tbSetDecision(IFormReference ifr) {
-        clearFields(ifr,new String[]{tbDecisionLocal,tbRemarksLocal});
-        setDecision(ifr,tbDecisionLocal,new String [] {decSubmit,decDiscard});
-    }
+    /*
+     * automatically populate primary market window unique reference in the below 
+     * format TPMADATEYEAR for example TBPMA28052020 which will not be editable
+     */
     private void tbCategoryChange(IFormReference ifr) throws ParseException{
+    	//primary Market
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
-            if (getTbCategory(ifr).equalsIgnoreCase(tbCategorySetup)){ //set up market
-                setVisible(ifr, new String [] {tbTreasuryPriSection,tbSetupSection,tbSetupWindowBtn,tbCutOffTimeSection});
-                setMandatory(ifr,new String[] {tbOpenDateLocal, tbPmMinPriAmtLocal,tbCloseDateLocal});
-                enableFields(ifr,new String[] {tbOpenDateLocal, tbPmMinPriAmtLocal,tbCloseDateLocal,tbSetupWindowBtn});
-                
-                //set the unique reference
-                setTbUniqueRef(ifr);
+            if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){ 
+            	setTbUniqueRef(ifr,generateTbUniqueReference(ifr)); //set the unique reference
+            }
+            else {
+            	
             }
         }
-        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){}
+        
+        //secondary MArket
+        else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){}
     }
     private void tbUpdateLandingMsg(IFormReference ifr){
-        if (getTbUpdateMsg(ifr).equalsIgnoreCase(True)){
-        	
-            setTbDecisionValue(ifr,decSubmit);
-            ifr.setValue(tbRemarksLocal,"Kindly approve landing message update.");
-            setInvisible(ifr, new String[]{tbSetupSection,tbDecisionSection});
-            undoMandatory(ifr,new String[]{tbRemarksLocal,tbDecisionLocal});
-            setMandatory(ifr,tbLandMsgLocal);
-            enableFields(ifr,new String[]{tbLandMsgLocal,tbLandingMsgSubmitBtn});
-            setVisible(ifr,tbLandingMsgSubmitBtn);
+        if (getTbUpdateLandingMsg(ifr)){ //true
+        	clearDropDown(ifr,tbCategorydd);
+            clearFields(ifr, new String[]{tbUniqueReftbx,tbPriOpenDate,tbPriCloseDate});
+            disableFields(ifr, new String[]{tbTreasuryPriSetupSection,tbCategorydd});
+            setMandatory(ifr,tbLandMsgtbx);
+            setVisible(ifr,tbLandingMsgSubmitBtn); setTbDecisiondd(ifr,decSubmit);
+            setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
+            setTbDecisiondd(ifr,decSubmit);
         }
         else {
-            clearFields(ifr, new String[]{tbDecisionLocal,tbRemarksLocal,tbLandMsgLocal});
-            setVisible(ifr, new String[]{tbSetupSection,tbDecisionSection});
-            setMandatory(ifr,new String[]{tbRemarksLocal,tbDecisionLocal});
-            undoMandatory(ifr,tbLandMsgLocal);
-            disableField(ifr,tbLandMsgLocal);
+        	setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbTreasuryPriSetupSection});
+    		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection});
+    		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate});
+            disableFields(ifr, new String[]{tbLandingMsgSection,tbUniqueReftbx,tbMarketTypedd});
         }
     }
     
+    /*
+     * save refid, opendate and close date into db
+     */
     private String setupTbWindow (IFormReference ifr){
+    	//primary market
         if (isEmpty(getSetupFlag(ifr))){
             if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
-                if (compareDate(getTbOpenDate(ifr),getTbCloseDate(ifr))){}
+                if (compareDate(getTbPriOpenDate(ifr),getTbPriCloseDate(ifr))){}
                 else {
                     return "Close date cannot be before open date.";
                 }
@@ -312,39 +313,24 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
          }
     	 return null;
     }
-    private void setTbUniqueRef(IFormReference ifr) {
-    	if(isEmpty(getTbUniqueRef(ifr))){
-    		ifr.setValue(tbUniqueRef,generateTbUniqueReference(ifr));
-    	}
-    }
     
     //onDone
-   /* private String tbOnDone(IFormReference ifr) {
-    	String retMsg ="";
+    /*
+     * save market setup details into db if flag y
+     * if market is already setup... fetch details from db and populate
+     */
+    private String tbOnDone(IFormReference ifr) {
     	if(getTbDecision(ifr).equalsIgnoreCase(decSubmit)) {
-    		
     		//check if market is set up -- save details in db
-    		 if (getTbCategory(ifr).equalsIgnoreCase(tbCategorySetup)){ //setupdone
-    			 String cols ="REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE,CLOSEFLAG";
-    			 String vals = "+"'"getTbUniqueRef"";
-    			 DbConnect dbConnect = new DbConnect(ifr, new Query().getInsertSetupQuery(cols,vals));
-    			 
-    		 }
+    		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){
+    			if(!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))) //market not set
+    				return setUpTbMarketWindow(ifr);
+    		}
+    		else
+    			return "Market has been set.";
     	}
-    	return retMsg;
-    		
+    	return null;
     }
-    try {
-        DbConnect dbConnect = new DbConnect(ifr, new Query().getUsersInGroup(groupName));
-        for (int i = 0; i < dbConnect.getData().size(); i++){
-            groupMail = dbConnect.getData().get(i).get(0)+endMail+","+groupMail; }
-    } catch (Exception e){
-        logger.error("Exception occurred in getUsersMailInGroup Method-- "+ e.getMessage());
-        return null;
-    }
-    logger.info("getUsersMailsGroup method --mail of users-- "+groupMail.trim());
-    return groupMail.trim();*/
-  
     
     /******************  TREASURY BILL CODE ENDS *********************************/
 }

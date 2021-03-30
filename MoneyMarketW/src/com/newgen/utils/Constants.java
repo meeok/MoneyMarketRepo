@@ -198,50 +198,68 @@ public interface Constants {
 	
 	/*************TREASURY BILLS STARTS HERE********************/
 	//treasury events
-	String tbCategoryChange = "tbCategoryChange";
+	String tbCategoryddChange = "tbCategoryChange";
+	String tbOnClickUpdateMsg = "tbOnClickUpdateMsg";
 	
 	// treasury bills control ids
-	String tbSelectMarketLocal = "tb_select_market";
-	String tbRemarksLocal = "tb_remarks";
-	String tbDecisionLocal = "tb_decision";
-	String tbLandMsgLocal = "tb_landingMsg";
+	
+	
 	String tbPrimaryMarket = "tb_primary";
 	String tbSecondaryMarket = "tb_secondary";
-	String tbCategoryLocal = "tb_category";
-	
 	String tbSetupWindowBtn = "tb_setupWin_btn";
 	String tbUpdateCutoffTimeBtn = "tb_updateCutoff_btn";
 	String tbSetReDiscountRateBtn = "tb_rediscRate_btn";
 	String tbLandingMsgSubmitBtn="tb_landMsgSubmit_btn";
-	String tbUpdateLocal = "tb_updateMsg";
-	String tbOpenDateLocal = "tb_open_window_date";
-	String tbCloseDateLocal = "tb_close_window_date";
 	String tbPmMinPriAmtLocal = "tb_mp_amount";
-	String tbUniqueRef = "tb_pmwu_ref";
 	
 	String tbCustSchemeCode ="";
-	//public static final public static final String 
+	//String 
 	
-	// tb sections
+	//tbMarketSection - Market
+	String tbMarketTypedd = "tb_select_market";
+	String tbCategorydd = "tb_category";
+	
+	//tbLandingMsgSection- Setup Landing Message
+	String tbLandMsgtbx = "tb_landingMsg";
+	String tbUpdateLandingMsgcbx = "tb_updateMsg";
+	
+	// tb_open_window_date - Treasury Primary SetUp
+	String tbUniqueReftbx = "tb_pmwu_ref";
+	String tbPriOpenDate= "tb_open_window_date";
+	String tbPriCloseDate = "tb_close_window_date";
+	
+	//Decision
+	String tbDecisiondd = "tb_decision";
+	String tbRemarkstbx = "tb_remarks";
+	
+	//Customer Details --
+	
+	//Branch Prmy View tbBranchSection
+	
+	
+	
+	//sections
 	String tbMarketSection = "tb_market_section";
 	String tbLandingMsgSection = "tb_setupmsg_section";
-	String tbTreasuryPriSection = "tb_treasuryPm_section";
+	String tbTreasuryPriSetupSection = "tb_treasuryPm_section";
+	String tbBranchPriSection = "tb_branch_section";
+	String tbBranchSecSection = "tb_sec_br_section";
 	String tbTreasurySecSection = "tb_treasurySec_section";
 	String tbPrimaryBidSection = "tb_pmBid_section";
-	String tbBranchSection = "tb_branch_section";
+	
 	String tbTerminationSection = "tb_termination_section";
 	String tbProofOfInvestSection = "tb_poi_section";
 	String tbDecisionSection = "tb_dec_section";
 	String tbTreasuryOpsSection ="tb_treasuryOps_section";
 	String tbTreasurySecReportSection ="tb_secReport_section";
 	String tbPostSection = "tb_post_section";
-	String tbSetupSection="tb_setup_section";
+	//String tbSetupSection="tb_setup_section";
 	String tbCutOffTimeSection = "tb_cutoff_section";
 	
-	//public static final String tbBranchPriSection = "tb_branchPm_section";
-	//public static final String tbBranchSecSection = "tb_BranchSec_section";
-	//public static final String tbTreasuryOpsSecSection = "tb_treasuryOpsSec_section";
-	//public static final String tbTreasuryOpsPriSection = "tb_treasuryOpsPm_section";
+	//String tbBranchPriSection = "tb_branchPm_section";
+	//String tbBranchSecSection = "tb_BranchSec_section";
+	//String tbTreasuryOpsSecSection = "tb_treasuryOpsSec_section";
+	//String tbTreasuryOpsPriSection = "tb_treasuryOpsPm_section";
 	
 	// categories dropdwon 
 	String tbCategorySetup = "Setup";
@@ -256,8 +274,15 @@ public interface Constants {
 	String SA340 ="SA340";
 	String SA327 ="SA327";
 	
-	String[] allTbSections = {tbMarketSection,tbLandingMsgSection ,tbTreasuryPriSection, tbTreasurySecSection,
-			tbPrimaryBidSection, tbBranchSection, tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
+	//hidden fields
+	String tbLandingMsgApprovedFlg ="tb_landingMsgApprovedFlg";
+	
+	String yesFlag  ="Y";
+	String noFlag ="N";
+	
+	
+	String[] allTbSections = {tbMarketSection,tbLandingMsgSection ,tbTreasuryPriSetupSection, tbTreasurySecSection,
+			tbPrimaryBidSection, tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
 			tbTreasuryOpsSection ,tbTreasurySecReportSection ,tbPostSection };
 	
 	/*************TREASURY BILLS ENDS HERE********************/
