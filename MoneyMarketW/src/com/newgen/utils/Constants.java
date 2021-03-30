@@ -69,6 +69,7 @@ public interface Constants {
 	String landMsgLabelLocal = "g_landMsg";
 	String goBackDashboardSection = "g_goBackDashboard_section";
 	String windowSetupFlagLocal = "g_setupFlag";
+	String wiNameFormLocal ="winame";
 
 	// commercial Paper process ids
 	String cpSelectMarketLocal = "cp_select_market";
@@ -109,7 +110,9 @@ public interface Constants {
 	String cpPmReqFreshLabel ="Fresh Mandate";
 	String cpPmReqFreshValue ="freshMandate";
 	String cpAcctValidateBtn ="cp_acctValidateBtn";
-	String cpTxnIdLocal ="";
+	String cpTxnIdLocal ="cp_tsnId";
+	String cpDebitPrincipalBtn ="cp_debitPrincipal_btn";
+	String cpTokenLocal ="cp_token";
 
 
 
@@ -167,6 +170,7 @@ public interface Constants {
 	String currencyNgn ="NGN";
 	String apiSuccess ="success";
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";
+	String exceptionMsg ="Exception occurred contact IBPS support";
 
 	//eventName/controlName
 	String formLoad = "formLoad";
@@ -188,6 +192,9 @@ public interface Constants {
 	String validateWindowEvent ="validateWindow";
 	String cpCheckPrincipalEvent ="onChangePrincipal";
 	String cpCheckTenorEvent="onChangeTenor";
+	String cpTokenEvent ="cpTokenEvent";
+	String cpPostEvent ="cpPostEvent";
+	String cpPostFlag ="cp_postFlag";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

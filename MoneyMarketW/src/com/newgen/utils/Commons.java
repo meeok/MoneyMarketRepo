@@ -248,7 +248,7 @@ public class Commons implements Constants {
     public String getCpSmWinRefNo(IFormReference ifr){
         return null;
     }
-    public String getCpPmCusRefNo(IFormReference ifr){return null;}
+    public String getCpPmCusRefNo(IFormReference ifr){return getFieldValue(ifr,cpPmCustomerIdLocal);}
     public String getCpSmCusRefNo(IFormReference ifr){
         return null;
     }
@@ -300,6 +300,7 @@ public class Commons implements Constants {
         return Integer.parseInt(getFieldValue(ifr,cpPmTenorLocal));
     }
     public String cpGenerateCustomerId (IFormReference ifr){
+        logger.info("customer id--" + cpIdLabel+getUserSol(ifr)+getCpRandomId());
         return cpIdLabel+getUserSol(ifr)+getCpRandomId();
     }
     private String getCpRandomId(){
@@ -308,8 +309,20 @@ public class Commons implements Constants {
     }
     public String getUserSol(IFormReference ifr){return getFieldValue(ifr,solLocal);}
     public boolean cpCheckWindowStateById(IFormReference ifr){
+        logger.info("getCheckActiveWindowByIdQuery --"+ new Query().getCheckActiveWindowByIdQuery(getCpPmWinRefNo(ifr)));
         return Integer.parseInt(new DbConnect(ifr,
                 new Query().getCheckActiveWindowByIdQuery(getCpPmWinRefNo(ifr))).getData().get(0).get(0)) > 0;
+    }
+    public void setupCpPmBid(IFormReference ifr){
+        logger.info("query to setup bid-- "+   new Query().getSetupBidQuery(
+                getCurrentDateTime(),getCpPmCusRefNo(ifr),getCpPmWinRefNo(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),
+                getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
+        ));
+        new DbConnect(ifr,
+                new Query().getSetupBidQuery(
+                        getCurrentDateTime(),getCpPmCusRefNo(ifr),getCpPmWinRefNo(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),
+                        getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
+                )).saveQuery();
     }
 
 
