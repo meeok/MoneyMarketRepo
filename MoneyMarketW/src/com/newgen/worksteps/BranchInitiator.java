@@ -61,6 +61,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         case onChangeProcess: {
                             selectProcessSheet(ifr);
                             if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
+                            if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) tbFormLoad(ifr);
                             break;
                         }
                         case cpOnSelectMarket:{
@@ -205,6 +206,14 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         setMandatory(ifr,new String [] {cpSelectMarketLocal,cpDecisionLocal,cpRemarksLocal});
         setDropDown(ifr,cpCategoryLocal,new String[]{cpCategoryBid,cpCategoryMandate,cpCategoryReport});
     }
+    public void tbFormLoad(IFormReference ifr) {
+        cpSetDecision(ifr);
+        setVisible(ifr, new String[]{cpDecisionSection, cpMarketSection});
+        enableFields(ifr,new String[]{cpSelectMarketLocal});
+        setMandatory(ifr,new String [] {cpSelectMarketLocal,cpDecisionLocal,cpRemarksLocal});
+        setDropDown(ifr,cpCategoryLocal,new String[]{cpCategoryBid,cpCategoryMandate,cpCategoryReport});
+    }
+
 
     @Override
     public void cpSetDecision(IFormReference ifr) {
