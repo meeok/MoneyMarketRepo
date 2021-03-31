@@ -27,6 +27,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             cpFormLoadActivity(ifr);
         else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess))
         	tbFormLoad(ifr);
+        else if (getUtilityFlag(ifr).equalsIgnoreCase(flag))
+                cpFormLoadActivity(ifr);
     }
 
     @Override
@@ -175,9 +177,14 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     public void cpFormLoadActivity(IFormReference ifr) {
         hideCpSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
-        setGenDetails(ifr);
+        //setGenDetails(ifr);
         setInvisible(ifr,new String[]{goBackDashboardSection});
-        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
+        if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
+            showCommercialProcessSheet(ifr);
+            setVisible(ifr,cpPrimaryBidSection);
+
+        }
+       else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
             if (isEmpty(getSetupFlag(ifr))) {
                 if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
                     if (getCpDecision(ifr).equalsIgnoreCase(decReject)) {

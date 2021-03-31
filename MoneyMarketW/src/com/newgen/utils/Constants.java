@@ -20,6 +20,7 @@ public interface Constants {
 	String discardWs = "Discard";
 	String exit = "Exit";
 	String query = "Query";
+	String utilityWs = "Utility_Initiation";
 	// Please input workSteps between comment bracket
 
 	// cp sections
@@ -70,6 +71,7 @@ public interface Constants {
 	String goBackDashboardSection = "g_goBackDashboard_section";
 	String windowSetupFlagLocal = "g_setupFlag";
 	String wiNameFormLocal ="winame";
+	String utilityFlagLocal = "cp_utilityFlag";
 
 	// commercial Paper process ids
 	String cpSelectMarketLocal = "cp_select_market";
@@ -113,6 +115,7 @@ public interface Constants {
 	String cpTxnIdLocal ="cp_tsnId";
 	String cpDebitPrincipalBtn ="cp_debitPrincipal_btn";
 	String cpTokenLocal ="cp_token";
+	String cpBidReportTbl ="table50";
 
 
 

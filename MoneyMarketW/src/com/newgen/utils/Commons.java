@@ -156,6 +156,12 @@ public class Commons implements Constants {
             ifr.setTabStyle(processTabName,treasuryTab,visible,False);
         }
     }
+    public void showCommercialProcessSheet(IFormReference ifr){
+        hideShowDashBoardTab(ifr,False);
+        ifr.setTabStyle(processTabName,omoTab,visible,False);
+        ifr.setTabStyle(processTabName,commercialTab,visible,True);
+        ifr.setTabStyle(processTabName,treasuryTab,visible,False);
+    }
     public static String getSol (IFormReference ifr){
         try { return new DbConnect(ifr, new Query().getSolQuery(getLoginUser(ifr))).getData().get(0).get(0); }
         catch (Exception e){ logger.error("Exception occurred in getSol Method-- "+e.getMessage());return  null;}
@@ -303,10 +309,14 @@ public class Commons implements Constants {
         logger.info("customer id--" + cpIdLabel+getUserSol(ifr)+getCpRandomId());
         return cpIdLabel+getUserSol(ifr)+getCpRandomId();
     }
+    public static String getUtilityFlag (IFormReference ifr){
+        return getFieldValue(ifr,utilityFlagLocal);
+    }
     private String getCpRandomId(){
         Random random = new Random();
         return String.valueOf(10000000000L + ((long)random.nextInt(900000000)*100) + random.nextInt(100));
     }
+
     public String getUserSol(IFormReference ifr){return getFieldValue(ifr,solLocal);}
     public boolean cpCheckWindowStateById(IFormReference ifr){
         logger.info("getCheckActiveWindowByIdQuery --"+ new Query().getCheckActiveWindowByIdQuery(getCpPmWinRefNo(ifr)));

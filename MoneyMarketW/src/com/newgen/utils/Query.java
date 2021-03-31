@@ -74,4 +74,13 @@ public class Query {
     public String getTBInsertSetupQuery (){
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE,CLOSEFLAG) values (values)";
     }
+
+    public String getCpPmBidsToProcessQuery(){
+        return "select custrefid, tenor, rate, ratetype from mm_bid_tbl where process = 'Commercial Paper' and markettype= 'primary' and processflag ='N' and groupindexflag = 'N'";
+    }
+
+    public String getCpPmUpdateBidsQuery(String id,String utilityWiName, String groupIndex){
+        return "update mm_bid_tbl set utilitywiname = '"+utilityWiName+"', groupindex = '"+groupIndex+"', groupindexflag = 'Y' , processflag = 'Y' where custrefid = '"+id+"'";
+    }
+
 }
