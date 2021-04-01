@@ -130,6 +130,9 @@ public interface Constants {
 	String cpUpdateBtn ="cp_upDateReport_btn";
 	String cpViewGroupBtn ="cp_viewGroup_btn";
 	String cpViewReportBtn ="cp_viewReport_btn";
+	String cpAllocBankRateLocal ="cp_bank_rate";
+	String cpAllocDefaultAllocLocal ="cp_default_app";
+	String cpAllocCpRateLocal ="cp_cpRate";
 
 
 	//common variables
@@ -213,6 +216,7 @@ public interface Constants {
 	String cpPostEvent ="cpPostEvent";
 	String cpPostFlag ="cp_postFlag";
 	String cpViewReportEvent ="cpViewReport";
+	String cpDownloadEvent = "cpDownloadGrid";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

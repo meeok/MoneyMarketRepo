@@ -63,6 +63,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                             viewReport(ifr);
                             break;
                         }
+                        case cpDownloadEvent:{
+                            setFields(ifr,downloadFlagLocal,flag);
+                            break;
+                        }
                     }
                 }
                 break;
@@ -182,9 +186,14 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         hideShowLandingMessageLabel(ifr,False);
         //setGenDetails(ifr);
         setInvisible(ifr,new String[]{goBackDashboardSection});
-        if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
+        if (getDownloadFlag(ifr).equalsIgnoreCase(flag)){
+            showCommercialProcessSheet(ifr);
+            setVisible(ifr, new String[]{});
+            setVisible(ifr,cpPrimaryBidSection);
+        }
+       else if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
             setGenDetails(ifr);
-            setFields(ifr,prevWsLocal,utilityWs);
+            setFields(ifr,new String[]{prevWsLocal,selectProcessLocal,cpSelectMarketLocal}, new String[]{utilityWs,commercialProcess,cpPrimaryMarket});
             showCommercialProcessSheet(ifr);
             setVisible(ifr,cpPrimaryBidSection);
 

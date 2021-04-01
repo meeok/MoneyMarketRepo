@@ -356,6 +356,9 @@ public class Commons implements Constants {
 
         return jsonObject;
     }
+    public String getDownloadFlag (IFormReference ifr){
+        return getFieldValue(ifr,downloadFlagLocal);
+    }
 
 
 
