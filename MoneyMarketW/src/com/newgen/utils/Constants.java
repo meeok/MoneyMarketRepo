@@ -72,6 +72,7 @@ public interface Constants {
 	String windowSetupFlagLocal = "g_setupFlag";
 	String wiNameFormLocal ="winame";
 	String utilityFlagLocal = "cp_utilityFlag";
+	String downloadFlagLocal ="downloadFlag";
 
 	// commercial Paper process ids
 	String cpSelectMarketLocal = "cp_select_market";
@@ -115,8 +116,20 @@ public interface Constants {
 	String cpTxnIdLocal ="cp_tsnId";
 	String cpDebitPrincipalBtn ="cp_debitPrincipal_btn";
 	String cpTokenLocal ="cp_token";
-	String cpBidReportTbl ="table50";
-
+	String cpAllocationTbl ="table88";
+	String cpAllocationReqTbl ="table89";
+	String cpBidReportTbl ="table90";
+	String cpAllocTenorCol = "Tenor";
+	String cpAllocRateCol = "Rate";
+	String cpAllocTotalAmountCol = "Total Amount";
+	String cpAllocRateTypeCol = "Rate Type";
+	String cpAllocCountCol = "Count";
+	String cpAllocStatusCol = "Status";
+	String cpAllocGroupIndexCol = "Group Index";
+	String cpDownloadBtn ="cp_downloadReport_btn";
+	String cpUpdateBtn ="cp_upDateReport_btn";
+	String cpViewGroupBtn ="cp_viewGroup_btn";
+	String cpViewReportBtn ="cp_viewReport_btn";
 
 
 	//common variables
@@ -174,6 +187,7 @@ public interface Constants {
 	String apiSuccess ="success";
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";
 	String exceptionMsg ="Exception occurred contact IBPS support";
+	String statusAwaitingTreasury = "Awaiting Treasury";
 
 	//eventName/controlName
 	String formLoad = "formLoad";
@@ -198,6 +212,7 @@ public interface Constants {
 	String cpTokenEvent ="cpTokenEvent";
 	String cpPostEvent ="cpPostEvent";
 	String cpPostFlag ="cp_postFlag";
+	String cpViewReportEvent ="cpViewReport";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

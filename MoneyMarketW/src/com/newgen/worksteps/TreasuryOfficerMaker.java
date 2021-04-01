@@ -4,15 +4,14 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.utils.Commons;
-import com.newgen.utils.CommonsI;
-import com.newgen.utils.DBCalls;
-import com.newgen.utils.LogGen;
+import com.newgen.utils.*;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.text.ParseException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,6 +59,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         case tbOnClickUpdateMsg:{tbUpdateLandingMsg(ifr);}
                         break;
                         /**** Treasury onClick End ****/
+                        case cpViewReportEvent:{
+                            viewReport(ifr);
+                            break;
+                        }
                     }
                 }
                 break;
@@ -180,6 +183,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         //setGenDetails(ifr);
         setInvisible(ifr,new String[]{goBackDashboardSection});
         if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
+            setGenDetails(ifr);
+            setFields(ifr,prevWsLocal,utilityWs);
             showCommercialProcessSheet(ifr);
             setVisible(ifr,cpPrimaryBidSection);
 
@@ -213,6 +218,41 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     public void cpSetDecision(IFormReference ifr) {
         clearFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
         setDecision(ifr,cpDecisionLocal,new String [] {decSubmit,decDiscard});
+    }
+
+    private void viewReport(IFormReference ifr){
+        List<List<String>> resultSet = new DbConnect(ifr,new Query().getCpPmBidGroupQuery(getWorkItemNumber(ifr))).getData();
+        for (List<String> result : resultSet){
+            String tenor = result.get(0);
+            logger.info("tenor-- "+ tenor);
+            String rate = result.get(1);
+            logger.info("rate-- "+ rate);
+            String totalAmount = result.get(2);
+            logger.info("totalAmount-- "+ totalAmount);
+            String rateType = result.get(3);
+            logger.info("rateType-- "+ rateType);
+            String count = result.get(4);
+            logger.info("count-- "+ count);
+            String groupIndex = result.get(5);
+            logger.info("groupIndex-- "+ groupIndex);
+
+            setTable(ifr,cpAllocationTbl,new String[]{cpAllocTenorCol,cpAllocRateCol,cpAllocTotalAmountCol,cpAllocRateTypeCol,cpAllocCountCol,cpAllocStatusCol,cpAllocGroupIndexCol},
+                    new String[]{tenor,rate,totalAmount,rateType,count, statusAwaitingTreasury,groupIndex});
+        }
+        setVisible(ifr,new String[]{cpAllocationTbl,cpDownloadBtn});
+       // enableFields(ifr,new String[]{cpAllocationTbl});
+        setInvisible(ifr,new String[]{cpViewReportBtn});
+    }
+    private JSONObject setCpViewReportTbl( String tenor, String rate,String totalAmount, String rateType, String count, String status,String groupIndex){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(cpAllocTenorCol,tenor);
+        jsonObject.put(cpAllocRateCol,rate);
+        jsonObject.put(cpAllocTotalAmountCol,totalAmount);
+        jsonObject.put(cpAllocRateTypeCol,rateType);
+        jsonObject.put(cpAllocCountCol,count);
+        jsonObject.put(cpAllocStatusCol,status);
+        jsonObject.put(cpAllocGroupIndexCol,groupIndex);
+        return jsonObject;
     }
     
     /******************  TREASURY BILL CODE BEGINS *********************************/

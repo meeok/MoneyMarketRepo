@@ -4,16 +4,16 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.utils.Commons;
-import com.newgen.utils.Constants;
-import com.newgen.utils.DbConnect;
-import com.newgen.utils.Query;
+import com.newgen.utils.*;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public class UtilityTemp extends Commons implements IFormServerEventHandler , Constants {
+    private static final Logger logger = LogGen.getLoggerInstance(UtilityTemp.class);
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
         startUtility(ifr);
@@ -61,15 +61,24 @@ public class UtilityTemp extends Commons implements IFormServerEventHandler , Co
     }
 
     private void startUtility (IFormReference ifr){
-        String wiName = getWorkItemNumber(ifr);
-        DbConnect dbConnect = new DbConnect(ifr,new Query().getCpPmBidsToProcessQuery());
-        for (int i = 0; i < dbConnect.getData().size(); i++){
-            String id = dbConnect.getData().get(i).get(0);
-            String tenor = dbConnect.getData().get(i).get(0);
-            String rate = dbConnect.getData().get(i).get(1);
-            String rateType = dbConnect.getData().get(i).get(2);
-            String groupIndex = getCpGroupIndex(wiName,tenor,rateType,rate);
-            new DbConnect(ifr,new Query().getCpPmUpdateBidsQuery(id,wiName,groupIndex)).saveQuery();
+        try {
+            String wiName = getWorkItemNumber(ifr);
+
+            List<List<String>> resultSet = new DbConnect(ifr, new Query().getCpPmBidsToProcessQuery()).getData();
+            for (List<String> result : resultSet) {
+                String id = result.get(0);
+                logger.info("id-- " + id);
+                String tenor = result.get(1);
+                logger.info("tenor-- " + tenor);
+                String rate = result.get(2);
+                logger.info("rate-- " + rate);
+                String rateType = result.get(3);
+                logger.info("rateType-- " + rateType);
+                String groupIndex = getCpGroupIndex(wiName, tenor, rateType, rate);
+                new DbConnect(ifr, new Query().getCpPmUpdateBidsQuery(id, wiName, groupIndex)).saveQuery();
+            }
+        } catch (Exception e){
+            logger.info("Exception occurred in fetching details --"+ e.getMessage());
         }
     }
     private String getCpGroupIndex(String wiName,String tenor,String rateType, String rate){
@@ -78,7 +87,16 @@ public class UtilityTemp extends Commons implements IFormServerEventHandler , Co
         String pRateLabel = "P";
         String bRateLabel = "B";
         String [] wiNameArray = wiName.split("-");
-        return new StringBuilder().append(groupLabel).append(wiNameArray[1].replaceAll(strPattern, "")).append(tenor).append(isPRate(rateType) ? pRateLabel : bRateLabel).append(isPRate(rateType) ? rate : "").toString();
+        String wiNameTrim = wiNameArray[1];
+        wiNameTrim = wiNameTrim.replaceAll(strPattern,"");
+        logger.info("wiNameTrim-- "+ wiNameTrim);
+        logger.info("tenor-- "+ tenor);
+        logger.info("rateType-- "+ rateType);
+        logger.info("rate-- "+ rate);
+
+        String groupIndex = groupLabel + wiNameTrim + tenor + (isPRate(rateType) ? pRateLabel : bRateLabel) + (isPRate(rateType) ? rate : "");
+        logger.info("groupIndex-- "+ groupIndex);
+        return groupIndex;
     }
 
     private boolean isPRate(String rateType){

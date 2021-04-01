@@ -316,7 +316,6 @@ public class Commons implements Constants {
         Random random = new Random();
         return String.valueOf(10000000000L + ((long)random.nextInt(900000000)*100) + random.nextInt(100));
     }
-
     public String getUserSol(IFormReference ifr){return getFieldValue(ifr,solLocal);}
     public boolean cpCheckWindowStateById(IFormReference ifr){
         logger.info("getCheckActiveWindowByIdQuery --"+ new Query().getCheckActiveWindowByIdQuery(getCpPmWinRefNo(ifr)));
@@ -334,6 +333,31 @@ public class Commons implements Constants {
                         getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
                 )).saveQuery();
     }
+    public static void  setTable (IFormReference ifr, String tableLocal, String [] columns, String [] rowValues){
+        JSONArray jsRowArray = new JSONArray();
+        jsRowArray.add(setRows(columns,rowValues));
+        ifr.addDataToGrid(tableLocal,jsRowArray);
+    }
+    public static void  setTable (IFormReference ifr, String tableLocal, String [] columns, String [] rowValues, int loopCount){
+        JSONArray jsRowArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+
+        for (int i = 0; i < loopCount; i++)
+            jsonObject = setRows(columns,rowValues);
+
+        jsRowArray.add(jsonObject);
+
+        ifr.addDataToGrid(tableLocal,jsRowArray);
+    }
+    private static JSONObject setRows (String [] columns, String [] rowValues){
+        JSONObject jsonObject = new JSONObject();
+        for (int i = 0 ; i < columns.length; i++)
+            jsonObject.put(columns[i],rowValues[i]);
+
+        return jsonObject;
+    }
+
+
 
 
 
