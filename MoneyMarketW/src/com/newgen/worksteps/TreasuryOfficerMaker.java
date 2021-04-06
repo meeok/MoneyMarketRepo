@@ -8,7 +8,6 @@ import com.newgen.utils.*;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.text.ParseException;
 import java.util.List;
@@ -245,24 +244,13 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             String groupIndex = result.get(5);
             logger.info("groupIndex-- "+ groupIndex);
 
-            setTable(ifr,cpAllocationTbl,new String[]{cpAllocTenorCol,cpAllocRateCol,cpAllocTotalAmountCol,cpAllocRateTypeCol,cpAllocCountCol,cpAllocStatusCol,cpAllocGroupIndexCol},
+            setTableData(ifr,cpAllocationTbl,new String[]{cpAllocTenorCol,cpAllocRateCol,cpAllocTotalAmountCol,cpAllocRateTypeCol,cpAllocCountCol,cpAllocStatusCol,cpAllocGroupIndexCol},
                     new String[]{tenor,rate,totalAmount,rateType,count, statusAwaitingTreasury,groupIndex});
         }
         setVisible(ifr,new String[]{cpAllocationTbl,cpDownloadBtn});
-       // enableFields(ifr,new String[]{cpAllocationTbl});
         setInvisible(ifr,new String[]{cpViewReportBtn});
     }
-    private JSONObject setCpViewReportTbl( String tenor, String rate,String totalAmount, String rateType, String count, String status,String groupIndex){
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(cpAllocTenorCol,tenor);
-        jsonObject.put(cpAllocRateCol,rate);
-        jsonObject.put(cpAllocTotalAmountCol,totalAmount);
-        jsonObject.put(cpAllocRateTypeCol,rateType);
-        jsonObject.put(cpAllocCountCol,count);
-        jsonObject.put(cpAllocStatusCol,status);
-        jsonObject.put(cpAllocGroupIndexCol,groupIndex);
-        return jsonObject;
-    }
+
     
     /******************  TREASURY BILL CODE BEGINS *********************************/
     /*hide all sections except market, decision and lnading message
