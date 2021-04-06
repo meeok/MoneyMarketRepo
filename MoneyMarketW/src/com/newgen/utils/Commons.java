@@ -281,7 +281,8 @@ public class Commons implements Constants {
        }
     }
     private String generateCpWinRefNo(String cpLabel) {
-        return cpLabel + new SimpleDateFormat(cpRefNoDateFormat).format(new Date());
+        return cpLabel + getCurrentDateTime(cpRefNoDateFormat);
+        //return cpLabel + new SimpleDateFormat(cpRefNoDateFormat).format(new Date());
     }
     public String getWindowSetupFlag (IFormReference ifr){return getFieldValue(ifr,windowSetupFlagLocal);}
     public String getCurrentWorkStep(IFormReference ifr){

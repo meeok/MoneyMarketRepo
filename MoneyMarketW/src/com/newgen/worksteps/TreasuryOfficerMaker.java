@@ -183,18 +183,20 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     public void cpFormLoadActivity(IFormReference ifr) {
         hideCpSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
-        //setGenDetails(ifr);
         setInvisible(ifr,new String[]{goBackDashboardSection});
-        if (getDownloadFlag(ifr).equalsIgnoreCase(flag)){
-            showCommercialProcessSheet(ifr);
-            setVisible(ifr, new String[]{});
-            setVisible(ifr,cpPrimaryBidSection);
-        }
-       else if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
-            setGenDetails(ifr);
-            setFields(ifr,new String[]{prevWsLocal,selectProcessLocal,cpSelectMarketLocal}, new String[]{utilityWs,commercialProcess,cpPrimaryMarket});
-            showCommercialProcessSheet(ifr);
-            setVisible(ifr,cpPrimaryBidSection);
+     if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
+           if(getDownloadFlag(ifr).equalsIgnoreCase(flag)){
+               showCommercialProcessSheet(ifr);
+               setVisible(ifr, new String[]{cpPrimaryBidSection,cpAllocationTbl});
+               setInvisible(ifr, new String[]{cpViewReportBtn});
+               disableFields(ifr, new String[]{cpDownloadBtn});
+           }
+           else {
+               setGenDetails(ifr);
+               setFields(ifr, new String[]{prevWsLocal, selectProcessLocal, cpSelectMarketLocal}, new String[]{utilityWs, commercialProcess, cpPrimaryMarket});
+               showCommercialProcessSheet(ifr);
+               setVisible(ifr, cpPrimaryBidSection);
+           }
 
         }
        else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
