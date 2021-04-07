@@ -86,6 +86,7 @@ public class Query {
 
     public String getCustomerRefIdQuery (String custrefId) {
         return "select * from MONEYMARKET_EXT where upper(refid) = upper('"+custrefId+"')";
+    }
 
     public String getCpPmBidsToProcessQuery(){
         return "select custrefid, tenor, rate, ratetype from mm_bid_tbl where process = 'Commercial Paper' and markettype= 'primary' and processflag ='N' and groupindexflag = 'N'";
