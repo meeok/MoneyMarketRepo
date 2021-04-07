@@ -50,9 +50,19 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             backToDashboard(ifr);
                             if (getProcess(ifr).equalsIgnoreCase(commercialProcess))
                                 cpBackToDashboard(ifr);
+                            else  if (getProcess(ifr).equalsIgnoreCase(treasuryProcess))
+                                tbBackToDashboard(ifr);
                             clearFields(ifr,new String[] {selectProcessLocal});
                             break;
                         }
+                        
+                        //****************Treasurry Starts here *********************//
+                        case tbValidateCustomer:{
+                        	return tbValidateCustomer(ifr);
+                            
+                        }
+                        
+                        //****************Treasurry Ends here *********************//
                     }
                 }
                 break;
@@ -98,9 +108,34 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             }
                             break;
                         }
+                        
+                      //****************Treasurry Starts here *********************//
+    	                case tbMarketTypeddChange:{
+    	                	tbMarketTypeddChange(ifr);
+    	                }
+    	                break;
+    	                case tbCustAcctNoChange:{
+    	                	tbFetchAccountDetails(ifr);
+    	                }
+    	                break;
+    	                case tbBrnchPriRollovrddChange:{
+    	                	tbBrnchPriRollovrddChange(ifr);
+    	                }
+    	                break;
+    	                case tbBrcnhPriRateTypeddChange:{
+    	                	return tbBrcnhPriRateTypeddChange(ifr);
+    	                }
+    	                case tbBrnchPriPrncplAmtChange:{
+    	                	return tbValidatePrincipalAmt(ifr);
+    	                }
+    	                case tbCategoryddChange:{
+    	                	tbCategoryddChange(ifr);
+    	                }
+    	                break;
+                        //****************Treasurry Ends here *********************//
                     }
                     
-                    //---- Treasurry on Change ----- //
+                    
                 }
                 break;
                 case custom:
@@ -112,6 +147,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             }
                             else return cpValidateWindowErrorMsg;
                         }
+                        //****************Treasurry on Change Starts here *********************//
+    	                
+                        
+                        //****************Treasurry on Change Ends here *********************//
 
                     }
                 }
@@ -136,7 +175,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         return null;
     }
 
-    private String cpSelectCategory(IFormReference ifr) {
+   
+	private String cpSelectCategory(IFormReference ifr) {
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
                 if (isCpWindowActive(ifr)) {
@@ -198,6 +238,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         clearFields(ifr,new String [] {selectProcessLocal});
         setMandatory(ifr, new String[]{selectProcessLocal});
         setFields(ifr, new String[]{currWsLocal,prevWsLocal},new String[]{getCurrentWorkStep(ifr),na});
+        setWiName(ifr);
     }
 
     @Override
@@ -208,18 +249,120 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         setMandatory(ifr,new String [] {cpSelectMarketLocal,cpDecisionLocal,cpRemarksLocal});
         setDropDown(ifr,cpCategoryLocal,new String[]{cpCategoryBid,cpCategoryMandate,cpCategoryReport});
     }
-    public void tbFormLoad(IFormReference ifr) {
-        cpSetDecision(ifr);
-        setVisible(ifr, new String[]{cpDecisionSection, cpMarketSection});
-        enableFields(ifr,new String[]{cpSelectMarketLocal});
-        setMandatory(ifr,new String [] {cpSelectMarketLocal,cpDecisionLocal,cpRemarksLocal});
-        setDropDown(ifr,cpCategoryLocal,new String[]{cpCategoryBid,cpCategoryMandate,cpCategoryReport});
-    }
-
+   
 
     @Override
     public void cpSetDecision(IFormReference ifr) {
         setDecision(ifr,cpDecisionLocal,new String[]{decSubmit,decDiscard});
 
     }
+    
+    //**********************Treasury Starts here **********************//
+  
+    private void tbBackToDashboard(IFormReference ifr) {
+        undoMandatory(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
+        clearFields(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
+		undoMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+    }
+
+    private void tbFormLoad(IFormReference ifr) {
+    	setDropDown(ifr,tbDecisiondd,new String[]{decApprove,decDiscard});
+        setVisible(ifr, new String[]{tbMarketSection, tbDecisionSection});
+        enableFields(ifr,new String[]{tbMarketTypedd});
+        setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx});
+        setDropDown(ifr,tbCategorydd,new String[]{tbCategoryBid,tbCategoryReport,tbCategoryMandate});
+        
+    }
+    /*
+     * if setup has been done for selected market display corresponding fields
+     */
+    
+    private String tbMarketTypeddChange(IFormReference ifr){
+    	String retMsg ="";
+    	setTbPriWindownUnqNo(ifr,getTbActiveWindowwithRefid(ifr));
+    	if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+    		if(!isEmpty(getTbPriWindownUnqNo(ifr))){
+    			setVisible(ifr, new String[]{tbCategorydd});
+    			//disableFields(ifr, new String[]{tbMarketSection});
+    		}
+    		else {
+    			retMsg = getTbMarket(ifr)+tbWindowInactiveMessage;
+    			//hide or disable all fields
+    		}
+    	}
+    	return retMsg;
+    }
+    private void tbBrnchPriRollovrddChange(IFormReference ifr){
+    	if(getTbBrnchPriRollovrdd(ifr).equalsIgnoreCase(tbBrnchPriRoTermteatMaturity))
+    		setMandatory(ifr,tbBrnchPriTermTypedd);
+    }
+    
+    private String tbBrcnhPriRateTypeddChange(IFormReference ifr){
+    	logger.info("tbBrcnhPriRateTypeddChange>>>>");
+    	if(getTbBrcnhPriRateTypedd(ifr).equalsIgnoreCase(tbBrnchPriRtPersonal)){
+    		setVisible(ifr,tbBrcnhPriPersonalRate);
+    		setMandatory(ifr,tbBrcnhPriPersonalRate);
+    	}
+    	else
+    		hideField(ifr,tbBrcnhPriPersonalRate);
+    	
+    	String retMsg ="";
+    	retMsg = tbValidatePrincipalAmt(ifr);
+    	logger.info("tbretmsg>>>>"+retMsg);
+    	return retMsg;
+    }
+    private void tbCategoryddChange(IFormReference ifr){
+    	if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
+    		setVisible(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection});
+    		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+    		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
+    		tbGenerateCustRefNo(ifr, getTbMarket(ifr));
+    	}
+    	else {
+    		setTbBrnchPriRqsttype(ifr,"");
+    		hideFields(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection});
+    		undoMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+
+    	}
+    }
+    
+    /*
+     * Minimum of N100,000 for bank Rate and Minimum of N50,000,000 for personal Rate
+     * Validation for amount should be in thousands and comma used for separation)
+     */
+    private String tbValidatePrincipalAmt(IFormReference ifr){
+    	//setTbBrnchInitRetMsg("");
+    	String retMsg ="";
+    	logger.info("tbValidatePrincipalAmt");
+    	logger.info("getTbBrcnhPriRateTypedd(ifr)>>>" +getTbBrcnhPriRateTypedd(ifr));
+    	logger.info("tbBrnchPriRtPersonal>>>" +tbBrnchPriRtPersonal);
+    	logger.info("Principal Amoun>>>" +tbPrsnlMinPrincipalAmt);
+    	logger.info("Principal Amount>>>"+getTbBrnchPriPrncplAmt(ifr));
+    	logger.info("check if empty>>>"+(!isEmpty(getTbBrnchPriPrncplAmt(ifr))));
+    	if(getTbBrcnhPriRateTypedd(ifr).equalsIgnoreCase(tbBrnchPriRtPersonal)){
+    		if(!isEmpty(getTbBrnchPriPrncplAmt(ifr))) {
+    			logger.info("getTbBrnchPriPrncplAmt>>>>"+Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)));
+    			try {
+    				retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbPrsnlMinPrincipalAmt ? "Principal Amount must be minimum of "+String.valueOf(tbPrsnlMinPrincipalAmt) :"";
+    			}
+    			catch(Exception ex) {retMsg ="Invalid Principal amount";}
+    		}
+    	}
+    	else if(getTbBrcnhPriRateTypedd(ifr).equalsIgnoreCase(tbBrnchPriRtBanKRate)) {
+    		if(!isEmpty(getTbBrnchPriPrncplAmt(ifr))) {
+    			logger.info("getTbBrnchPriPrncplAmt>>>>"+Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)));
+	    		try {
+					clearFields(ifr,tbBrnchPriPrncplAmt);
+					retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbBnkMinPrincipalAmt ? "Principal Amount must be minimum of "+String.valueOf(tbBnkMinPrincipalAmt) :"";
+				}
+				catch(Exception ex) {retMsg ="Invalid Principal amount";}
+			}
+    	}
+   
+    	return retMsg;
+    }
+
+    
+    //**********************Treasury Ends here **********************//
+
 }

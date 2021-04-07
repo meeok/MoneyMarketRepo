@@ -69,6 +69,7 @@ public interface Constants {
 	String landMsgLabelLocal = "g_landMsg";
 	String goBackDashboardSection = "g_goBackDashboard_section";
 	String windowSetupFlagLocal = "g_setupFlag";
+	String wiNameFormLocal ="winame";
 
 	// commercial Paper process ids
 	String cpSelectMarketLocal = "cp_select_market";
@@ -200,49 +201,65 @@ public interface Constants {
 	//treasury events
 	String tbCategoryddChange = "tbCategoryChange";
 	String tbOnClickUpdateMsg = "tbOnClickUpdateMsg";
+	String tbMarketTypeddChange = "tbMarketTypeddChange";
+	String tbValidateCustomer = "tbValidateCustomer";
+	String tbCustAcctNoChange ="tbCustAcctNoChange";
+	String tbUpDateLndingMsgFlg ="tbUpDateLndingMsgFlg";
+	String tbOnDone ="tbOnDone";
+	String tbSetupMarket ="tbSetupMarket";
+	String tbBrnchPriRollovrddChange ="tbBrnchPriRollovrddChange";
+	String tbBrcnhPriRateTypeddChange ="tbBrcnhPriRateTypeddChange";
+	String tbBrnchPriPrncplAmtChange = "tbBrnchPriPrncplAmtChange";
 	
 	// treasury bills control ids
-	
-	
-	String tbPrimaryMarket = "tb_primary";
-	String tbSecondaryMarket = "tb_secondary";
+	String tbPrimaryMarket = "primary";
+	String tbSecondaryMarket = "secondary";
 	String tbSetupWindowBtn = "tb_setupWin_btn";
 	String tbUpdateCutoffTimeBtn = "tb_updateCutoff_btn";
 	String tbSetReDiscountRateBtn = "tb_rediscRate_btn";
 	String tbLandingMsgSubmitBtn="tb_landMsgSubmit_btn";
 	String tbPmMinPriAmtLocal = "tb_mp_amount";
-	
-	String tbCustSchemeCode ="";
-	//String 
-	
 	//tbMarketSection - Market
 	String tbMarketTypedd = "tb_select_market";
 	String tbCategorydd = "tb_category";
-	
 	//tbLandingMsgSection- Setup Landing Message
 	String tbLandMsgtbx = "tb_landingMsg";
 	String tbUpdateLandingMsgcbx = "tb_updateMsg";
-	
 	// tb_open_window_date - Treasury Primary SetUp
 	String tbUniqueReftbx = "tb_pmwu_ref";
 	String tbPriOpenDate= "tb_open_window_date";
 	String tbPriCloseDate = "tb_close_window_date";
-	
+	String tbPriSetupbtn ="tb_pmSetup_btn";
 	//Decision
 	String tbDecisiondd = "tb_decision";
 	String tbRemarkstbx = "tb_remarks";
-	
 	//Customer Details --
+	String tbCustAcctNo ="tb_custAcctNum";
+	String tbCustAcctEmail ="tb_custAcctEmail";
+	String tbCustAcctName ="tb_custAcctName";
+	String tbCustAcctLienStatus ="tb_lien_status";
+	String tbCustSchemeCode ="tb_schemecode";
+	//branch Primary
+	String tbBrnchPriTenordd ="tb_pm_tenor";
+	String tbBrnchPriRollovrdd="tb_rollover_type";
+	String tbBrnchPriTermTypedd="tb_termtype";
+	String tbBrnchCustPriRefNo="tb_pm_custId";
+	String tbBrcnhPriRateTypedd="tb_rate_type";
+	String tbBrcnhPriPersonalRate="tb_pm_personal";
+	String tbBrnchPriWindownUnqNo="tb_uniqueNum";
+	String tbBrnchPriRqsttype ="tb_request_type";
+	String tbBrnchPriPrncplAmt ="tb_pm_mpBr";
+	
+	
 	
 	//Branch Prmy View tbBranchSection
-	
-	
 	
 	//sections
 	String tbMarketSection = "tb_market_section";
 	String tbLandingMsgSection = "tb_setupmsg_section";
-	String tbTreasuryPriSetupSection = "tb_treasuryPm_section";
-	String tbBranchPriSection = "tb_branch_section";
+	String tbPriSetupSection = "tb_treasuryPm_section";
+	String tbBranchPriSection = "tb_pm_br_section";
+	String tbBrnchPriCusotmerDetails ="tb_custdetails_section";
 	String tbBranchSecSection = "tb_sec_br_section";
 	String tbTreasurySecSection = "tb_treasurySec_section";
 	String tbPrimaryBidSection = "tb_pmBid_section";
@@ -255,8 +272,9 @@ public interface Constants {
 	String tbPostSection = "tb_post_section";
 	//String tbSetupSection="tb_setup_section";
 	String tbCutOffTimeSection = "tb_cutoff_section";
+	String tbSecRediscountRate ="tb_rediscount_section";
 	
-	//String tbBranchPriSection = "tb_branchPm_section";
+	//String tbBranchPriSection = "tb_pm_br_section";
 	//String tbBranchSecSection = "tb_BranchSec_section";
 	//String tbTreasuryOpsSecSection = "tb_treasuryOpsSec_section";
 	//String tbTreasuryOpsPriSection = "tb_treasuryOpsPm_section";
@@ -267,23 +285,55 @@ public interface Constants {
 	String tbCategoryReDiscountRate = "Re-discount Rate";
 	String tbCategoryCutOff = "Cut off time modification";
 	String tbCategoryReport = "Report";
+	String tbCategoryMandate = "Mandate";
 	
+	// roll over dropdown
+	String tbBrnchPriRoPrincipal ="Principal";
+	String tbBrnchPriRoPrncpalInterest ="Principal plus Interest";
+	String tbBrnchPriRoTermteatMaturity ="Terminate at Maturity";
+	
+	//Rate Type dropdown
+	String tbBrnchPriRtBanKRate ="Bank";
+	String tbBrnchPriRtPersonal ="Personal";
 	//schemecodes not allowed
 	String SA231 ="SA231";
 	String SA310 ="SA310";
 	String SA340 ="SA340";
 	String SA327 ="SA327";
 	
-	//hidden fields
-	String tbLandingMsgApprovedFlg ="tb_landingMsgApprovedFlg";
+	//other constants
+	double tbBnkMinPrincipalAmt = 100000;
+	double tbPrsnlMinPrincipalAmt = 50000000;
 	
+	
+	
+	
+	//return messages
+	
+	//hidden fields
+	
+
+	String tbLandingMsgApprovedFlg ="tb_landingMsgApprovedFlg";
+	String tbInvalidAccountErrorMessage ="This account is not valid for CP processing";
+	/*String minPrincipalErrorMsg ="Customer principal cannot be less and window minimum principal";
+	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";
+	String cpValidateWindowErrorMsg ="This CP window has been closed. Kindly wait till the next window to initiate";
+	String tbDocumentName ="Proof of Investment for TB";
+	String cpDocumentName ="Proof of Investment for CP";
+	String cpEmailMsg = "Update email of customer on account maintenance workflow";
+	String cpPmInvestmentPrincipal ="Principal";
+	String cpPostSuccessMsg = "Posting Done Successfully";
+	String currencyNgn ="NGN";
+	String apiSuccess ="success";
+	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";*/
+	String tbWindowInactiveMessage = " Market Window is currently not open, Try again later";
 	String yesFlag  ="Y";
 	String noFlag ="N";
+	String tbBidRqstType ="Fresh Mandate";
 	
-	
-	String[] allTbSections = {tbMarketSection,tbLandingMsgSection ,tbTreasuryPriSetupSection, tbTreasurySecSection,
+	String[] allTbSections = {tbBrnchPriCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection, tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
-			tbTreasuryOpsSection ,tbTreasurySecReportSection ,tbPostSection };
+			tbTreasuryOpsSection ,tbTreasurySecReportSection ,tbPostSection,tbSecRediscountRate };
 	
 	/*************TREASURY BILLS ENDS HERE********************/
 
