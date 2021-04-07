@@ -4,11 +4,13 @@ import com.newgen.api.*;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.utils.Commons;
 import com.newgen.utils.Constants;
+import com.newgen.utils.LogGen;
+import org.apache.log4j.Logger;
 
 import java.util.Map;
 
 public class CpController implements Constants {
-
+    private static Logger logger = LogGen.getLoggerInstance(CpController.class);
     public static String fetchAccountDetailsController(IFormReference ifr){
         Map<String, String> getData = FetchAccountDetails.fetchAccountDetails();
         String name = getData.get("name");
@@ -34,23 +36,45 @@ public class CpController implements Constants {
         return empty;
     }
     public static String postTranController(IFormReference ifr){
-        String txnId = PostTransaction.postTransaction();
-        txnId = txnId.trim();
-        if (Commons.isEmpty(txnId)) {
-            Commons.setFields(ifr,new String[]{cpTxnIdLocal,cpDecisionLocal},new String[]{txnId,decApprove});
-            Commons.disableFields(ifr,new String[]{cpDecisionLocal});
-            return cpPostSuccessMsg;
+        String resp = limitController(ifr);
+        logger.info("resp -- "+ resp);
+        if (resp.equalsIgnoreCase(apiSuccess)) {
+            String txnId = PostTransaction.postTransaction();
+            txnId = txnId.trim();
+            if (!Commons.isEmpty(txnId)) {
+                Commons.setVisible(ifr,new String[]{cpTxnIdLocal});
+                Commons.setFields(ifr, new String[]{cpTxnIdLocal, cpDecisionLocal,cpPostFlag}, new String[]{txnId, decApprove,flag});
+                Commons.disableFields(ifr, new String[]{cpDecisionLocal,cpDebitPrincipalBtn,cpTxnIdLocal});
+                return cpPostSuccessMsg;
+            }
         }
+        else return resp;
+
         return null;
     }
 
-    public static String tokenController(){
-        return TokenValidation.validateToken();
+    public static String tokenController(IFormReference ifr){
+        String resp =  TokenValidation.validateToken();
+
+        if (resp.equalsIgnoreCase(apiSuccess)){
+            Commons.disableFields(ifr,new String[]{cpTokenLocal});
+            Commons.setVisible(ifr,new String[]{cpDebitPrincipalBtn});
+            Commons.enableFields(ifr,new String[]{cpDebitPrincipalBtn});
+        }
+        else return resp;
+
+        return null;
     }
     public  static  String  limitController (IFormReference ifr){
-        float ngnLimit = Float.parseFloat(FetchLimit.fetchLimit().get(currencyNgn));
-        if (Commons.getCpPmCustomerPrincipal(ifr) > ngnLimit)
-            return cpApiLimitErrorMsg;
-        return apiSuccess;
+        try {
+            float ngnLimit = Float.parseFloat(FetchLimit.fetchLimit().get(currencyNgn));
+            logger.info("ngnLimit-- "+ ngnLimit);
+            if (Commons.getCpPmCustomerPrincipal(ifr) > ngnLimit) return cpApiLimitErrorMsg;
+          else return apiSuccess;
+        }
+        catch (Exception e){
+            logger.error("Exception occurred-- "+ e.getMessage());
+            return exceptionMsg;
+        }
     }
 }

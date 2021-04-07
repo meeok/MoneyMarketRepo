@@ -1,5 +1,7 @@
 package com.newgen.utils;
 
+import com.newgen.iforms.custom.IFormReference;
+
 public class Query {
     public String getSolQuery(String userName){
         return "select sole_id from usr_0_fbn_usr_branch_mapping where upper(user_id) = upper('"+userName+"')";
@@ -64,17 +66,37 @@ public class Query {
     public String getWinCloseFlagById (String winRefId){
         return "select closeflag from mm_setup_tbl where refid = '"+winRefId+"'";
     }
+
     public String getUpdateSetupQuery(String columnName,String value,String condition){
         return "update mm_setup_tbl set "+columnName+" = "+value+" where condition = "+condition+"";
     }
+
     public String getCheckActiveWindowByIdQuery(String winRefId){
         return  "select COUNT(closeflag) from mm_setup_tbl where refid = '"+winRefId+"' and closeflag = 'N'";
     }
+
+    public String getSetupBidQuery(String reqDate,String custRefId, String winRefId,String wiName, String process, String marketType,String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rateType, String rate ){
+        return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rateType,rate) values ('"+reqDate+"','"+custRefId+"','"+winRefId+"','"+wiName+"', '"+process+"', '"+marketType+"', '"+custAcctNo+"','"+custName+"','"+custEmail+"','"+custPrincipal+"','"+tenor+"','"+rateType+"','"+rate+"')";
+    }
+
     public String getTBInsertSetupQuery (){
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE,CLOSEFLAG) values (values)";
     }
 
+
     public String getCustomerRefIdQuery (String custrefId) {
         return "select * from MONEYMARKET_EXT where upper(refid) = upper('"+custrefId+"')";
+
+    public String getCpPmBidsToProcessQuery(){
+        return "select custrefid, tenor, rate, ratetype from mm_bid_tbl where process = 'Commercial Paper' and markettype= 'primary' and processflag ='N' and groupindexflag = 'N'";
+    }
+
+    public String getCpPmUpdateBidsQuery(String id,String utilityWiName, String groupIndex){
+        return "update mm_bid_tbl set utilitywiname = '"+utilityWiName+"', groupindex = '"+groupIndex+"', groupindexflag = 'Y' , processflag = 'Y' where custrefid = '"+id+"'";
+    }
+
+    public String getCpPmBidGroupQuery(String utilityWiName){
+      return "select tenor , rate , sum(custprincipal) as TotalAmount ,ratetype, count(*) as TransactionCount, groupindex from mm_bid_tbl where utilitywiname = '"+utilityWiName+"' group by tenor, rate ,ratetype,groupindex";
+
     }
 }

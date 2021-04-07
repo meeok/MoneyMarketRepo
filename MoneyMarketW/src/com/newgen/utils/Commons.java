@@ -156,6 +156,12 @@ public class Commons implements Constants {
             ifr.setTabStyle(processTabName,treasuryTab,visible,False);
         }
     }
+    public void showCommercialProcessSheet(IFormReference ifr){
+        hideShowDashBoardTab(ifr,False);
+        ifr.setTabStyle(processTabName,omoTab,visible,False);
+        ifr.setTabStyle(processTabName,commercialTab,visible,True);
+        ifr.setTabStyle(processTabName,treasuryTab,visible,False);
+    }
     public static String getSol (IFormReference ifr){
         try { return new DbConnect(ifr, new Query().getSolQuery(getLoginUser(ifr))).getData().get(0).get(0); }
         catch (Exception e){ logger.error("Exception occurred in getSol Method-- "+e.getMessage());return  null;}
@@ -248,7 +254,7 @@ public class Commons implements Constants {
     public String getCpSmWinRefNo(IFormReference ifr){
         return null;
     }
-    public String getCpPmCusRefNo(IFormReference ifr){return null;}
+    public String getCpPmCusRefNo(IFormReference ifr){return getFieldValue(ifr,cpPmCustomerIdLocal);}
     public String getCpSmCusRefNo(IFormReference ifr){
         return null;
     }
@@ -275,7 +281,8 @@ public class Commons implements Constants {
        }
     }
     private String generateCpWinRefNo(String cpLabel) {
-        return cpLabel + new SimpleDateFormat(cpRefNoDateFormat).format(new Date());
+        return cpLabel + getCurrentDateTime(cpRefNoDateFormat);
+        //return cpLabel + new SimpleDateFormat(cpRefNoDateFormat).format(new Date());
     }
     public String getWindowSetupFlag (IFormReference ifr){return getFieldValue(ifr,windowSetupFlagLocal);}
     public String getCurrentWorkStep(IFormReference ifr){
@@ -300,7 +307,11 @@ public class Commons implements Constants {
         return Integer.parseInt(getFieldValue(ifr,cpPmTenorLocal));
     }
     public String cpGenerateCustomerId (IFormReference ifr){
+        logger.info("customer id--" + cpIdLabel+getUserSol(ifr)+getCpRandomId());
         return cpIdLabel+getUserSol(ifr)+getCpRandomId();
+    }
+    public static String getUtilityFlag (IFormReference ifr){
+        return getFieldValue(ifr,utilityFlagLocal);
     }
     private String getCpRandomId(){
         Random random = new Random();
@@ -308,9 +319,49 @@ public class Commons implements Constants {
     }
     public String getUserSol(IFormReference ifr){return getFieldValue(ifr,solLocal);}
     public boolean cpCheckWindowStateById(IFormReference ifr){
+        logger.info("getCheckActiveWindowByIdQuery --"+ new Query().getCheckActiveWindowByIdQuery(getCpPmWinRefNo(ifr)));
         return Integer.parseInt(new DbConnect(ifr,
                 new Query().getCheckActiveWindowByIdQuery(getCpPmWinRefNo(ifr))).getData().get(0).get(0)) > 0;
     }
+    public void setupCpPmBid(IFormReference ifr){
+        logger.info("query to setup bid-- "+   new Query().getSetupBidQuery(
+                getCurrentDateTime(),getCpPmCusRefNo(ifr),getCpPmWinRefNo(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),
+                getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
+        ));
+        new DbConnect(ifr,
+                new Query().getSetupBidQuery(
+                        getCurrentDateTime(),getCpPmCusRefNo(ifr),getCpPmWinRefNo(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),
+                        getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
+                )).saveQuery();
+    }
+    public static void setTableData(IFormReference ifr, String tableLocal, String [] columns, String [] rowValues){
+        JSONArray jsRowArray = new JSONArray();
+        jsRowArray.add(setTableRows(columns,rowValues));
+        ifr.addDataToGrid(tableLocal,jsRowArray);
+    }
+    public static void setTableData(IFormReference ifr, String tableLocal, String [] columns, String [] rowValues, int loopCount){
+        JSONArray jsRowArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+
+        for (int i = 0; i < loopCount; i++)
+            jsonObject = setTableRows(columns,rowValues);
+
+        jsRowArray.add(jsonObject);
+
+        ifr.addDataToGrid(tableLocal,jsRowArray);
+    }
+    private static JSONObject setTableRows(String [] columns, String [] rowValues){
+        JSONObject jsonObject = new JSONObject();
+        for (int i = 0 ; i < columns.length; i++)
+            jsonObject.put(columns[i],rowValues[i]);
+
+        return jsonObject;
+    }
+    public String getDownloadFlag (IFormReference ifr){
+        return getFieldValue(ifr,downloadFlagLocal);
+    }
+
+
 
 
 

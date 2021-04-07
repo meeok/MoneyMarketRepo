@@ -20,6 +20,7 @@ public interface Constants {
 	String discardWs = "Discard";
 	String exit = "Exit";
 	String query = "Query";
+	String utilityWs = "Utility_Initiation";
 	// Please input workSteps between comment bracket
 
 	// cp sections
@@ -71,6 +72,10 @@ public interface Constants {
 	String windowSetupFlagLocal = "g_setupFlag";
 	String wiNameFormLocal ="winame";
 
+	String utilityFlagLocal = "cp_utilityFlag";
+	String downloadFlagLocal ="downloadFlag";
+
+
 	// commercial Paper process ids
 	String cpSelectMarketLocal = "cp_select_market";
 	String cpRemarksLocal = "cp_remarks";
@@ -110,8 +115,26 @@ public interface Constants {
 	String cpPmReqFreshLabel ="Fresh Mandate";
 	String cpPmReqFreshValue ="freshMandate";
 	String cpAcctValidateBtn ="cp_acctValidateBtn";
-	String cpTxnIdLocal ="";
-
+	String cpTxnIdLocal ="cp_tsnId";
+	String cpDebitPrincipalBtn ="cp_debitPrincipal_btn";
+	String cpTokenLocal ="cp_token";
+	String cpAllocationTbl ="table88";
+	String cpAllocationReqTbl ="table89";
+	String cpBidReportTbl ="table90";
+	String cpAllocTenorCol = "Tenor";
+	String cpAllocRateCol = "Rate";
+	String cpAllocTotalAmountCol = "Total Amount";
+	String cpAllocRateTypeCol = "Rate Type";
+	String cpAllocCountCol = "Count";
+	String cpAllocStatusCol = "Status";
+	String cpAllocGroupIndexCol = "Group Index";
+	String cpDownloadBtn ="cp_downloadReport_btn";
+	String cpUpdateBtn ="cp_upDateReport_btn";
+	String cpViewGroupBtn ="cp_viewGroup_btn";
+	String cpViewReportBtn ="cp_viewReport_btn";
+	String cpAllocBankRateLocal ="cp_bank_rate";
+	String cpAllocDefaultAllocLocal ="cp_default_app";
+	String cpAllocCpRateLocal ="cp_cpRate";
 
 
 	//common variables
@@ -168,6 +191,8 @@ public interface Constants {
 	String currencyNgn ="NGN";
 	String apiSuccess ="success";
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";
+	String exceptionMsg ="Exception occurred contact IBPS support";
+	String statusAwaitingTreasury = "Awaiting Treasury";
 
 	//eventName/controlName
 	String formLoad = "formLoad";
@@ -189,6 +214,11 @@ public interface Constants {
 	String validateWindowEvent ="validateWindow";
 	String cpCheckPrincipalEvent ="onChangePrincipal";
 	String cpCheckTenorEvent="onChangeTenor";
+	String cpTokenEvent ="cpTokenEvent";
+	String cpPostEvent ="cpPostEvent";
+	String cpPostFlag ="cp_postFlag";
+	String cpViewReportEvent ="cpViewReport";
+	String cpDownloadEvent = "cpDownloadGrid";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

@@ -4,15 +4,13 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.utils.Commons;
-import com.newgen.utils.CommonsI;
-import com.newgen.utils.DBCalls;
-import com.newgen.utils.LogGen;
+import com.newgen.utils.*;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 
 import java.text.ParseException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +25,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             cpFormLoadActivity(ifr);
         else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess))
         	tbFormLoad(ifr);
+        else if (getUtilityFlag(ifr).equalsIgnoreCase(flag))
+                cpFormLoadActivity(ifr);
     }
 
     @Override
@@ -59,6 +59,14 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         break;
                         case tbSetupMarket:{ return tbSetupMarket(ifr);}
                         /**** Treasury onClick End ****/
+                        case cpViewReportEvent:{
+                            viewReport(ifr);
+                            break;
+                        }
+                        case cpDownloadEvent:{
+                            setFields(ifr,downloadFlagLocal,flag);
+                            break;
+                        }
                     }
                 }
                 break;
@@ -181,9 +189,23 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     public void cpFormLoadActivity(IFormReference ifr) {
         hideCpSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
-        setGenDetails(ifr);
         setInvisible(ifr,new String[]{goBackDashboardSection});
-        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
+     if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
+           if(getDownloadFlag(ifr).equalsIgnoreCase(flag)){
+               showCommercialProcessSheet(ifr);
+               setVisible(ifr, new String[]{cpPrimaryBidSection,cpAllocationTbl});
+               setInvisible(ifr, new String[]{cpViewReportBtn});
+               disableFields(ifr, new String[]{cpDownloadBtn});
+           }
+           else {
+               setGenDetails(ifr);
+               setFields(ifr, new String[]{prevWsLocal, selectProcessLocal, cpSelectMarketLocal}, new String[]{utilityWs, commercialProcess, cpPrimaryMarket});
+               showCommercialProcessSheet(ifr);
+               setVisible(ifr, cpPrimaryBidSection);
+           }
+
+        }
+       else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
             if (isEmpty(getSetupFlag(ifr))) {
                 if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
                     if (getCpDecision(ifr).equalsIgnoreCase(decReject)) {
@@ -213,6 +235,30 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         clearFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
         setDecision(ifr,cpDecisionLocal,new String [] {decSubmit,decDiscard});
     }
+
+    private void viewReport(IFormReference ifr){
+        List<List<String>> resultSet = new DbConnect(ifr,new Query().getCpPmBidGroupQuery(getWorkItemNumber(ifr))).getData();
+        for (List<String> result : resultSet){
+            String tenor = result.get(0);
+            logger.info("tenor-- "+ tenor);
+            String rate = result.get(1);
+            logger.info("rate-- "+ rate);
+            String totalAmount = result.get(2);
+            logger.info("totalAmount-- "+ totalAmount);
+            String rateType = result.get(3);
+            logger.info("rateType-- "+ rateType);
+            String count = result.get(4);
+            logger.info("count-- "+ count);
+            String groupIndex = result.get(5);
+            logger.info("groupIndex-- "+ groupIndex);
+
+            setTableData(ifr,cpAllocationTbl,new String[]{cpAllocTenorCol,cpAllocRateCol,cpAllocTotalAmountCol,cpAllocRateTypeCol,cpAllocCountCol,cpAllocStatusCol,cpAllocGroupIndexCol},
+                    new String[]{tenor,rate,totalAmount,rateType,count, statusAwaitingTreasury,groupIndex});
+        }
+        setVisible(ifr,new String[]{cpAllocationTbl,cpDownloadBtn});
+        setInvisible(ifr,new String[]{cpViewReportBtn});
+    }
+
     
     /******************  TREASURY BILL CODE BEGINS *********************************/
     /*hide all sections except market, decision and lnading message

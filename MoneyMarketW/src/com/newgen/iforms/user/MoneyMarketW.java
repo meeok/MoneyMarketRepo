@@ -5,20 +5,7 @@ import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.utils.Constants;
 import com.newgen.utils.LogGen;
-import com.newgen.worksteps.TreasuryOfficerMaker;
-import com.newgen.worksteps.TreasuryOfficerInitiator;
-import com.newgen.worksteps.TreasuryOfficerVerifier;
-import com.newgen.worksteps.TreasuryOpsVerifier;
-import com.newgen.worksteps.TreasuryOpsMature;
-import com.newgen.worksteps.AwaitingMaturity;
-import com.newgen.worksteps.TreasuryOpsMatureOnMaturity;
-import com.newgen.worksteps.BranchInitiator;
-import com.newgen.worksteps.BranchVerifier;
-import com.newgen.worksteps.BranchException;
-import com.newgen.worksteps.RpcVerifier;
-import com.newgen.worksteps.TreasuryOpsFailed;
-import com.newgen.worksteps.TreasuryOpsSuccessful;
-import com.newgen.worksteps.Exit;
+import com.newgen.worksteps.*;
 import org.apache.log4j.Logger;
 
 public class MoneyMarketW implements IFormListenerFactory, Constants {
@@ -74,6 +61,8 @@ private Logger logger = LogGen.getLoggerInstance(MoneyMarketW.class);
 
 			else if (activityName != null && activityName.trim().equalsIgnoreCase(treasuryOpsSuccessful))
 				objActivity = new TreasuryOpsSuccessful();
+			else if (activityName != null & activityName.trim().equalsIgnoreCase(utilityWs))
+				objActivity = new UtilityTemp();
 
 			else if (activityName != null && (activityName.trim().equalsIgnoreCase(discardWs) || activityName.trim().equalsIgnoreCase(query) || activityName.trim().equalsIgnoreCase(exit)))
 				objActivity = new Exit();
