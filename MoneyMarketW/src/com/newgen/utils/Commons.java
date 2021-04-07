@@ -369,24 +369,24 @@ public class Commons implements Constants {
     /************************* COMMERCIAL PAPER CODE ENDS **************************/
 
     /******************  TREASURY BILL CODE BEGINS *********************************/
-    public void hideTbSections (IFormReference ifr){hideFields(ifr,allTbSections);}
-    public void disableTbSections (IFormReference ifr){disableFields(ifr,allTbSections);}
-    public void disableField(IFormReference ifr, String field) {ifr.setStyle(field,disable,True);}
-    public void clearFields(IFormReference ifr, String field) {ifr.setValue(field,empty);}
-    public void setVisible(IFormReference ifr, String field) { ifr.setStyle(field,visible,True);}
-    public void hideField(IFormReference ifr, String field) {ifr.setStyle(field,visible,False);}
-    public void hideFields(IFormReference ifr, String [] fields ) { for(String field: fields) ifr.setStyle(field,visible,False); }
-    public void enableField(IFormReference ifr, String field) {ifr.setStyle(field,disable,False);}
-    public void setMandatory(IFormReference ifr, String field) { ifr.setStyle(field,mandatory,True); }
-    public void undoMandatory(IFormReference ifr, String field) { ifr.setStyle(field,mandatory,False); }
-    public String getTbMarketName (IFormReference ifr){
+    public static void hideTbSections (IFormReference ifr){hideFields(ifr,allTbSections);}
+    public static void disableTbSections (IFormReference ifr){disableFields(ifr,allTbSections);}
+    public static void disableField(IFormReference ifr, String field) {ifr.setStyle(field,disable,True);}
+    public static void clearFields(IFormReference ifr, String field) {ifr.setValue(field,empty);}
+    public static void setVisible(IFormReference ifr, String field) { ifr.setStyle(field,visible,True);}
+    public static void hideField(IFormReference ifr, String field) {ifr.setStyle(field,visible,False);}
+    public static void hideFields(IFormReference ifr, String [] fields ) { for(String field: fields) ifr.setStyle(field,visible,False); }
+    public static void enableField(IFormReference ifr, String field) {ifr.setStyle(field,disable,False);}
+    public static void setMandatory(IFormReference ifr, String field) { ifr.setStyle(field,mandatory,True); }
+    public static void undoMandatory(IFormReference ifr, String field) { ifr.setStyle(field,mandatory,False); }
+    public static String getTbMarketName (IFormReference ifr){
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) 
         	return primary;
         else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) 
         	return secondary;
         return null;
     }
-    public String getTbMarket(IFormReference ifr){
+    public static String getTbMarket(IFormReference ifr){
     	return  (String) ifr.getValue(tbMarketTypedd);
     }
     public void setTbDecisionHistory (IFormReference ifr){
@@ -398,25 +398,32 @@ public class Commons implements Constants {
         ifr.setValue(decHisFlagLocal,flag);
     }
     public boolean getTbUpdateLandingMsg(IFormReference ifr){ return (boolean) ifr.getValue(tbUpdateLandingMsgcbx); }
-    public void setTbUpdateLandingMsg(IFormReference ifr, String value){ ifr.setValue(tbUpdateLandingMsgcbx,value); }
-    public String getTbDecision (IFormReference ifr){return (String) ifr.getValue(tbDecisiondd);}
-    public void setTbDecisiondd (IFormReference ifr, String value){ifr.setValue(tbDecisiondd,value);}
-    public String getTbCategorydd (IFormReference ifr){return (String) ifr.getValue(tbCategorydd);}
-    public void setTbCategorydd  (IFormReference ifr, String value){ifr.setValue(tbCategorydd,value);}
-    public String getTbPriOpenDate(IFormReference ifr){return (String)ifr.getValue(tbPriOpenDate);}
-    public String getTbPriCloseDate(IFormReference ifr){return (String)ifr.getValue(tbPriCloseDate);}
-    public String getTbUniqueRef(IFormReference ifr){return (String)ifr.getValue(tbUniqueReftbx);}
-    public void setTbSetUpFlg(IFormReference ifr,String value){ifr.setValue(windowSetupFlagLocal,value);}
-    public String getTbSetUpFlg(IFormReference ifr){return (String)ifr.getValue(windowSetupFlagLocal);}
-    public void setTbUniqueRef(IFormReference ifr,String value){
+    public static void setTbUpdateLandingMsg(IFormReference ifr, String value){ ifr.setValue(tbUpdateLandingMsgcbx,value); }
+    public static String getTbDecision (IFormReference ifr){return (String) ifr.getValue(tbDecisiondd);}
+    public static void setTbDecisiondd (IFormReference ifr, String value){ifr.setValue(tbDecisiondd,value);}
+    public static String getTbCategorydd (IFormReference ifr){return (String) ifr.getValue(tbCategorydd);}
+    public static void setTbCategorydd  (IFormReference ifr, String value){ifr.setValue(tbCategorydd,value);}
+    public static String getTbPriOpenDate(IFormReference ifr){return (String)ifr.getValue(tbPriOpenDate);}
+    public static String getTbPriCloseDate(IFormReference ifr){return (String)ifr.getValue(tbPriCloseDate);}
+    public static String getTbUniqueRef(IFormReference ifr){return (String)ifr.getValue(tbUniqueReftbx);}
+    public static void setTbSetUpFlg(IFormReference ifr,String value){ifr.setValue(windowSetupFlagLocal,value);}
+    public static String getTbSetUpFlg(IFormReference ifr){return (String)ifr.getValue(windowSetupFlagLocal);}
+    public static void setTbCustSchemeCode(IFormReference ifr,String value){ifr.setValue(tbCustSchemeCode,value);}
+    public static String getTbCustSchemeCode(IFormReference ifr){return (String)ifr.getValue(tbCustSchemeCode);}
+    public static void setTbBrnchPriPrncplAmt(IFormReference ifr,String value){ifr.setValue(tbBrnchPriPrncplAmt,value);}
+    public static String getTbBrnchPriPrncplAmt(IFormReference ifr){return (String)ifr.getValue(tbBrnchPriPrncplAmt);}
+    
+   
+    
+    public static void setTbUniqueRef(IFormReference ifr,String value){
     	if(isEmpty(getTbUniqueRef(ifr)))
     		ifr.setValue(tbUniqueReftbx,value);
     }
-    public String getTbLandingMsgApprovedFlg(IFormReference ifr){return getFieldValue(ifr,tbLandingMsgApprovedFlg);}
-    public void setTbLandingMsgApprovedFlg(IFormReference ifr, String value){ ifr.setValue(value,tbLandingMsgApprovedFlg);}
-    public String getTbLandingMsg (IFormReference ifr){return getFieldValue(ifr,tbLandMsgtbx);}
+    public static String getTbLandingMsgApprovedFlg(IFormReference ifr){return getFieldValue(ifr,tbLandingMsgApprovedFlg);}
+    public static void setTbLandingMsgApprovedFlg(IFormReference ifr, String value){ ifr.setValue(tbLandingMsgApprovedFlg,value);}
+    public static String getTbLandingMsg (IFormReference ifr){return getFieldValue(ifr,tbLandMsgtbx);}
     
-    public String getDateWithoutTime() {
+    public static String getDateWithoutTime() {
     	SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
     	try {
     		return formatter.format(new Date());
@@ -426,11 +433,11 @@ public class Commons implements Constants {
 			return null;
 		}
 	}
-    public void clearDropDown(IFormReference ifr, String controlName){
+    public static void clearDropDown(IFormReference ifr, String controlName){
         ifr.clearCombo(controlName);
-    }
-    // window setup
-    public String setUpTbMarketWindow(IFormReference ifr){
+    } 
+    // tb window setup
+    public static String setUpTbMarketWindow(IFormReference ifr){
     	String qry = new Query().getSetupMarketWindowQuery(getTbUniqueRef(ifr),  getWorkItemNumber(ifr), treasuryProcessName, getTbMarket(ifr), 
     			getTbLandingMsg(ifr), getTbPriOpenDate(ifr), getTbPriCloseDate(ifr));
         logger.info("setUpTbMarketWindow Query>> "+qry);
@@ -443,23 +450,146 @@ public class Commons implements Constants {
        else 
     	   return "Unable to setup window try again later";
     }
-    
-
-    public String setUpTbMarketWindowold(IFormReference ifr){ //primary market
-    	DBCalls dbc = new DBCalls();
-    	int insertVal = dbc.insertSetupDetails(getTbUniqueRef(ifr),  getWorkItemNumber(ifr), treasuryProcessName, getTbMarket(ifr), 
-    			getTbLandingMsg(ifr), getTbPriOpenDate(ifr), getTbPriCloseDate(ifr));
-    	if (insertVal >= 0) {
-           logger.info("record saved into db");
-           return "success";
-       }
-       else return "Unable to setup window try again later";
+   
+    public boolean isTbWindowActive(IFormReference ifr){
+    	String qry = new Query().getCheckActiveWindowQuery(treasuryProcessName,getTbMarket(ifr));
+        logger.info("check tb window query --"+ qry);
+        return Integer.parseInt(new DbConnect(ifr,qry).getData().get(0).get(0)) > 0;
     }
+    //get refid from active window
+    public static String getTbActiveWindowwithRefid(IFormReference ifr){
+    	String qry = new Query().getCheckActiveWindowQueryRefid(treasuryProcessName,getTbMarket(ifr));
+        logger.info("check tb window query --"+ qry);
+        try{
+        	return new DbConnect(ifr,qry).getData().get(0).get(0); 
+        }
+        catch(Exception ex){return null; }
+    }
+    
+    //primary branch validations
+    /*
+     * validate Account Schemecode
+     * 
+     */
+    public static String tbValidateCustomer(IFormReference ifr) {
+    	tbFetchAccountDetails(ifr);
+    	String retMsg = (getTbCustSchemeCode(ifr).equalsIgnoreCase(SA231) || getTbCustSchemeCode(ifr).equalsIgnoreCase(SA310) ||
+    			getTbCustSchemeCode(ifr).equalsIgnoreCase(SA340) ||getTbCustSchemeCode(ifr).equalsIgnoreCase(SA327)) ?
+    			"This account is not valid for TB processing":"";	
+    	logger.info("retMsg1>>"+ retMsg);
+    	if (isEmpty(retMsg))
+    		retMsg = isEmpty(getTbCustAcctEmail(ifr)) ? "Update email of customer on account maintenance workflow":"";
+    	logger.info("retMsg1>>"+ retMsg);
+    	return retMsg;
+    }
+    
+    public static void tbFetchAccountDetails(IFormReference ifr) {
+    	if(getTbCustAcctNo(ifr).equalsIgnoreCase("32222222222")){
+	    	setTbCustAcctName(ifr, "John Doe");
+	    	setTbCustAcctLienStatus(ifr, "Yes");
+	    	setTbCustAcctEmail(ifr, "");
+	    	setTbCustSchemeCode(ifr,"SA531");
+	    }
+    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("32222222223")){
+	    	setTbCustAcctName(ifr, "Miranda");
+	    	setTbCustAcctLienStatus(ifr, "No");
+	    	setTbCustAcctEmail(ifr, "someone@gmail.com");
+	    	setTbCustSchemeCode(ifr,SA231);
+	    }
+    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("32222222224")){
+	    	setTbCustAcctName(ifr, "Mercy Lee");
+	    	setTbCustAcctLienStatus(ifr, "No");
+	    	setTbCustAcctEmail(ifr, "ogb@gmail.com");
+	    	setTbCustSchemeCode(ifr,"SA931");
+	    }
+    	//return isEmpty(getTbCustAcctEmail(ifr)) ? "Update email of customer on account maintenance workflow":null;
+    }
+  /*  
+    o	IBPS fetches customers account number and email address from Finacle (if available)
+    o	If email address is not available, a pop up will be displayed for user to update customer’s email .”Update email of customer on account maintenance workflow”
+    o	User should be able to select email notification required from a dropdown.
+    o	User select TENOR from the drop down (91 days, 182 days or 364 days)
+    o	User select rollover type from the dropdown list ( Terminate at maturity, principal or principal+interest)
+    o	Where user selects terminate at maturity ,user must select termination type which is mandatory
+    o	User select rate type from the dropdown (bank rate or personal rate ). Minimum principal amount for personal rate is N50,000,000.00 while the minimum for bank rate is N100,000.
+    o	Where user selects personal rate, field for personal rate is enabled for user to enter personal rate value
+    o	User enters principal amount(validation for amount should be in thousands and comma used for separation)
+    o	The unique reference for primary market is generated automatically 
+    o	User then click on submit and request flows to  Money_Market_Branch_Verifier in the same branch to approve
+    o	All transactions initiated by branch user must be approved by Money_Market_Branch_Verifier before the cut off time.  “Where request remains pending with branch_verifier after cut off time setup approved by Money_Market_Treasury_Verifier, request will not be processed. Error message will be displayed stated “Cutoff time for window has elapsed”
+    o	Branch initiation User should not initiate the request beyond open time and close time where window unique ref no has been generated from Money_Market_Treasury_Officer
+*/
+    public static void setTbCustAcctNo(IFormReference ifr, String value) {ifr.setValue(tbCustAcctNo,value);}
+	public static String getTbCustAcctNo(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctNo);}
+	public static void setTbCustAcctName(IFormReference ifr, String value) {ifr.setValue(tbCustAcctName,value);}
+	public static String getTbCustAcctName(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctName);}
+	public static void setTbCustAcctLienStatus(IFormReference ifr, String value) {ifr.setValue(tbCustAcctLienStatus,value);}
+	public static String getTbCustAcctLienSatatus(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctLienStatus);}
+	public static void setTbCustAcctEmail(IFormReference ifr, String value) {ifr.setValue(tbCustAcctEmail,value);}
+	public static String getTbCustAcctEmail(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctEmail);}
+	
+	public static void setTbPriWindownUnqNo(IFormReference ifr, String value) {ifr.setValue(tbBrnchPriWindownUnqNo,value);}
+	public static String getTbPriWindownUnqNo(IFormReference ifr) {return (String) ifr.getValue(tbBrnchPriWindownUnqNo);}
+	public static void setTbBrnchPriRqsttype(IFormReference ifr, String value) {ifr.setValue(tbBrnchPriRqsttype,value);}
+	public static String getTbBrnchPriRqsttype(IFormReference ifr) {return (String) ifr.getValue(tbBrnchPriRqsttype);}
+	public static String getTbBrcnhPriRateTypedd(IFormReference ifr) {return (String) ifr.getValue(tbBrcnhPriRateTypedd);}
+	public static String getTbBrnchPriRollovrdd(IFormReference ifr){return (String)ifr.getValue(tbBrnchPriRollovrdd);}
+	
+	
+	public static void setWiName(IFormReference ifr){
+	    setFields(ifr,wiNameFormLocal,getWorkItemNumber(ifr));
+	}
 
-    //testing merge changes made on branch
     
-    //testing branch
-    
+	//unsused
+	private String tbMarketTypeddChange(IFormReference ifr){
+    	String retMsg ="";
+    	if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+    		if(isTbWindowActive(ifr)){
+    			setVisible(ifr, new String[]{tbMarketSection, tbDecisionSection});
+    			disableFields(ifr, new String[]{tbMarketSection});
+    		}
+    		else {
+    			retMsg = getTbMarket(ifr)+tbWindowInactiveMessage;
+    			//hide or disable all fields
+    		}
+    	}
+    	return retMsg;
+    }
+	public String generateTbUniqueReference(IFormReference ifr) {
+    	//generate ref. check if its in db
+    	 if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+    		 return "TBPMA"+getDateWithoutTime();	
+         }
+         else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+        	 return "TBSEC"+getDateWithoutTime();	
+         }
+    	return "";
+    }
+	
+	/*
+	 * @param length is the length of the five digit serial no.
+	 * Markettype represents market (Primary-P, Secondary- S or OMO-O)
+	 * *Automatically generated PXXX12AB45678.
+		Where; XXX represents SOL ID of processing branch.
+		12 represents year of processing
+		AB represents month of processing
+		45678 represents five digit serial numbers for each TBills processed bank wide
+		Reference number (unique identifier) must be a hypertext (hyperlink) which enables user explode on the transaction to view full transaction details.
+		*/
+	public String tbGenerateCustRefNo(IFormReference ifr,String marketType) {
+		Date date =new Date();
+		String randNo = Character.toUpperCase((marketType.charAt(0))) + getUserSol(ifr) + 
+				new SimpleDateFormat("yyyy").format(date)+new SimpleDateFormat("MMM").format(date) + 
+				((int)(Math.random()*9000)+1000);
+		
+		String qry = new Query().getCustomerRefIdQuery(randNo);
+		logger.info("getCustomerRefIdQuery>>"+qry);
+		if(new DbConnect(ifr,qry).getData().size()>0)
+			tbGenerateCustRefNo(ifr,marketType);
+		logger.info("randNo>>>"+randNo);
+		return randNo;
+	}
     
     
     /******************  TREASURY BILL CODE ENDS ***********************************/

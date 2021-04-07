@@ -118,6 +118,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
         clearFields(ifr,new String [] {selectProcessLocal});
         setMandatory(ifr, new String[]{selectProcessLocal});
         setFields(ifr, new String[]{currWsLocal,prevWsLocal},new String[]{getCurrentWorkStep(ifr),na});
+        setWiName(ifr);
     }
 
     @Override
@@ -159,18 +160,16 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     /******************  TREASURY BILL CODE BEGINS *********************************/
     
     private void tbBackToDashboard(IFormReference ifr) {
-        undoMandatory(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd});
-        clearFields(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd});
+        undoMandatory(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
+        clearFields(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
     }
    
     private void tbFormLoad (IFormReference ifr){
     	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
-    	setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
-    	setTbCategorydd(ifr,tbCategorySetup);
     	setVisible(ifr, new String[]{tbLandingMsgSection, tbDecisionSection, tbMarketSection});
     	setMandatory(ifr,new String [] {tbMarketTypedd,tbCategorydd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
     	enableFields(ifr,new String[]{tbLandingMsgSection,tbDecisionSection,tbMarketSection});
-    	hideField(ifr,tbUpdateLandingMsgcbx);
+    	hideFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbCategorydd});
     }
     public void tbSendMail(IFormReference ifr){
         String message = "A window open request for "+treasuryProcessName+" has been Initiated with ref number "+getWorkItemNumber(ifr)+".";

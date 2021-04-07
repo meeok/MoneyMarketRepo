@@ -48,11 +48,14 @@ public class Query {
                 "values ('"+refId+"','"+wiName+"','"+process+"','"+marketType+"','"+landingMessage+"','"+minPrincipalAmount+"','"+reDiscountRateLess90+"','"+reDiscountRateLess180+"','"+reDiscountRateLess270+"','"+reDiscountRateLess364+"','"+openDate+"','"+closeDate+"')";
     }
     public String getSetupMarketWindowQuery (String refId, String wiName,String process,String marketType,String landingMessage,String openDate,String closeDate) {
-        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,REDISCOUNTRATELESS90,REDISCOUNTRATELESS180,REDISCOUNTRATELESS270,REDISCOUNTRATELESS364,OPENDATE,CLOSEDATE)" +
+        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE)" +
                 "values ('"+refId+"','"+wiName+"','"+process+"','"+marketType+"','"+landingMessage+"','"+openDate+"','"+closeDate+"')";
     }
     public String getCheckActiveWindowQuery(String process, String marketType){
         return "select count(*) from mm_setup_tbl where process = '"+process+"' and markettype ='"+marketType+"' and  closeflag = 'N'";
+    }
+    public String getCheckActiveWindowQueryRefid(String process, String marketType){
+        return "select REFID from mm_setup_tbl where process = '"+process+"' and markettype ='"+marketType+"' and  closeflag = 'N'";
     }
     public String getActiveWindowDetailsQuery(String process, String markType){
         return "select refid, landingmessage, minprincipalamount from mm_setup_tbl where process = '"+process+"' and markettype ='"+markType+"' and  closeflag = 'N'";
@@ -80,6 +83,10 @@ public class Query {
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE,CLOSEFLAG) values (values)";
     }
 
+
+    public String getCustomerRefIdQuery (String custrefId) {
+        return "select * from MONEYMARKET_EXT where upper(refid) = upper('"+custrefId+"')";
+
     public String getCpPmBidsToProcessQuery(){
         return "select custrefid, tenor, rate, ratetype from mm_bid_tbl where process = 'Commercial Paper' and markettype= 'primary' and processflag ='N' and groupindexflag = 'N'";
     }
@@ -90,5 +97,6 @@ public class Query {
 
     public String getCpPmBidGroupQuery(String utilityWiName){
       return "select tenor , rate , sum(custprincipal) as TotalAmount ,ratetype, count(*) as TransactionCount, groupindex from mm_bid_tbl where utilitywiname = '"+utilityWiName+"' group by tenor, rate ,ratetype,groupindex";
+
     }
 }

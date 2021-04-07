@@ -21,6 +21,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         clearDecHisFlag(ifr);
         if (!isEmpty(getProcess(ifr))) showSelectedProcessSheet(ifr);
         if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
+        else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) tbFormLoadActivity(ifr);
     }
 
     @Override
@@ -130,4 +131,25 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     public void cpSetDecision(IFormReference ifr) {
         setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReject});
     }
+    
+    /*********************************  Treasury Starts here ****************/
+
+    private void tbFormLoadActivity(IFormReference ifr){
+        hideTbSections(ifr);
+        hideShowLandingMessageLabel(ifr,False);
+        disableTbSections(ifr);
+        hideShowBackToDashboard(ifr,False);
+        clearFields(ifr,new String[]{tbRemarkstbx,tbDecisiondd}); 
+        if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
+            if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
+            	setVisible(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection});
+            	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
+                setInvisible(ifr, new String[]{cpAcctValidateBtn});
+            }
+        } else {}
+       
+        
+    }
+    
+    /***************************Treaury ends here ************************/
 }
