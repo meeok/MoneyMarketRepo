@@ -5,8 +5,9 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
-
+import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Random;
 
@@ -484,19 +485,19 @@ public class Commons implements Constants {
     }
     
     public static void tbFetchAccountDetails(IFormReference ifr) {
-    	if(getTbCustAcctNo(ifr).equalsIgnoreCase("32222222222")){
+    	if(getTbCustAcctNo(ifr).equalsIgnoreCase("3222222222")){
 	    	setTbCustAcctName(ifr, "John Doe");
 	    	setTbCustAcctLienStatus(ifr, "Yes");
 	    	setTbCustAcctEmail(ifr, "");
 	    	setTbCustSchemeCode(ifr,"SA531");
 	    }
-    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("32222222223")){
+    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("3222222223")){
 	    	setTbCustAcctName(ifr, "Miranda");
 	    	setTbCustAcctLienStatus(ifr, "No");
 	    	setTbCustAcctEmail(ifr, "someone@gmail.com");
 	    	setTbCustSchemeCode(ifr,SA231);
 	    }
-    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("32222222224")){
+    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("3222222224")){
 	    	setTbCustAcctName(ifr, "Mercy Lee");
 	    	setTbCustAcctLienStatus(ifr, "No");
 	    	setTbCustAcctEmail(ifr, "ogb@gmail.com");
@@ -534,6 +535,12 @@ public class Commons implements Constants {
 	public static String getTbBrnchPriRqsttype(IFormReference ifr) {return (String) ifr.getValue(tbBrnchPriRqsttype);}
 	public static String getTbBrcnhPriRateTypedd(IFormReference ifr) {return (String) ifr.getValue(tbBrcnhPriRateTypedd);}
 	public static String getTbBrnchPriRollovrdd(IFormReference ifr){return (String)ifr.getValue(tbBrnchPriRollovrdd);}
+	public  String getTbtoken(IFormReference ifr) {return (String) ifr.getValue(tbtoken);}
+	//public static void setTbtoken(IFormReference ifr, String value) {ifr.setValue(tbtoken,value);}
+	public  String getTbTranID(IFormReference ifr) {return (String) ifr.getValue(tbTranID);}
+	public  void setTbTranID(IFormReference ifr, String value) {ifr.setValue(tbTranID,value);}
+	public  String getPostStatus(IFormReference ifr) {return tbSuccess;}
+	
 	
 	
 	public static void setWiName(IFormReference ifr){
@@ -590,6 +597,44 @@ public class Commons implements Constants {
 		logger.info("randNo>>>"+randNo);
 		return randNo;
 	}
+	
+	 //check if cutoff time has elapsed
+    public static boolean isTbWinValid(IFormReference ifr){
+    	String qry = new Query().getWinCloseDateByIdQuery(getTbPriWindownUnqNo(ifr));
+        logger.info("check tb window query --"+ qry);
+        Date closeDte = null;
+        List<List<String>> ls = new DbConnect(ifr,qry).getData();
+        logger.info("getWinCloseDateById: >>"+ls);
+        if(ls.size()>0) {
+        	//compare dates
+        	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				closeDte = formatter.parse(ls.get(0).get(0));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+   			logger.info("Close Date - Date format>>>"+closeDte);
+   			
+   			logger.info("currDte>>"+new Date()); 
+   			System.out.println(closeDte.compareTo(new Date()));
+   			
+        }
+        return  closeDte.compareTo(new Date())>=0  ?true:false;
+    }
+    
+    /*
+     * check if a document has been uploaded
+     */
+    public boolean isTbDocUploaded(IFormReference ifr,String winame,String docName){
+    	logger.info("isTbDocUploaded");
+    	String qry = new Query().getUploadedDocQuery(winame, docName);
+    	logger.info("isDocUploaded dbQuery: "+qry);
+    	List<List<String>> dbResult = new DbConnect(ifr,qry).getData();
+    	logger.info("isDocUploaded dbResult>> "+dbResult);
+    	return dbResult.size() == 0 ? false:true;
+    }
+    
     
     
     /******************  TREASURY BILL CODE ENDS ***********************************/

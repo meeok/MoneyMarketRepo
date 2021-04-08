@@ -240,6 +240,9 @@ public interface Constants {
 	String tbBrnchPriRollovrddChange ="tbBrnchPriRollovrddChange";
 	String tbBrcnhPriRateTypeddChange ="tbBrcnhPriRateTypeddChange";
 	String tbBrnchPriPrncplAmtChange = "tbBrnchPriPrncplAmtChange";
+	String tbTokenChange ="tbTokenChange";
+	String tbPost ="tbPost";
+	String tbOndone ="tbOndone";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -269,6 +272,7 @@ public interface Constants {
 	String tbCustAcctName ="tb_custAcctName";
 	String tbCustAcctLienStatus ="tb_lien_status";
 	String tbCustSchemeCode ="tb_schemecode";
+	String tbValidatebtn ="tb_validate_btn";
 	//branch Primary
 	String tbBrnchPriTenordd ="tb_pm_tenor";
 	String tbBrnchPriRollovrdd="tb_rollover_type";
@@ -280,6 +284,9 @@ public interface Constants {
 	String tbBrnchPriRqsttype ="tb_request_type";
 	String tbBrnchPriPrncplAmt ="tb_pm_mpBr";
 	
+	//Post section --tb_post_section
+	String tbtoken = "tb_token";
+	String tbTranID = "tb_trn";
 	
 	
 	//Branch Prmy View tbBranchSection
@@ -334,9 +341,11 @@ public interface Constants {
 	//other constants
 	double tbBnkMinPrincipalAmt = 100000;
 	double tbPrsnlMinPrincipalAmt = 50000000;
+	String tbSuccess ="success";
 	
 	
-	
+	//Document names
+	String customers_instruction ="customers_instruction";
 	
 	//return messages
 	
@@ -345,6 +354,7 @@ public interface Constants {
 
 	String tbLandingMsgApprovedFlg ="tb_landingMsgApprovedFlg";
 	String tbInvalidAccountErrorMessage ="This account is not valid for CP processing";
+	
 	/*String minPrincipalErrorMsg ="Customer principal cannot be less and window minimum principal";
 	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";
 	String cpValidateWindowErrorMsg ="This CP window has been closed. Kindly wait till the next window to initiate";

@@ -47,8 +47,20 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 }
                 case formLoad:
                 case onLoad:
-                case onClick:
-                case onChange:
+                case onClick:{
+                	switch(control) {
+	                	case tbPost:{
+	                		return tbPost(ifr);
+	                	}
+                	}
+                }
+                case onChange:{
+                	switch(control) {
+	                	case tbTokenChange:{
+	                		tbTokenChange(ifr);
+	                	}
+                	}
+                }
                 case custom:
                 case onDone:{
                     switch (control){
@@ -59,6 +71,10 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                                 else return cpValidateWindowErrorMsg;
                             }
                         }
+                        case tbOndone:{
+                        	return tbOndone(ifr);
+                        }
+                        	
                     }
                 }
                 break;
@@ -78,7 +94,8 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         return null;
     }
 
-    @Override
+  
+	@Override
     public JSONArray validateSubmittedForm(FormDef formDef, IFormReference iFormReference, String s) {
         return null;
     }
@@ -142,14 +159,41 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         clearFields(ifr,new String[]{tbRemarkstbx,tbDecisiondd}); 
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
             if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
-            	setVisible(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection});
+            	setVisible(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection,tbPostSection});
             	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
                 setInvisible(ifr, new String[]{cpAcctValidateBtn});
+                disableFields(ifr, new String[] {tbTranID});
             }
         } else {}
        
         
     }
+    private void tbTokenChange(IFormReference ifr){
+    	if(!isEmpty(getTbtoken(ifr))) {
+    		setVisible(ifr,tbPostSection);
+    	}
+    }
+    /*
+     * 
+     */
+    private String tbPost(IFormReference ifr){
+    	if(isTbWinValid(ifr)){
+    		//post
+    		if(getPostStatus(ifr).equalsIgnoreCase(tbSuccess)) {
+        		setTbDecisiondd(ifr,decApprove);
+        		disableFields(ifr,new String[] {tbDecisiondd});
+        	}	
+    	}
+    	else { //window is closed
+    		return "Cutoff time for window has elapsed";
+		}
+    	return "";
+    }
+    //check if docs are uploaded
+    private String tbOndone(IFormReference ifr) {
+    	return isTbDocUploaded(ifr,getWorkItemNumber(ifr),customers_instruction) ?"Kindly attach customers_instruction ":"";
+  	}
+
     
     /***************************Treaury ends here ************************/
 }

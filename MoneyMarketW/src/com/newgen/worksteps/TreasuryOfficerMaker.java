@@ -306,6 +306,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     	//primary Market
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
             if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){ 
+            	//check if a window is open
             	setTbUniqueRef(ifr,generateTbUniqueReference(ifr)); //set the unique reference
             	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
             	hideField(ifr,tbDecisionSection);

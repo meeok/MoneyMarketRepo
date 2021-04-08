@@ -63,6 +63,11 @@ public class Query {
     public String getWinDetailsByIdQuery(String winRefId){
         return "select * from mm_setup_tbl where refid = '"+winRefId+"";
     }
+    //get window close date of a refid
+    public String getWinCloseDateByIdQuery(String winRefId){
+        return "select CLOSEDATE from mm_setup_tbl where refid = '"+winRefId+"";
+    }
+    
     public String getWinCloseFlagById (String winRefId){
         return "select closeflag from mm_setup_tbl where refid = '"+winRefId+"'";
     }
@@ -100,4 +105,16 @@ public class Query {
       return "select tenor , rate , sum(custprincipal) as TotalAmount ,ratetype, count(*) as TransactionCount, groupindex from mm_bid_tbl where utilitywiname = '"+utilityWiName+"' group by tenor, rate ,ratetype,groupindex";
 
     }
+    /*
+     * get attached documents
+     * @param winame
+     * @param document name
+     */
+    public String getUploadedDocQuery(String winame,String docName){
+        return  "SELECT name " +
+	            "FROM pdbdocument A, PDBDocumentContent B " +
+	            "WHERE A.DocumentIndex=B.DocumentIndex " +
+	            "AND B.ParentFolderIndex=(select FolderIndex from PDBFolder where name ='"+ winame + "') " +
+	            "AND upper(A.Name) like '"+docName+"%'";
+      }
 }
