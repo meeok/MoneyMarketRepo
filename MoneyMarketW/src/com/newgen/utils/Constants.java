@@ -219,6 +219,7 @@ public interface Constants {
 	String cpPostFlag ="cp_postFlag";
 	String cpViewReportEvent ="cpViewReport";
 	String cpDownloadEvent = "cpDownloadGrid";
+	String cpGetPmGridEvent = "cpPmGrid";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

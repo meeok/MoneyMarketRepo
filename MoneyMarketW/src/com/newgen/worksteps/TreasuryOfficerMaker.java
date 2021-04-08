@@ -35,7 +35,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     }
 
     @Override
-    public JSONArray executeEvent(FormDef formDef, IFormReference iFormReference, String s, String s1) {
+    public JSONArray executeEvent(FormDef formDef, IFormReference ifr, String event, String data) {
+
+        logger.info("called executeEvent event"+ event);
+
         return null;
     }
 
@@ -84,7 +87,13 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                     }
                 }
                 break;
-                case custom:{}
+                case custom:{
+                    switch (controlName){
+                        case cpGetPmGridEvent:{
+                        return getPmGrid(ifr,Integer.parseInt(data));
+                        }
+                    }
+                }
                 break;
                 case onDone:{
                 	switch (controlName){
@@ -257,6 +266,21 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         }
         setVisible(ifr,new String[]{cpAllocationTbl,cpDownloadBtn});
         setInvisible(ifr,new String[]{cpViewReportBtn});
+    }
+
+    private String getPmGrid (IFormReference ifr,int tableCount){
+        StringBuilder output = new StringBuilder(empty);
+        for (int i = 0; i < tableCount; i++){
+          String tenor =  ifr.getTableCellValue(cpAllocationTbl,i,0);
+          String rate =  ifr.getTableCellValue(cpAllocationTbl,i,1);
+          String totalAmount =  ifr.getTableCellValue(cpAllocationTbl,i,2);
+          String rateType =  ifr.getTableCellValue(cpAllocationTbl,i,3);
+          String count =  ifr.getTableCellValue(cpAllocationTbl,i,4);
+          String status =  ifr.getTableCellValue(cpAllocationTbl,i,5);
+          output.append("{tenor: '").append(tenor).append("', rate: '").append(rate).append("', totalAmount: '").append(totalAmount).append("', rateType: '").append(rateType).append("', count: '").append(count).append("', status: '").append(status).append("}$");
+        }
+        logger.info("output from grid: "+output.toString());
+        return output.toString().trim();
     }
 
     
