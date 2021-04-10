@@ -40,6 +40,7 @@ public interface Constants {
 	String cpSetupSection="cp_setup_section";
 	String cpCutOffTimeSection = "cp_cutoff_section";
 	String cpCustomerDetailsSection ="cp_custDetails_section";
+	String cpIframeSection = "iframeSection";
 	// end of cp sections
 
 	//general process Ids
@@ -50,6 +51,7 @@ public interface Constants {
 	String treasuryTab = "2";
 	String omoTab = "3";
 	String moneyMarketSection = "g_moneyMarket_section";
+	String landMsgLabelSection = "landingMsgLabelSection";
 	String solLocal = "g_sol";
 	String loginUserLocal ="g_loginUser";
 	String currWsLocal = "g_currWs";
@@ -71,9 +73,9 @@ public interface Constants {
 	String goBackDashboardSection = "g_goBackDashboard_section";
 	String windowSetupFlagLocal = "g_setupFlag";
 	String wiNameFormLocal ="winame";
-
 	String utilityFlagLocal = "cp_utilityFlag";
 	String downloadFlagLocal ="downloadFlag";
+
 
 
 	// commercial Paper process ids
@@ -118,7 +120,7 @@ public interface Constants {
 	String cpTxnIdLocal ="cp_tsnId";
 	String cpDebitPrincipalBtn ="cp_debitPrincipal_btn";
 	String cpTokenLocal ="cp_token";
-	String cpAllocationTbl ="table88";
+	String cpAllocSummaryTbl ="table88";
 	String cpAllocationReqTbl ="table89";
 	String cpBidReportTbl ="table90";
 	String cpAllocTenorCol = "Tenor";
@@ -133,8 +135,22 @@ public interface Constants {
 	String cpViewGroupBtn ="cp_viewGroup_btn";
 	String cpViewReportBtn ="cp_viewReport_btn";
 	String cpAllocBankRateLocal ="cp_bank_rate";
-	String cpAllocDefaultAllocLocal ="cp_default_app";
+	String cpAllocDefaultAllocLocal ="cp_default_ap";
 	String cpAllocCpRateLocal ="cp_cpRate";
+	String cpBidCustIdCol ="Customer ID";
+	String cpBidAcctNoCol ="Account Number";
+	String cpBidAcctNameCol ="Account Name";
+	String cpBidTenorCol ="Tenor";
+	String cpBidCpRateCol ="CP Rate";
+	String cpBidBankRateCol = "Bank Rate";
+	String cpBidPersonalRateCol ="Personal Rate";
+	String cpBidMaturityDateCol = "Maturity Date";
+	String cpBidDefAllocCol = "Default Allocation percentage";
+	String cpBidNewAllocCol = "New Allocation Percentage";
+	String cpBidTotalAmountCol = "Total Amount";
+	String cpBidStatusCol ="Status";
+	String cpBidStatusBidCol ="Bid Status";
+	String cpPmAllocFlagLocal = "cp_pm_allocflag";
 
 
 	//common variables
@@ -193,6 +209,10 @@ public interface Constants {
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";
 	String exceptionMsg ="Exception occurred contact IBPS support";
 	String statusAwaitingTreasury = "Awaiting Treasury";
+	String statusAwaitingMaturity = "Awaiting Maturity";
+	String bidSuccess = "Successful";
+	String bidFailed = "Failed";
+	String defaultAllocation = "100";
 
 	//eventName/controlName
 	String formLoad = "formLoad";
@@ -220,6 +240,7 @@ public interface Constants {
 	String cpViewReportEvent ="cpViewReport";
 	String cpDownloadEvent = "cpDownloadGrid";
 	String cpGetPmGridEvent = "cpPmGrid";
+	String cpViewGroupBidEvent = "viewGroupBids";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

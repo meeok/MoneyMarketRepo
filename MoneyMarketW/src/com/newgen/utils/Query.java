@@ -89,23 +89,27 @@ public class Query {
     }
 
     public String getTBInsertSetupQuery() {
-        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE,CLOSEFLAG) values (values)";
-    }
-
+    return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE,CLOSEFLAG) values (values)";
+}
 
     public String getCustomerRefIdQuery(String custrefId) {
         return "select * from MONEYMARKET_EXT where upper(refid) = upper('" + custrefId + "')";
     }
-        public String getCpPmBidsToProcessQuery () {
-            return "select custrefid, tenor, rate, ratetype from mm_bid_tbl where process = 'Commercial Paper' and markettype= 'primary' and processflag ='N' and groupindexflag = 'N'";
-        }
+    public String getCpPmBidsToProcessQuery () {
+        return "select custrefid, tenor, rate, ratetype from mm_bid_tbl where process = 'Commercial Paper' and markettype= 'primary' and processflag ='N' and groupindexflag = 'N'";
+    }
 
-        public String getCpPmUpdateBidsQuery (String id, String utilityWiName, String groupIndex){
-            return "update mm_bid_tbl set utilitywiname = '" + utilityWiName + "', groupindex = '" + groupIndex + "', groupindexflag = 'Y' , processflag = 'Y' where custrefid = '" + id + "'";
-        }
+    public String getCpPmUpdateBidsQuery (String id, String utilityWiName, String groupIndex){
+        return "update mm_bid_tbl set utilitywiname = '" + utilityWiName + "', groupindex = '" + groupIndex + "', groupindexflag = 'Y' , processflag = 'Y' where custrefid = '" + id + "'";
+    }
 
-        public String getCpPmBidGroupQuery (String utilityWiName){
-            return "select tenor , rate , sum(custprincipal) as TotalAmount ,ratetype, count(*) as TransactionCount, groupindex from mm_bid_tbl where utilitywiname = '" + utilityWiName + "' group by tenor, rate ,ratetype,groupindex";
-
-        }
+    public String getCpPmSummaryBidsQuery(String utilityWiName){
+        return "select tenor , rate , sum(custprincipal) as TotalAmount ,ratetype, count(*) as TransactionCount, groupindex from mm_bid_tbl where utilitywiname = '" + utilityWiName + "' group by tenor, rate ,ratetype,groupindex";
+    }
+    public String getCpPmGroupBidsQuery(String groupIndex){
+        return "select custrefid,custacctno, custname, tenor, rate, custprincipal  from mm_bid_tbl where groupindex = '"+groupIndex+"'";
+    }
+    public String getCpPmBidRateTypeQuery(String id){
+        return "select ratetype from mm_bid_tbl where custrefid = '"+id+"'";
+    }
 }

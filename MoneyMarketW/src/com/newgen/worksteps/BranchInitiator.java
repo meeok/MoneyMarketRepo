@@ -180,11 +180,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
                 if (isCpWindowActive(ifr)) {
-                    setVisible(ifr,new String[]{cpBranchPriSection,cpCustomerDetailsSection});
+                    setVisible(ifr,new String[]{cpBranchPriSection,cpCustomerDetailsSection,landMsgLabelLocal});
                     setMandatory(ifr,new String[]{cpCustomerAcctNoLocal,cpPmTenorLocal,cpPmPrincipalLocal,cpPmRateTypeLocal});
                     enableFields(ifr,new String[]{cpCustomerAcctNoLocal,cpPmTenorLocal,cpPmPrincipalLocal,cpPmRateTypeLocal});
                     setDropDown(ifr,cpPmReqTypeLocal,new String[]{cpPmReqFreshLabel},new String[]{cpPmReqFreshValue});
-                    setFields(ifr,cpPmReqTypeLocal,cpPmReqFreshValue);
                     setFields(ifr,new String[]{cpPmReqTypeLocal, cpPmInvestmentTypeLocal},new String[]{cpPmReqFreshValue,cpPmInvestmentPrincipal});
                     setCpPmWindowDetails(ifr);
                 } else return windowInactiveMessage;

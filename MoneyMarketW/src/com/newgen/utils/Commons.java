@@ -8,10 +8,13 @@ import java.text.ParseException;
 import java.util.Date;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Random;
 
 public class Commons implements Constants {
     private static final Logger logger = LogGen.getLoggerInstance(Commons.class);
+    public List<List<String>> resultSet;
+
 
     /************************* COMMERCIAL PAPER CODE BEGINS **************************/
     private String getTat (String entryDate, String exitDate){
@@ -167,7 +170,7 @@ public class Commons implements Constants {
         catch (Exception e){ logger.error("Exception occurred in getSol Method-- "+e.getMessage());return  null;}
     }
     public void hideCpSections (IFormReference ifr){
-        setInvisible(ifr,new String []{cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
+        setInvisible(ifr,new String []{cpIframeSection,cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
         cpTerminationSection,cpCutOffTimeSection,cpDecisionSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection,cpSetupSection,cpCustomerDetailsSection});
     }
     public void disableCpSections (IFormReference ifr){
@@ -267,10 +270,11 @@ public class Commons implements Constants {
        int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getPmMinPrincipal(ifr),empty,empty,empty,empty,getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
        if (validate >= 0) {
            setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
+           disableFields(ifr, new String[]{cpTreasuryPriSection,cpCutOffTimeSection,cpMarketSection,cpSetupSection});
            logger.info("record saved just for checking");
            return "success";
        }
-       else return "Unable to setup window try again later";
+       else return "Unable to setup window. Kindly contact iBPS support.";
     }
     public void cpSetUpSecondaryMarketWindow(IFormReference ifr){
         String winRefNo =  generateCpWinRefNo(cpSmLabel);
@@ -359,6 +363,10 @@ public class Commons implements Constants {
     }
     public String getDownloadFlag (IFormReference ifr){
         return getFieldValue(ifr,downloadFlagLocal);
+    }
+
+    public boolean checkBidStatus(String rate, String cpRate){
+        return Float.parseFloat(rate) <= Float.parseFloat(cpRate);
     }
 
 

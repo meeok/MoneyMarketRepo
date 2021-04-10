@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class TreasuryOfficerMaker extends Commons implements IFormServerEventHandler, CommonsI {
-    private Logger logger = LogGen.getLoggerInstance(TreasuryOfficerMaker.class);
+    private static final Logger logger = LogGen.getLoggerInstance(TreasuryOfficerMaker.class);
+
+
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
         clearDecHisFlag(ifr);
@@ -68,6 +70,11 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         }
                         case cpDownloadEvent:{
                             setFields(ifr,downloadFlagLocal,flag);
+                            disableField(ifr,cpDownloadBtn);
+                            break;
+                        }
+                        case cpViewGroupBidEvent:{
+                            viewGroupBids(ifr,Integer.parseInt(data));
                             break;
                         }
                     }
@@ -202,9 +209,12 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
      if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
            if(getDownloadFlag(ifr).equalsIgnoreCase(flag)){
                showCommercialProcessSheet(ifr);
-               setVisible(ifr, new String[]{cpPrimaryBidSection,cpAllocationTbl});
-               setInvisible(ifr, new String[]{cpViewReportBtn});
-               disableFields(ifr, new String[]{cpDownloadBtn});
+               setVisible(ifr, new String[]{cpPrimaryBidSection, cpAllocSummaryTbl,cpAllocBankRateLocal,cpAllocCpRateLocal,cpAllocDefaultAllocLocal
+               ,cpViewGroupBtn});
+               enableFields(ifr, new String[]{cpAllocDefaultAllocLocal,cpAllocCpRateLocal,cpAllocBankRateLocal});
+               setMandatory(ifr, new String[]{cpAllocDefaultAllocLocal,cpAllocCpRateLocal,cpAllocBankRateLocal});
+               setInvisible(ifr, new String[]{cpViewReportBtn,cpDownloadBtn});
+               setFields(ifr,new String[]{cpPmAllocFlagLocal},new String[]{flag});
            }
            else {
                setGenDetails(ifr);
@@ -246,7 +256,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     }
 
     private void viewReport(IFormReference ifr){
-        List<List<String>> resultSet = new DbConnect(ifr,new Query().getCpPmBidGroupQuery(getWorkItemNumber(ifr))).getData();
+        resultSet = new DbConnect(ifr,new Query().getCpPmSummaryBidsQuery(getWorkItemNumber(ifr))).getData();
         for (List<String> result : resultSet){
             String tenor = result.get(0);
             logger.info("tenor-- "+ tenor);
@@ -261,26 +271,65 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             String groupIndex = result.get(5);
             logger.info("groupIndex-- "+ groupIndex);
 
-            setTableData(ifr,cpAllocationTbl,new String[]{cpAllocTenorCol,cpAllocRateCol,cpAllocTotalAmountCol,cpAllocRateTypeCol,cpAllocCountCol,cpAllocStatusCol,cpAllocGroupIndexCol},
+            setTableData(ifr, cpAllocSummaryTbl,new String[]{cpAllocTenorCol,cpAllocRateCol,cpAllocTotalAmountCol,cpAllocRateTypeCol,cpAllocCountCol,cpAllocStatusCol,cpAllocGroupIndexCol},
                     new String[]{tenor,rate,totalAmount,rateType,count, statusAwaitingTreasury,groupIndex});
         }
-        setVisible(ifr,new String[]{cpAllocationTbl,cpDownloadBtn});
+        setVisible(ifr,new String[]{cpAllocSummaryTbl,cpDownloadBtn});
         setInvisible(ifr,new String[]{cpViewReportBtn});
     }
 
     private String getPmGrid (IFormReference ifr,int tableCount){
         StringBuilder output = new StringBuilder(empty);
         for (int i = 0; i < tableCount; i++){
-          String tenor =  ifr.getTableCellValue(cpAllocationTbl,i,0);
-          String rate =  ifr.getTableCellValue(cpAllocationTbl,i,1);
-          String totalAmount =  ifr.getTableCellValue(cpAllocationTbl,i,2);
-          String rateType =  ifr.getTableCellValue(cpAllocationTbl,i,3);
-          String count =  ifr.getTableCellValue(cpAllocationTbl,i,4);
-          String status =  ifr.getTableCellValue(cpAllocationTbl,i,5);
-          output.append("{tenor: '").append(tenor).append("', rate: '").append(rate).append("', totalAmount: '").append(totalAmount).append("', rateType: '").append(rateType).append("', count: '").append(count).append("', status: '").append(status).append("}$");
+          String tenor =  ifr.getTableCellValue(cpAllocSummaryTbl,i,0);
+          String rate =  ifr.getTableCellValue(cpAllocSummaryTbl,i,1);
+          String totalAmount =  ifr.getTableCellValue(cpAllocSummaryTbl,i,2);
+          String rateType =  ifr.getTableCellValue(cpAllocSummaryTbl,i,3);
+          String count =  ifr.getTableCellValue(cpAllocSummaryTbl,i,4);
+          String status =  ifr.getTableCellValue(cpAllocSummaryTbl,i,5);
+          output.append("{\"tenor\": \"").append(tenor).append("\", \"rate\": \"").append(rate).append("\", \"totalAmount\": \"").append(totalAmount).append("\", \"rateType\": \"").append(rateType).append("\", \"count\": \"").append(count).append("\", \"status\": \"").append(status).append("\"}$");
         }
         logger.info("output from grid: "+output.toString());
         return output.toString().trim();
+    }
+
+    private void viewGroupBids(IFormReference ifr,int rowIndex){
+        ifr.clearTable(cpBidReportTbl);
+        String groupIndex = ifr.getTableCellValue(cpAllocSummaryTbl,rowIndex,6);
+        logger.info("group index: "+ groupIndex);
+        resultSet = new DbConnect(ifr, new Query().getCpPmGroupBidsQuery(groupIndex)).getData();
+        for(List<String> result : resultSet){
+            String id = result.get(0);
+            String acctNo = result.get(1);
+            String acctName = result.get(2);
+            String tenor = result.get(3);
+            String rate = result.get(4);
+            String principal = result.get(5);
+            setTableData(ifr,cpBidReportTbl,new String[]{cpBidCustIdCol,cpBidAcctNoCol,cpBidAcctNameCol,cpBidTenorCol,cpBidPersonalRateCol,cpBidTotalAmountCol,cpBidStatusCol,cpBidDefAllocCol},
+                    new String[]{id,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation});
+        }
+        setVisible(ifr,new String[]{cpBidReportTbl,cpUpdateBtn});
+    }
+
+    private void updateBids(IFormReference ifr,int rowIndex){
+        String bankRate = getFieldValue(ifr,cpAllocBankRateLocal);
+        String cpRate = getFieldValue(ifr,cpAllocCpRateLocal);
+        String defaultAlloc = getFieldValue(ifr,cpAllocDefaultAllocLocal);
+        String id = ifr.getTableCellValue(cpBidReportTbl,rowIndex,0);
+        String rateType = new DbConnect(ifr,new Query().getCpPmBidRateTypeQuery(id)).getData().get(0).get(0);
+
+        if (!(isEmpty(bankRate) && isEmpty(cpRate) && isEmpty(defaultAlloc))){
+            if (rateType.equalsIgnoreCase(rateTypeBank)){
+                if (checkBidStatus(bankRate,cpRate)){
+                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
+                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
+                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
+                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,5,bankRate);
+                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
+
+                }
+            }
+        }
     }
 
     
