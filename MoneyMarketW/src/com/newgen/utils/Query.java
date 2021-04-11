@@ -112,4 +112,10 @@ public class Query {
     public String getCpPmBidRateTypeQuery(String id){
         return "select ratetype from mm_bid_tbl where custrefid = '"+id+"'";
     }
+
+    public String getCpPmBidDetailByIdQuery(String id, String detail){
+        return "select "+detail+" from mm_bid_tbl where custrefid = '"+id+"'";
+    }
+
+    //public String
 }

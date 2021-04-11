@@ -5,6 +5,9 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import java.text.SimpleDateFormat;
@@ -81,10 +84,10 @@ public class Commons implements Constants {
         return getFieldValue(ifr,selectProcessLocal);
     }
     public String getCurrentDateTime (String format){
-        return new SimpleDateFormat(format).format(new Date());
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(format));
     }
     public String getCurrentDateTime (){
-        return new SimpleDateFormat(dbDateTimeFormat).format(new Date());
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(dbDateTimeFormat));
     }
     public static String getCpDecision (IFormReference ifr){ return getFieldValue(ifr,cpDecisionLocal);}
     public static String getWorkItemNumber (IFormReference ifr){
@@ -240,14 +243,7 @@ public class Commons implements Constants {
         return empty;
     }
     public boolean compareDate(String startDate, String endDate){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dbDateTimeFormat);
-        try {
-             Date start = simpleDateFormat.parse(startDate);
-             Date end = simpleDateFormat.parse(endDate);
-             if (start.compareTo(end) < 0)
-                 return true;
-        } catch (Exception e){logger.error("Exception occurred in compareDate method-- "+ e.getMessage());return false;}
-        return false;
+      return  LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern(dbDateTimeFormat)).isBefore(LocalDateTime.parse(startDate,DateTimeFormatter.ofPattern(dbDateTimeFormat)));
     }
     public String getCpOpenDate(IFormReference ifr){return getFieldValue(ifr,cpOpenDateLocal);}
     public String getCpCloseDate(IFormReference ifr){return getFieldValue(ifr,cpCloseDateLocal);}
@@ -338,12 +334,12 @@ public class Commons implements Constants {
                         getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
                 )).saveQuery();
     }
-    public static void setTableData(IFormReference ifr, String tableLocal, String [] columns, String [] rowValues){
+    public static void setTableGridData(IFormReference ifr, String tableLocal, String [] columns, String [] rowValues){
         JSONArray jsRowArray = new JSONArray();
         jsRowArray.add(setTableRows(columns,rowValues));
         ifr.addDataToGrid(tableLocal,jsRowArray);
     }
-    public static void setTableData(IFormReference ifr, String tableLocal, String [] columns, String [] rowValues, int loopCount){
+    public static void setTableGridData(IFormReference ifr, String tableLocal, String [] columns, String [] rowValues, int loopCount){
         JSONArray jsRowArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
 
@@ -364,9 +360,14 @@ public class Commons implements Constants {
     public String getDownloadFlag (IFormReference ifr){
         return getFieldValue(ifr,downloadFlagLocal);
     }
-
     public boolean checkBidStatus(String rate, String cpRate){
         return Float.parseFloat(rate) <= Float.parseFloat(cpRate);
+    }
+    public static String getMaturityDate(int tenor){
+        return LocalDate.now().plusDays(tenor).toString();
+    }
+    public static boolean isLeapYear (){
+        return LocalDate.now().isLeapYear();
     }
 
 
@@ -542,11 +543,13 @@ public class Commons implements Constants {
 	public static String getTbBrnchPriRqsttype(IFormReference ifr) {return (String) ifr.getValue(tbBrnchPriRqsttype);}
 	public static String getTbBrcnhPriRateTypedd(IFormReference ifr) {return (String) ifr.getValue(tbBrcnhPriRateTypedd);}
 	public static String getTbBrnchPriRollovrdd(IFormReference ifr){return (String)ifr.getValue(tbBrnchPriRollovrdd);}
-	
-	
 	public static void setWiName(IFormReference ifr){
 	    setFields(ifr,wiNameFormLocal,getWorkItemNumber(ifr));
 	}
+
+
+
+
 
     
 	//unsused

@@ -20,28 +20,7 @@ public interface Constants {
 	String discardWs = "Discard";
 	String exit = "Exit";
 	String query = "Query";
-	String utilityWs = "Utility_Initiation";
 	// Please input workSteps between comment bracket
-
-	// cp sections
-	String cpBranchPriSection = "cp_branchPm_section";
-	String cpBranchSecSection = "cp_BranchSec_section";
-	String cpLandingMsgSection = "cp_landingMsg_section";
-	String cpMarketSection = "cp_market_section";
-	String cpPrimaryBidSection = "cp_primaryBid_section";
-	String cpTerminationSection = "cp_termination_section";
-	String cpProofOfInvestSection = "cp_poi_section";
-	String cpDecisionSection = "cp_dec_section";
-	String cpTreasuryPriSection = "cp_pmTreasury_section";
-	String cpTreasurySecSection = "cp_secTreasury_section";
-	String cpTreasuryOpsSecSection = "cp_treasuryOpsSec_section";
-	String cpTreasuryOpsPriSection = "cp_treasuryOpsPm_section";
-	String cpPostSection = "cp_post_section";
-	String cpSetupSection="cp_setup_section";
-	String cpCutOffTimeSection = "cp_cutoff_section";
-	String cpCustomerDetailsSection ="cp_custDetails_section";
-	String cpIframeSection = "iframeSection";
-	// end of cp sections
 
 	//general process Ids
 	String selectProcessLocal = "g_select_market";
@@ -75,8 +54,27 @@ public interface Constants {
 	String wiNameFormLocal ="winame";
 	String utilityFlagLocal = "cp_utilityFlag";
 	String downloadFlagLocal ="downloadFlag";
+	String utilityWs = "Utility_Initiation";
 
-
+	// cp sections
+	String cpBranchPriSection = "cp_branchPm_section";
+	String cpBranchSecSection = "cp_BranchSec_section";
+	String cpLandingMsgSection = "cp_landingMsg_section";
+	String cpMarketSection = "cp_market_section";
+	String cpPrimaryBidSection = "cp_primaryBid_section";
+	String cpTerminationSection = "cp_termination_section";
+	String cpProofOfInvestSection = "cp_poi_section";
+	String cpDecisionSection = "cp_dec_section";
+	String cpTreasuryPriSection = "cp_pmTreasury_section";
+	String cpTreasurySecSection = "cp_secTreasury_section";
+	String cpTreasuryOpsSecSection = "cp_treasuryOpsSec_section";
+	String cpTreasuryOpsPriSection = "cp_treasuryOpsPm_section";
+	String cpPostSection = "cp_post_section";
+	String cpSetupSection="cp_setup_section";
+	String cpCutOffTimeSection = "cp_cutoff_section";
+	String cpCustomerDetailsSection ="cp_custDetails_section";
+	String cpIframeSection = "iframeSection";
+    // end of cp sections
 
 	// commercial Paper process ids
 	String cpSelectMarketLocal = "cp_select_market";
@@ -151,6 +149,7 @@ public interface Constants {
 	String cpBidStatusCol ="Status";
 	String cpBidStatusBidCol ="Bid Status";
 	String cpPmAllocFlagLocal = "cp_pm_allocflag";
+	String cpSmCutOffTimeLocal = "cp_sm_cutofftime";
 
 
 	//common variables

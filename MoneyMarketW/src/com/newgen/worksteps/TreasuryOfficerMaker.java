@@ -84,7 +84,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                     switch (controlName){
                         case cpOnSelectCategory:{cpSelectCategory(ifr);}
                         break;
-                        
+
                         /**** Treasury Onchange Start ****/
                         case tbCategoryddChange:{
                         	tbCategoryChange(ifr);
@@ -156,6 +156,72 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         return null;
     }
 
+    @Override
+    public void cpSendMail(IFormReference iFormReference) {
+
+    }
+    @Override
+    public void cpFormLoadActivity(IFormReference ifr) {
+        hideCpSections(ifr);
+        hideShowLandingMessageLabel(ifr,False);
+        setInvisible(ifr,new String[]{goBackDashboardSection});
+     if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
+           if(getDownloadFlag(ifr).equalsIgnoreCase(flag)){
+               showCommercialProcessSheet(ifr);
+               setVisible(ifr, new String[]{cpPrimaryBidSection, cpAllocSummaryTbl,cpAllocBankRateLocal,cpAllocCpRateLocal,cpAllocDefaultAllocLocal
+               ,cpViewGroupBtn});
+               enableFields(ifr, new String[]{cpAllocDefaultAllocLocal,cpAllocCpRateLocal,cpAllocBankRateLocal});
+               setMandatory(ifr, new String[]{cpAllocDefaultAllocLocal,cpAllocCpRateLocal,cpAllocBankRateLocal});
+               setInvisible(ifr, new String[]{cpViewReportBtn,cpDownloadBtn});
+               setFields(ifr,new String[]{cpPmAllocFlagLocal},new String[]{flag});
+           }
+           else {
+               setGenDetails(ifr);
+               setFields(ifr, new String[]{prevWsLocal, selectProcessLocal, cpSelectMarketLocal}, new String[]{utilityWs, commercialProcess, cpPrimaryMarket});
+               showCommercialProcessSheet(ifr);
+               setVisible(ifr, cpPrimaryBidSection);
+           }
+
+        }
+       else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
+            if (isEmpty(getSetupFlag(ifr))) {
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
+                    if (getCpDecision(ifr).equalsIgnoreCase(decReject)) {
+                        setVisible(ifr, new String [] {cpLandingMsgSection,cpDecisionSection});
+                        setMandatory(ifr,new String [] {cpDecisionLocal,cpRemarksLocal,cpLandMsgLocal});
+                        enableFields(ifr,new String[] {cpLandingMsgSection,cpDecisionSection});
+                    } else if (getCpDecision(ifr).equalsIgnoreCase(decApprove)) {
+                        setVisible(ifr,new String [] {cpLandingMsgSection,cpMarketSection,cpCategoryLocal,cpDecisionSection});
+                        setInvisible(ifr,new String[]{cpDecisionSection});
+                        enableFields(ifr,new String[]{cpDecisionSection,cpCategoryLocal});
+                        disableFields(ifr, new String[]{cpSelectMarketLocal,cpLandingMsgSection});
+                        setMandatory(ifr,new String[] {cpCategoryLocal});
+                        setCpCategory(ifr, new String[]{cpCategorySetup});
+                    }
+                } else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
+                    if (getCpDecision(ifr).equalsIgnoreCase(decApprove)){
+                        setVisible(ifr,new String [] {cpLandingMsgSection,cpMarketSection,cpCategoryLocal,cpDecisionSection});
+                        enableFields(ifr,new String[]{cpDecisionSection,cpCategoryLocal});
+                        disableFields(ifr, new String[]{cpSelectMarketLocal,cpLandingMsgSection});
+                        setMandatory(ifr,new String[] {cpCategoryLocal});
+                        setCpCategory(ifr, new String[]{cpCategorySetup});
+                    }
+                }
+            }
+            else {
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){}
+                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){}
+            }
+        }
+        cpSetDecision(ifr);
+    }
+
+    @Override
+    public void cpSetDecision(IFormReference ifr) {
+        clearFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+        setDecision(ifr,cpDecisionLocal,new String [] {decSubmit,decDiscard});
+    }
+
     private String setupCpWindow (IFormReference ifr){
         if (isEmpty(getSetupFlag(ifr))){
             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
@@ -194,65 +260,12 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 enableFields(ifr,new String[] {cpPmMinPriAmtLocal,cpCloseDateLocal,cpSetupWindowBtn});
             }
         }
-        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){}
-    }
-    @Override
-    public void cpSendMail(IFormReference iFormReference) {
-
-    }
-
-    @Override
-    public void cpFormLoadActivity(IFormReference ifr) {
-        hideCpSections(ifr);
-        hideShowLandingMessageLabel(ifr,False);
-        setInvisible(ifr,new String[]{goBackDashboardSection});
-     if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
-           if(getDownloadFlag(ifr).equalsIgnoreCase(flag)){
-               showCommercialProcessSheet(ifr);
-               setVisible(ifr, new String[]{cpPrimaryBidSection, cpAllocSummaryTbl,cpAllocBankRateLocal,cpAllocCpRateLocal,cpAllocDefaultAllocLocal
-               ,cpViewGroupBtn});
-               enableFields(ifr, new String[]{cpAllocDefaultAllocLocal,cpAllocCpRateLocal,cpAllocBankRateLocal});
-               setMandatory(ifr, new String[]{cpAllocDefaultAllocLocal,cpAllocCpRateLocal,cpAllocBankRateLocal});
-               setInvisible(ifr, new String[]{cpViewReportBtn,cpDownloadBtn});
-               setFields(ifr,new String[]{cpPmAllocFlagLocal},new String[]{flag});
-           }
-           else {
-               setGenDetails(ifr);
-               setFields(ifr, new String[]{prevWsLocal, selectProcessLocal, cpSelectMarketLocal}, new String[]{utilityWs, commercialProcess, cpPrimaryMarket});
-               showCommercialProcessSheet(ifr);
-               setVisible(ifr, cpPrimaryBidSection);
-           }
-
-        }
-       else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
-            if (isEmpty(getSetupFlag(ifr))) {
-                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                    if (getCpDecision(ifr).equalsIgnoreCase(decReject)) {
-                        setVisible(ifr, new String [] {cpLandingMsgSection,cpDecisionSection});
-                        setMandatory(ifr,new String [] {cpDecisionLocal,cpRemarksLocal,cpLandMsgLocal});
-                        enableFields(ifr,new String[] {cpLandingMsgSection,cpDecisionSection});
-                    } else if (getCpDecision(ifr).equalsIgnoreCase(decApprove) && isEmpty(getWindowSetupFlag(ifr))) {
-                        setVisible(ifr,new String [] {cpLandingMsgSection,cpMarketSection,cpCategoryLocal,cpDecisionSection});
-                        setInvisible(ifr,new String[]{cpDecisionSection});
-                        enableFields(ifr,new String[]{cpDecisionSection,cpCategoryLocal});
-                        disableFields(ifr, new String[]{cpSelectMarketLocal,cpLandingMsgSection});
-                        setMandatory(ifr,new String[] {cpCategoryLocal});
-                        setCpCategory(ifr, new String[]{cpCategorySetup});
-                    }
-                } else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {}
-            }
-            else {
-                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){}
-                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){}
+        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+            if (getCpCategory(ifr).equalsIgnoreCase(cpCategorySetup)){
+                setVisible(ifr,new String[]{cpTreasurySecSection,cpCutOffTimeSection});
+                enableFields(ifr,new String[] {cpPmMinPriAmtLocal,cpSmCutOffTimeLocal,cpSetupWindowBtn});
             }
         }
-        cpSetDecision(ifr);
-    }
-
-    @Override
-    public void cpSetDecision(IFormReference ifr) {
-        clearFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
-        setDecision(ifr,cpDecisionLocal,new String [] {decSubmit,decDiscard});
     }
 
     private void viewReport(IFormReference ifr){
@@ -271,7 +284,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             String groupIndex = result.get(5);
             logger.info("groupIndex-- "+ groupIndex);
 
-            setTableData(ifr, cpAllocSummaryTbl,new String[]{cpAllocTenorCol,cpAllocRateCol,cpAllocTotalAmountCol,cpAllocRateTypeCol,cpAllocCountCol,cpAllocStatusCol,cpAllocGroupIndexCol},
+            setTableGridData(ifr, cpAllocSummaryTbl,new String[]{cpAllocTenorCol,cpAllocRateCol,cpAllocTotalAmountCol,cpAllocRateTypeCol,cpAllocCountCol,cpAllocStatusCol,cpAllocGroupIndexCol},
                     new String[]{tenor,rate,totalAmount,rateType,count, statusAwaitingTreasury,groupIndex});
         }
         setVisible(ifr,new String[]{cpAllocSummaryTbl,cpDownloadBtn});
@@ -305,7 +318,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             String tenor = result.get(3);
             String rate = result.get(4);
             String principal = result.get(5);
-            setTableData(ifr,cpBidReportTbl,new String[]{cpBidCustIdCol,cpBidAcctNoCol,cpBidAcctNameCol,cpBidTenorCol,cpBidPersonalRateCol,cpBidTotalAmountCol,cpBidStatusCol,cpBidDefAllocCol},
+            setTableGridData(ifr,cpBidReportTbl,new String[]{cpBidCustIdCol,cpBidAcctNoCol,cpBidAcctNameCol,cpBidTenorCol,cpBidPersonalRateCol,cpBidTotalAmountCol,cpBidStatusCol,cpBidDefAllocCol},
                     new String[]{id,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation});
         }
         setVisible(ifr,new String[]{cpBidReportTbl,cpUpdateBtn});
@@ -313,22 +326,37 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 
     private void updateBids(IFormReference ifr,int rowIndex){
         String bankRate = getFieldValue(ifr,cpAllocBankRateLocal);
+        String personalRate = empty;
         String cpRate = getFieldValue(ifr,cpAllocCpRateLocal);
         String defaultAlloc = getFieldValue(ifr,cpAllocDefaultAllocLocal);
         String id = ifr.getTableCellValue(cpBidReportTbl,rowIndex,0);
-        String rateType = new DbConnect(ifr,new Query().getCpPmBidRateTypeQuery(id)).getData().get(0).get(0);
+        String rateType = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,"ratetype")).getData().get(0).get(0);
+        String tenor = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,"tenor")).getData().get(0).get(0);
 
-        if (!(isEmpty(bankRate) && isEmpty(cpRate) && isEmpty(defaultAlloc))){
-            if (rateType.equalsIgnoreCase(rateTypeBank)){
-                if (checkBidStatus(bankRate,cpRate)){
-                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
-                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
-                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
-                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,5,bankRate);
-                    ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
+        if (rateType.equalsIgnoreCase(rateTypePersonal))
+            personalRate = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,"rate")).getData().get(0).get(0);
 
-                }
+        if (rateType.equalsIgnoreCase(rateTypeBank)){
+            if (checkBidStatus(bankRate,cpRate)){
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,5,bankRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,6,getMaturityDate(Integer.parseInt(tenor)));
             }
+            else ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidFailed);
+        }
+        else if (rateType.equalsIgnoreCase(rateTypePersonal)){
+            if (checkBidStatus(personalRate,cpRate)){
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,5,personalRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,6,getMaturityDate(Integer.parseInt(tenor)));
+            }
+            else ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidFailed);
         }
     }
 
