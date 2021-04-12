@@ -339,17 +339,6 @@ public class Commons implements Constants {
         jsRowArray.add(setTableRows(columns,rowValues));
         ifr.addDataToGrid(tableLocal,jsRowArray);
     }
-    public static void setTableGridData(IFormReference ifr, String tableLocal, String [] columns, String [] rowValues, int loopCount){
-        JSONArray jsRowArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
-
-        for (int i = 0; i < loopCount; i++)
-            jsonObject = setTableRows(columns,rowValues);
-
-        jsRowArray.add(jsonObject);
-
-        ifr.addDataToGrid(tableLocal,jsRowArray);
-    }
     private static JSONObject setTableRows(String [] columns, String [] rowValues){
         JSONObject jsonObject = new JSONObject();
         for (int i = 0 ; i < columns.length; i++)
