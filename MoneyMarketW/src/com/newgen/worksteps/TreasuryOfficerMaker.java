@@ -77,6 +77,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                             viewGroupBids(ifr,Integer.parseInt(data));
                             break;
                         }
+                        case cpUpdateBidEvent:{
+                            updateBids(ifr,Integer.parseInt(data));
+                            break;
+                        }
                     }
                 }
                 break;
@@ -84,6 +88,13 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                     switch (controlName){
                         case cpOnSelectCategory:{cpSelectCategory(ifr);}
                         break;
+                        case cpSmSetupEvent:{
+                            if (getCpSmSetup(ifr).equalsIgnoreCase(smSetupNew) || getCpSmSetup(ifr).equalsIgnoreCase(smSetupUpdate))
+                                setVisible(ifr,new String[]{cpSmCpBidTbl, cpSmIFrameLocal});
+                            else setInvisible(ifr,new String[]{cpSmCpBidTbl, cpSmIFrameLocal});
+
+                            break;
+                        }
 
                         /**** Treasury Onchange Start ****/
                         case tbCategoryddChange:{
@@ -104,6 +115,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 break;
                 case onDone:{
                 	switch (controlName){
+                        case cpSmCpUpdateEvent:{return updateCpSmDetails(ifr,Integer.parseInt(data));}
                 	
 	                /**** Treasury onDOne Start ****/
                 	case tbOnDone:{
@@ -165,6 +177,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         hideCpSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
         setInvisible(ifr,new String[]{goBackDashboardSection});
+        clearFields(ifr,new String[]{cpRemarksLocal});
      if (getUtilityFlag(ifr).equalsIgnoreCase(flag)){
            if(getDownloadFlag(ifr).equalsIgnoreCase(flag)){
                showCommercialProcessSheet(ifr);
@@ -203,8 +216,11 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         setVisible(ifr,new String [] {cpLandingMsgSection,cpMarketSection,cpCategoryLocal,cpDecisionSection});
                         enableFields(ifr,new String[]{cpDecisionSection,cpCategoryLocal});
                         disableFields(ifr, new String[]{cpSelectMarketLocal,cpLandingMsgSection});
-                        setMandatory(ifr,new String[] {cpCategoryLocal});
+                        setMandatory(ifr,new String[] {cpCategoryLocal,cpDecisionLocal,cpRemarksLocal});
                         setCpCategory(ifr, new String[]{cpCategorySetup});
+                    }
+                    else if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
+
                     }
                 }
             }
@@ -262,8 +278,11 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         }
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategorySetup)){
-                setVisible(ifr,new String[]{cpTreasurySecSection,cpCutOffTimeSection});
-                enableFields(ifr,new String[] {cpPmMinPriAmtLocal,cpSmCutOffTimeLocal,cpSetupWindowBtn});
+                setVisible(ifr,new String[]{cpTreasurySecSection,cpCutOffTimeSection,cpSmCutOffTimeLocal});
+                setInvisible(ifr,new String[]{cpOpenDateLocal,cpCloseDateLocal});
+                setFields(ifr, new String[]{cpSmCutOffTimeLocal, cpSmMinPrincipalLocal}, new String[]{smDefaultCutOffTime,smMinPrincipal});
+                enableFields(ifr,new String[]{cpSmSetupLocal});
+                setMandatory(ifr,new String[]{cpSmSetupLocal,cpSmMinPrincipalLocal});
             }
         }
     }
@@ -330,35 +349,59 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         String cpRate = getFieldValue(ifr,cpAllocCpRateLocal);
         String defaultAlloc = getFieldValue(ifr,cpAllocDefaultAllocLocal);
         String id = ifr.getTableCellValue(cpBidReportTbl,rowIndex,0);
-        String rateType = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,"ratetype")).getData().get(0).get(0);
-        String tenor = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,"tenor")).getData().get(0).get(0);
+        String rateType = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,rateTypeBidTblCol)).getData().get(0).get(0);
+        String tenor = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,tenorBidTblCol)).getData().get(0).get(0);
 
         if (rateType.equalsIgnoreCase(rateTypePersonal))
-            personalRate = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,"rate")).getData().get(0).get(0);
+            personalRate = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,rateBidTblCol)).getData().get(0).get(0);
 
         if (rateType.equalsIgnoreCase(rateTypeBank)){
             if (checkBidStatus(bankRate,cpRate)){
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,5,bankRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,7,getMaturityDate(Integer.parseInt(tenor)));
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
                 ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
                 ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,5,bankRate);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,6,getMaturityDate(Integer.parseInt(tenor)));
+                new DbConnect(ifr, new Query().getCpPmBidUpdateBankQuery(id,cpRate,bankRate,getMaturityDate(Integer.parseInt(tenor)),defaultAlloc,bidSuccess,statusAwaitingMaturity)).saveQuery();
             }
-            else ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidFailed);
+            else {
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidFailed);
+                new DbConnect(ifr, new Query().getCpPmUpdateFailedBidsQuery(id,bidFailed)).saveQuery();
+            }
         }
         else if (rateType.equalsIgnoreCase(rateTypePersonal)){
             if (checkBidStatus(personalRate,cpRate)){
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,7,getMaturityDate(Integer.parseInt(tenor)));
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
                 ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
                 ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,5,personalRate);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,6,getMaturityDate(Integer.parseInt(tenor)));
+                new DbConnect(ifr,new Query().getCpPmBidUpdatePersonalQuery(id,cpRate,getMaturityDate(Integer.parseInt(tenor)),defaultAlloc,bidSuccess,statusAwaitingMaturity)).saveQuery();
             }
-            else ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidFailed);
+            else {
+                ifr.setTableCellValue(cpBidReportTbl, rowIndex, 11, bidFailed);
+                new DbConnect(ifr, new Query().getCpPmUpdateFailedBidsQuery(id, bidFailed)).saveQuery();
+            }
         }
     }
+
+    private String updateCpSmDetails (IFormReference ifr, int rowCount){
+
+        for (int i= 0; i< rowCount; i++){
+            String maturityDate = ifr.getTableCellValue(cpSmCpBidTbl,i,2);
+            int dayToMaturity =  getDaysToMaturity(maturityDate);
+            if (dayToMaturity > 270)
+                return "Number of days to maturity Cannot be more 270. Please correct MaturityDate. Days to Maturity: "+dayToMaturity+"";
+
+            ifr.setTableCellValue(cpSmCpBidTbl,i,6,String.valueOf(dayToMaturity));
+            ifr.setTableCellValue(cpSmCpBidTbl,i,7,smStatusOpen);
+        }
+        setFields(ifr,new String[]{cpSmWinRefLocal}, new String[]{generateCpWinRefNo(cpSmLabel)});
+
+        return empty;
+    }
+
 
     
     /******************  TREASURY BILL CODE BEGINS *********************************/

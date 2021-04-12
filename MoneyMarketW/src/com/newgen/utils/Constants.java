@@ -73,7 +73,7 @@ public interface Constants {
 	String cpSetupSection="cp_setup_section";
 	String cpCutOffTimeSection = "cp_cutoff_section";
 	String cpCustomerDetailsSection ="cp_custDetails_section";
-	String cpIframeSection = "iframeSection";
+
     // end of cp sections
 
 	// commercial Paper process ids
@@ -149,7 +149,12 @@ public interface Constants {
 	String cpBidStatusCol ="Status";
 	String cpBidStatusBidCol ="Bid Status";
 	String cpPmAllocFlagLocal = "cp_pm_allocflag";
-	String cpSmCutOffTimeLocal = "cp_sm_cutofftime";
+	String cpSmCutOffTimeLocal = "cp_secCuttoff";
+	String cpSmCpBidTbl = "table93";
+	String cpSmSetupLocal = "cp_sec_setUp";
+	String cpSmWinRefLocal = "cp_sm_winref";
+	String cpSmMinPrincipalLocal = "cp_sec_miniPrincipalAmt";
+	String cpSmIFrameLocal = "cp_downloadBid_frame";
 
 
 	//common variables
@@ -212,6 +217,17 @@ public interface Constants {
 	String bidSuccess = "Successful";
 	String bidFailed = "Failed";
 	String defaultAllocation = "100";
+	String rateBidTblCol = "rate";
+	String tenorBidTblCol = "tenor";
+	String rateTypeBidTblCol = "ratetype";
+	String smDefaultCutOffTime = "2 PM";
+	String smMinPrincipal = "1000000";
+	String smSetupNew = "New";
+	String smSetupUpdate = "Update";
+	String smStatusOpen= "Open";
+	String smStatusClosed= "Closed";
+	String smStatusMature= "Matured";
+
 
 	//eventName/controlName
 	String formLoad = "formLoad";
@@ -240,6 +256,9 @@ public interface Constants {
 	String cpDownloadEvent = "cpDownloadGrid";
 	String cpGetPmGridEvent = "cpPmGrid";
 	String cpViewGroupBidEvent = "viewGroupBids";
+	String cpUpdateBidEvent = "updateBids";
+	String cpSmSetupEvent = "smSetup";
+	String cpSmCpUpdateEvent = "smCpBidUpdate";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

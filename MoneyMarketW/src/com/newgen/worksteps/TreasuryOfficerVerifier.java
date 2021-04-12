@@ -123,8 +123,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     public void cpSetDecision(IFormReference ifr) {
         setDecision(ifr, cpDecisionLocal,new String[]{decApprove,decReject});
     }
-    
-    //*************** Treasury Start *************************/
+
+    /******************  TREASURY BILL CODE BEGINS *********************************/
     /*
      * set controls for task to be performed before the formloads
      */

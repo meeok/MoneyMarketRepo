@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import java.text.SimpleDateFormat;
@@ -17,7 +18,6 @@ import java.util.Random;
 public class Commons implements Constants {
     private static final Logger logger = LogGen.getLoggerInstance(Commons.class);
     public List<List<String>> resultSet;
-
 
     /************************* COMMERCIAL PAPER CODE BEGINS **************************/
     private String getTat (String entryDate, String exitDate){
@@ -173,7 +173,7 @@ public class Commons implements Constants {
         catch (Exception e){ logger.error("Exception occurred in getSol Method-- "+e.getMessage());return  null;}
     }
     public void hideCpSections (IFormReference ifr){
-        setInvisible(ifr,new String []{cpIframeSection,cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
+        setInvisible(ifr,new String []{cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
         cpTerminationSection,cpCutOffTimeSection,cpDecisionSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection,cpSetupSection,cpCustomerDetailsSection});
     }
     public void disableCpSections (IFormReference ifr){
@@ -239,7 +239,7 @@ public class Commons implements Constants {
     public String getCpUpdateMsg (IFormReference ifr){return getFieldValue(ifr,cpUpdateLocal);}
     public String getCpMarketName (IFormReference ifr){
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) return primary;
-        else if (getProcess(ifr).equalsIgnoreCase(cpSecondaryMarket)) return secondary;
+        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) return secondary;
         return empty;
     }
     public boolean compareDate(String startDate, String endDate){
@@ -280,7 +280,7 @@ public class Commons implements Constants {
            logger.info("record saved just for checking");
        }
     }
-    private String generateCpWinRefNo(String cpLabel) {
+    public String generateCpWinRefNo(String cpLabel) {
         return cpLabel + getCurrentDateTime(cpRefNoDateFormat);
         //return cpLabel + new SimpleDateFormat(cpRefNoDateFormat).format(new Date());
     }
@@ -368,6 +368,10 @@ public class Commons implements Constants {
     }
     public static boolean isLeapYear (){
         return LocalDate.now().isLeapYear();
+    }
+    public static String getCpSmSetup(IFormReference ifr){return getFieldValue(ifr,cpSmSetupLocal);}
+    public static int getDaysToMaturity(String maturityDate){
+        return (int) ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.parse(maturityDate));
     }
 
 
