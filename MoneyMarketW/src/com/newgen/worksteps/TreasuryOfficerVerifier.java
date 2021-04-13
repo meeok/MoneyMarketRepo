@@ -129,6 +129,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
      * set controls for task to be performed before the formloads
      */
     private void tbFormLoadActivity(IFormReference ifr){
+    	logger.info("tbFormLoadActivity");
+    	 
         hideTbSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
         setGenDetails(ifr);
@@ -137,6 +139,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         clearFields(ifr,new String[]{tbRemarkstbx});
         //set controls for task to be performed
         //approving of landing message 
+        logger.info("getTbUpdateLandingMsg>>"+getTbUpdateLandingMsg(ifr));
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) || getTbUpdateLandingMsg(ifr)) { // for approval of landing page
             setVisible(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
             enableField(ifr,tbDecisionSection);
@@ -154,7 +157,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
      */
     private void tbUpDateLndingMsgFlg(IFormReference ifr) {
     	logger.info("tbUpDateLndingMsgFlg");
-    	 if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)){
+    	 if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) ||getTbUpdateLandingMsg(ifr) ){
              if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
             	 setTbLandingMsgApprovedFlg(ifr,yesFlag);
              }

@@ -267,22 +267,55 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     private void tbMarketTypeOnChange() {
     	
     }
+    /*
+     * Primary:  if market window is set and bids are done user shdnt be able to discard workitem
+     */
+    private void tbSetDecision(IFormReference ifr) {
+        clearFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+      //  if()
+        setDecision(ifr,cpDecisionLocal,new String [] {decSubmit,decDiscard});
+    }
+    /*
+     * if Market window has been set ..
+     */
+    private void tbSetCategorydd(IFormReference ifr) {
+    	if(getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+    		 clearFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+    	        if(!isTbWindowActive(ifr)) {//check for when window is closed
+    	        	setDropDown(ifr,tbCategorydd,new String [] {tbCategoryReDiscountRate,tbCategoryCutOff,tbCategoryReport});
+    	        }
+    	        else {// setup not done
+    	        	setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
+    	        }
+    	        	
+    	}
+       
+      
+      
+    }
     private void tbFormLoad(IFormReference ifr) {
     	setGenDetails(ifr);
     	hideTbSections(ifr);
         hideFields(ifr, new String[] {goBackDashboardSection,tbPriSetupbtn});
         //disableTbSections(ifr);
-        setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
-    	setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
+        setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard}); //cannot discard if bids have been placed by bi
+    	//setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
     	clearFields(ifr,new String[]{tbRemarkstbx});
     	
         //tb primary Market
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
-        	if(getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)){ // ready to set Market(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbTreasuryPriSetupSection});
-        		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd});
+        	if(getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag) && !(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))){ // ready to set Market(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbTreasuryPriSetupSection});
+        		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
         		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate,tbCategorydd});
                 disableFields(ifr, new String[]{tbLandingMsgSection,tbUniqueReftbx,tbMarketTypedd});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
+        	}
+        	else if(getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag) && (getTbSetUpFlg(ifr).equalsIgnoreCase(flag))){ // ready to set Market(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbTreasuryPriSetupSection});
+        		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
+        		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
+        		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate,tbCategorydd});
+                disableFields(ifr, new String[]{tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd,});
         	}
         	else { //landing msg is not approved
         		clearDropDown(ifr,tbCategorydd);
@@ -302,14 +335,26 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
      * automatically populate primary market window unique reference in the below 
      * format TPMADATEYEAR for example TBPMA28052020 which will not be editable
      */
-    private void tbCategoryChange(IFormReference ifr) throws ParseException{
+    private String tbCategoryChange(IFormReference ifr) throws ParseException{
     	//primary Market
+    	String retMsg ="";
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
             if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){ 
             	//check if a window is open
-            	setTbUniqueRef(ifr,generateTbUniqueReference(ifr)); //set the unique reference
-            	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
-            	hideField(ifr,tbDecisionSection);
+            	if(!isTbWindowOpen(ifr)) {
+            		setTbUniqueRef(ifr,generateTbUniqueReference(ifr)); //set the unique reference
+                	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
+                	hideField(ifr,tbDecisionSection);
+            	}
+            	else { //market already set clear category dropdown and send msg
+            		clearFields(ifr,tbCategorydd);
+            		retMsg =tbWindowActiveMessage;
+            	}
+            }
+            else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryCutOff)){
+            	disableFields(ifr, new String[] {tbPriOpenDate,tbDecisiondd});
+            	enableFields(ifr,new String[] {tbPriCloseDate});
+            	setTbDecisiondd(ifr,decSubmit);
             }
             else {
             	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
@@ -320,6 +365,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         
         //secondary MArket
         else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){}
+        return retMsg;
     }
     private void tbUpdateLandingMsg(IFormReference ifr){
         if (getTbUpdateLandingMsg(ifr)){ //true

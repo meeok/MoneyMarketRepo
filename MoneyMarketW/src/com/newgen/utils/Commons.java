@@ -398,7 +398,9 @@ public class Commons implements Constants {
         setDecisionHistory(ifr,getLoginUser(ifr),treasuryProcessName,marketType,getCpDecision(ifr),remarks,getActivityName(ifr),entryDate,exitDate,getTat(entryDate,exitDate));
         ifr.setValue(decHisFlagLocal,flag);
     }
-    public boolean getTbUpdateLandingMsg(IFormReference ifr){ return (boolean) ifr.getValue(tbUpdateLandingMsgcbx); }
+    public boolean getTbUpdateLandingMsg(IFormReference ifr){ 
+    	return ((String) ifr.getValue(tbUpdateLandingMsgcbx)).equalsIgnoreCase("true")? true : false; 
+    }
     public static void setTbUpdateLandingMsg(IFormReference ifr, String value){ ifr.setValue(tbUpdateLandingMsgcbx,value); }
     public static String getTbDecision (IFormReference ifr){return (String) ifr.getValue(tbDecisiondd);}
     public static void setTbDecisiondd (IFormReference ifr, String value){ifr.setValue(tbDecisiondd,value);}
@@ -451,11 +453,60 @@ public class Commons implements Constants {
        else 
     	   return "Unable to setup window try again later";
     }
-   
+    
+    public Date tbConvertStringToDate(String str) {
+    	
+    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+    	try {
+			return formatter.parse(str);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    }
+    
+    /*
+     * check if window is open for a market
+     * query gets the date of the specified market type then check if current date is before close
+     * date --- if its before return true else return false
+     */
+    public boolean isTbWindowOpen(IFormReference ifr){
+    	String qry = new Query().getWinCloseDateQuery(treasuryProcessName,getTbMarket(ifr));
+        logger.info("isTbWindowOpen--"+ qry);
+        List<List<String>> dbr = new DbConnect(ifr,qry).getData();
+        logger.info("isTbWindowOpen db output>>"+dbr);
+        String closedte = "";
+        if(dbr.size()>0) {
+        	closedte = dbr.get(0).get(0);
+        	logger.info("isTbWindowOpen CloseDTe>>>"+closedte);
+        	return tbConvertStringToDate(closedte).compareTo(new Date())>0 ? true:false;
+        }
+        
+        return false;
+    }
+    
+    /*
+     * return true is window is set and open
+     * else return false
+     */
+     public boolean isTbWindowClosed(IFormReference ifr,String refid){
+     	String qry = new Query().getClosedMarketWinRefIDQuery(treasuryProcessName,getTbMarket(ifr),refid);
+         logger.info("isTbWindowClosed query --"+ qry);
+         List<List<String>> dbr = new DbConnect(ifr,qry).getData();
+         logger.info("isTbWindowClosed db output>>"+dbr);
+         return dbr.size()>0 ? true:false;
+     }
+   /*
+    * return true is window is set and open
+    * else return false
+    */
     public boolean isTbWindowActive(IFormReference ifr){
     	String qry = new Query().getCheckActiveWindowQuery(treasuryProcessName,getTbMarket(ifr));
         logger.info("check tb window query --"+ qry);
-        return Integer.parseInt(new DbConnect(ifr,qry).getData().get(0).get(0)) > 0;
+        List<List<String>> dbr = new DbConnect(ifr,qry).getData();
+        logger.info("isTbWindowActive db output>>"+dbr);
+        return dbr.size()>0 ? true:false;
     }
     //get refid from active window
     public static String getTbActiveWindowwithRefid(IFormReference ifr){
@@ -485,19 +536,19 @@ public class Commons implements Constants {
     }
     
     public static void tbFetchAccountDetails(IFormReference ifr) {
-    	if(getTbCustAcctNo(ifr).equalsIgnoreCase("3222222222")){
+    	if(getTbCustAcctNo(ifr).equalsIgnoreCase("22")){
 	    	setTbCustAcctName(ifr, "John Doe");
 	    	setTbCustAcctLienStatus(ifr, "Yes");
 	    	setTbCustAcctEmail(ifr, "");
 	    	setTbCustSchemeCode(ifr,"SA531");
 	    }
-    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("3222222223")){
+    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("33")){
 	    	setTbCustAcctName(ifr, "Miranda");
 	    	setTbCustAcctLienStatus(ifr, "No");
 	    	setTbCustAcctEmail(ifr, "someone@gmail.com");
 	    	setTbCustSchemeCode(ifr,SA231);
 	    }
-    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("3222222224")){
+    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("44")){
 	    	setTbCustAcctName(ifr, "Mercy Lee");
 	    	setTbCustAcctLienStatus(ifr, "No");
 	    	setTbCustAcctEmail(ifr, "ogb@gmail.com");

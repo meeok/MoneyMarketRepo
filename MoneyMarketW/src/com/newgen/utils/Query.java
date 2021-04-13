@@ -63,9 +63,17 @@ public class Query {
     public String getWinDetailsByIdQuery(String winRefId){
         return "select * from mm_setup_tbl where refid = '"+winRefId+"";
     }
+    public String getClosedMarketWinRefIDQuery(String process, String marketType,String refid){
+        return "select REFID from mm_setup_tbl where process = '"+process+"' "
+        		+ "and upper(markettype) = upper('"+marketType+"') and upper(refid) = upper('"+refid+"') and upper(closeflag) = ('Y')";
+    }
     //get window close date of a refid
     public String getWinCloseDateByIdQuery(String winRefId){
         return "select CLOSEDATE from mm_setup_tbl where refid = '"+winRefId+"";
+    }
+    //get window close date of a market
+    public String getWinCloseDateQuery(String process, String marketType){
+        return "select CLOSEDATE from mm_setup_tbl where process = '"+process+"' and markettype ='"+marketType+"' and  closeflag = 'N'";
     }
     
     public String getWinCloseFlagById (String winRefId){

@@ -291,6 +291,16 @@ public interface Constants {
 	
 	//Branch Prmy View tbBranchSection
 	
+	//tb_Primary Bid
+	String tbViewPriBidReportbtn = "tb_viewReport_btn";
+	String tbPriBidReportTable ="table69";
+	String tbPriBidAllocationTable ="table68";
+	String tbPriBidAllocationbtn ="tb_allocation_btn";
+	String tbPriBidAllocatebtn ="tb_allocate_btn";
+	String tbPriBidApprovebtn ="tb_allocation_btn";
+	String tbPriBidCustRqstTable ="table67";
+	//String tbPriBidApprovebtn ="tb_allocation_btn";
+	
 	//sections
 	String tbMarketSection = "tb_market_section";
 	String tbLandingMsgSection = "tb_setupmsg_section";
@@ -367,6 +377,7 @@ public interface Constants {
 	String apiSuccess ="success";
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";*/
 	String tbWindowInactiveMessage = " Market Window is currently not open, Try again later";
+	String tbWindowActiveMessage = " Market Window is currently open, You cannot setup another window";
 	String yesFlag  ="Y";
 	String noFlag ="N";
 	String tbBidRqstType ="Fresh Mandate";
