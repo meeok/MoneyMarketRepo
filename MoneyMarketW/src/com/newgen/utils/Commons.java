@@ -178,7 +178,7 @@ public class Commons implements Constants {
     }
     public void disableCpSections (IFormReference ifr){
         disableFields(ifr,new String []{cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection, cpTerminationSection,
-                cpDecisionSection,cpCutOffTimeSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection,cpSetupSection});
+                cpCutOffTimeSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection});
     }
     public void hideShowLandingMessageLabel(IFormReference ifr,String state){ifr.setStyle(landMsgLabelLocal,visible,state);}
     public void hideShow (IFormReference ifr, String[] fields,String state) { for(String field: fields) ifr.setStyle(field,visible,state);}
@@ -259,7 +259,7 @@ public class Commons implements Constants {
     }
     public String getCpLandingMsg (IFormReference ifr){return getFieldValue(ifr,cpLandMsgLocal);}
     public String getPmMinPrincipal(IFormReference ifr){return getFieldValue(ifr,cpPmMinPriAmtLocal);}
-    public String cpSetUpPrimaryMarketWindow(IFormReference ifr){
+    public String cpSetupPrimaryMarketWindow(IFormReference ifr){
         String winRefNo =  generateCpWinRefNo(cpPmLabel);
         logger.info("pmWinRefNo--"+ winRefNo);
         logger.info("Query for setup-- "+ new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getPmMinPrincipal(ifr),empty,empty,empty,empty,getCpOpenDate(ifr),getCpCloseDate(ifr)));
@@ -268,17 +268,9 @@ public class Commons implements Constants {
            setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
            disableFields(ifr, new String[]{cpTreasuryPriSection,cpCutOffTimeSection,cpMarketSection,cpSetupSection});
            logger.info("record saved just for checking");
-           return "success";
+           return apiSuccess;
        }
        else return "Unable to setup window. Kindly contact iBPS support.";
-    }
-    public void cpSetUpSecondaryMarketWindow(IFormReference ifr){
-        String winRefNo =  generateCpWinRefNo(cpSmLabel);
-       int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,secondary,getCpLandingMsg(ifr),getPmMinPrincipal(ifr),empty,empty,empty,empty,getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
-       if (validate >= 0) {
-           setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
-           logger.info("record saved just for checking");
-       }
     }
     public String generateCpWinRefNo(String cpLabel) {
         return cpLabel + getCurrentDateTime(cpRefNoDateFormat);
@@ -297,6 +289,11 @@ public class Commons implements Constants {
         DbConnect dbConnect = new DbConnect(ifr,new Query().getActiveWindowDetailsQuery(commercialProcessName,getCpMarket(ifr)));
         setFields(ifr, new String[]{cpPmWinRefNoBranchLocal,landMsgLabelLocal,cpPmMinPriAmtBranchLocal},
                 new String[]{dbConnect.getData().get(0).get(0),dbConnect.getData().get(0).get(1),dbConnect.getData().get(0).get(2)});
+    }
+    public void setCpSmWindowDetails(IFormReference ifr){
+      resultSet = new DbConnect(ifr,new Query().getActiveWindowDetailsQuery(commercialProcessName,getCpMarket(ifr))).getData();
+        setFields(ifr, new String[]{cpSmWinRefNoBranchLocal,landMsgLabelLocal,cpSmMinPrincipalBrLocal},
+                new String[]{resultSet.get(0).get(0),resultSet.get(0).get(1),resultSet.get(0).get(2)});
     }
     public static String getCpPmRateType (IFormReference ifr){
         return getFieldValue(ifr,cpPmRateTypeLocal);
@@ -359,8 +356,45 @@ public class Commons implements Constants {
         return LocalDate.now().isLeapYear();
     }
     public static String getCpSmSetup(IFormReference ifr){return getFieldValue(ifr,cpSmSetupLocal);}
-    public static int getDaysToMaturity(String maturityDate){
-        return (int) ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.parse(maturityDate));
+    public static long getDaysToMaturity(String maturityDate){
+        return ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.parse(maturityDate));
+    }
+    public String cpSetupSecondaryMarketWindow(IFormReference ifr, int rowCount){
+        setCpSmCloseDate(ifr);
+        int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(getFieldValue(ifr,cpSmWinRefLocal),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getFieldValue(ifr,cpSmMinPrincipalLocal),getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
+        if (validate >= 0){
+            setCpSmInvestmentOnSetup(ifr,rowCount);
+            setWindowSetupFlag(ifr);
+            disableField(ifr,cpSetupWindowBtn);
+           return apiSuccess;
+        }
+        else return "Unable to setup window. Kindly contact iBPS support.";
+    }
+    private String getCpSmInvestmentId(){
+        return cpSmIdInvestmentLabel+getCpRandomId();
+    }
+    private void setCpSmCloseDate(IFormReference ifr){
+        String time = " 14:00:01";
+        setFields(ifr,cpCloseDateLocal,LocalDate.now().toString() +time);
+    }
+    private void setCpSmInvestmentOnSetup(IFormReference ifr, int rowCount){
+        for( int i = 0; i < rowCount; i++){
+            String corporateName = ifr.getTableCellValue(cpSmCpBidTbl,i,0);
+            String description = ifr.getTableCellValue(cpSmCpBidTbl,i,1);
+            String maturityDate = ifr.getTableCellValue(cpSmCpBidTbl,i,2);
+            String billAmount = ifr.getTableCellValue(cpSmCpBidTbl,i,3);
+            String rate = ifr.getTableCellValue(cpSmCpBidTbl,i,4);
+            String tenor = ifr.getTableCellValue(cpSmCpBidTbl,i,5);
+            String dtm = ifr.getTableCellValue(cpSmCpBidTbl,i,6);
+            String status = ifr.getTableCellValue(cpSmCpBidTbl,i,7);
+            String guaranteedCp = ifr.getTableCellValue(cpSmCpBidTbl,i,9);
+
+            new DbConnect(ifr,new Query().getSetSmInvestmentQuery(getCpSmInvestmentId(),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpSmWinRefLocal),
+                    corporateName,description,maturityDate,billAmount,billAmount,rate,tenor,dtm,status,guaranteedCp,getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
+        }
+    }
+    public void setWindowSetupFlag (IFormReference ifr){
+        setFields(ifr,windowSetupFlagLocal,flag);
     }
 
 

@@ -45,8 +45,12 @@ public class Query {
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,REDISCOUNTRATELESS90,REDISCOUNTRATELESS180,REDISCOUNTRATELESS270,REDISCOUNTRATELESS364,OPENDATE,CLOSEDATE)" +
                 "values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','" + minPrincipalAmount + "','" + reDiscountRateLess90 + "','" + reDiscountRateLess180 + "','" + reDiscountRateLess270 + "','" + reDiscountRateLess364 + "','" + openDate + "','" + closeDate + "')";
     }
+    public String getSetupMarketWindowQuery(String refId, String wiName, String process, String marketType, String landingMessage,String minimumPrincipal, String openDate, String closeDate) {
+        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,OPENDATE,CLOSEDATE)" +
+                "values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','"+minimumPrincipal+"','" + openDate + "','" + closeDate + "')";
+    }
     public String getSetupMarketWindowQuery(String refId, String wiName, String process, String marketType, String landingMessage, String openDate, String closeDate) {
-        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE)" +
+        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,OPENDATE,CLOSEDATE)" +
                 "values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','" + openDate + "','" + closeDate + "')";
     }
     public String getCheckActiveWindowQuery(String process, String marketType) {
@@ -105,5 +109,13 @@ public class Query {
     }
     public String getCpPmUpdateFailedBidsQuery(String id, String bidStatus){
         return "update mm_bid_tbl set bidstatus = '"+bidStatus+"', cprate = '', allocationpercentage = '', maturitydate = ''  , status = 'Awaiting Reversal', failedflag = 'Y', terminateflag = 'Y' where custrefid = '"+id+"'";
+    }
+    public String getSetSmInvestmentQuery(String id, String wiName, String process, String marketType, String winRef,String corporateName,String description,String maturityDate,String billAmount,String availableAmount,String rate,String tenor,String dtm,String status,String guaranteedCp,String openDate, String closeDate){
+        return "insert into mm_sminvestments_tbl (investmentid,winame,process,marketType,windowrefno,corporateissuername,description,maturitydate,billamount,avaliableamount,rate,tenor,dtm,status,guaranteedcp,openDate,closeDate) values" +
+                " ('"+id+"','"+wiName+"','"+process+"','"+marketType+"','"+winRef+"','"+corporateName+"','"+description+"','"+maturityDate+"','"+billAmount+"','"+availableAmount+"','"+rate+"','"+tenor+"','"+dtm+"', '"+status+"','"+guaranteedCp+"','"+openDate+"','"+closeDate+"')";
+    }
+    public String getCpSmInvestmentsQuery(String process, String marketType){
+        return "select investmentid,corporateissuername, description, maturitydate,dtm,status, availableamount,rate, totalamountsold, mandates  from mm_sminvestments_tbl " +
+                "where process = '"+process+"' and  markettype= '"+marketType+"' and closedflag = 'N' and maturedflag = 'N' and cancelledflag = 'N'";
     }
 }

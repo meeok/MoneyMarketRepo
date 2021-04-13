@@ -74,11 +74,11 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                             break;
                         }
                         case cpViewGroupBidEvent:{
-                            viewGroupBids(ifr,Integer.parseInt(data));
+                            viewCpGroupBids(ifr,Integer.parseInt(data));
                             break;
                         }
                         case cpUpdateBidEvent:{
-                            updateBids(ifr,Integer.parseInt(data));
+                            updateCpPmBids(ifr,Integer.parseInt(data));
                             break;
                         }
                     }
@@ -108,7 +108,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 case custom:{
                     switch (controlName){
                         case cpGetPmGridEvent:{
-                        return getPmGrid(ifr,Integer.parseInt(data));
+                        return getCpPmBidGrid(ifr,Integer.parseInt(data));
                         }
                     }
                 }
@@ -197,7 +197,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 
         }
        else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
-            if (isEmpty(getSetupFlag(ifr))) {
+            if (isEmpty(getWindowSetupFlag(ifr))) {
                 if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
                     if (getCpDecision(ifr).equalsIgnoreCase(decReject)) {
                         setVisible(ifr, new String [] {cpLandingMsgSection,cpDecisionSection});
@@ -241,7 +241,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     private String setupCpWindow (IFormReference ifr){
         if (isEmpty(getSetupFlag(ifr))){
             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
-                if (compareDate(getCpOpenDate(ifr),getCpCloseDate(ifr))) return cpSetUpPrimaryMarketWindow(ifr);
+                if (compareDate(getCpOpenDate(ifr),getCpCloseDate(ifr))) return cpSetupPrimaryMarketWindow(ifr);
                 else return "Close date cannot be before Open date.";
             }
             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
@@ -310,9 +310,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         setInvisible(ifr,new String[]{cpViewReportBtn});
     }
 
-    private String getPmGrid (IFormReference ifr,int tableCount){
+    private String getCpPmBidGrid(IFormReference ifr, int rowCount){
         StringBuilder output = new StringBuilder(empty);
-        for (int i = 0; i < tableCount; i++){
+        for (int i = 0; i < rowCount; i++){
           String tenor =  ifr.getTableCellValue(cpAllocSummaryTbl,i,0);
           String rate =  ifr.getTableCellValue(cpAllocSummaryTbl,i,1);
           String totalAmount =  ifr.getTableCellValue(cpAllocSummaryTbl,i,2);
@@ -325,7 +325,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         return output.toString().trim();
     }
 
-    private void viewGroupBids(IFormReference ifr,int rowIndex){
+    private void viewCpGroupBids(IFormReference ifr, int rowIndex){
         ifr.clearTable(cpBidReportTbl);
         String groupIndex = ifr.getTableCellValue(cpAllocSummaryTbl,rowIndex,6);
         logger.info("group index: "+ groupIndex);
@@ -343,7 +343,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         setVisible(ifr,new String[]{cpBidReportTbl,cpUpdateBtn});
     }
 
-    private void updateBids(IFormReference ifr,int rowIndex){
+    private void updateCpPmBids(IFormReference ifr, int rowIndex){
         String bankRate = getFieldValue(ifr,cpAllocBankRateLocal);
         String personalRate = empty;
         String cpRate = getFieldValue(ifr,cpAllocCpRateLocal);
@@ -390,15 +390,20 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 
         for (int i= 0; i< rowCount; i++){
             String maturityDate = ifr.getTableCellValue(cpSmCpBidTbl,i,2);
-            int dayToMaturity =  getDaysToMaturity(maturityDate);
+            String cpBillAmount = ifr.getTableCellValue(cpSmCpBidTbl,i,3);
+            String minimumPrincipal = getFieldValue(ifr,cpSmMinPrincipalLocal);
+            long dayToMaturity =  getDaysToMaturity(maturityDate);
+
+            if (Float.parseFloat(cpBillAmount) < Float.parseFloat(minimumPrincipal))
+                return "CP Bill Amount cannot be less than the minimum principal Amount. Correct row No. "+i+".";
+
             if (dayToMaturity > 270)
-                return "Number of days to maturity Cannot be more 270. Please correct MaturityDate. Days to Maturity: "+dayToMaturity+"";
+                return "Number of days to maturity Cannot be more 270. Please correct Maturity Date Column. Days to Maturity: "+dayToMaturity+"";
 
             ifr.setTableCellValue(cpSmCpBidTbl,i,6,String.valueOf(dayToMaturity));
             ifr.setTableCellValue(cpSmCpBidTbl,i,7,smStatusOpen);
         }
         setFields(ifr,new String[]{cpSmWinRefLocal}, new String[]{generateCpWinRefNo(cpSmLabel)});
-
         return empty;
     }
 

@@ -7,10 +7,8 @@ import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.utils.Commons;
 import com.newgen.utils.CommonsI;
 import com.newgen.utils.DBCalls;
-import com.newgen.utils.DbConnect;
 import com.newgen.utils.LogGen;
 import com.newgen.utils.MailSetup;
-import com.newgen.utils.Query;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -49,7 +47,13 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 break;
                 case onLoad:{}
                 break;
-                case onClick:{}
+                case onClick:{
+                    switch (controlName){
+                        case cpSetupWindowEvent:{
+                          return setupCpWindow(ifr, Integer.parseInt(data));
+                        }
+                    }
+                }
                 break;
                 case onChange:{}
                 break;
@@ -116,12 +120,34 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
             enableFields(ifr,new String[]{cpDecisionSection});
             setMandatory(ifr, new String[]{cpDecisionLocal,cpRemarksLocal});
         }
+        else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerMaker)){
+            if (isEmpty(getWindowSetupFlag(ifr))){
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){}
+                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+                    setVisible(ifr, new String[]{cpLandingMsgSection,cpDecisionSection,cpMarketSection,cpTreasurySecSection,cpCutOffTimeSection,cpSmCutOffTimeLocal,cpSetupSection,cpSetupWindowBtn,cpSmCpBidTbl});
+                    setInvisible(ifr,new String[]{cpOpenDateLocal,cpCloseDateLocal});
+                    setMandatory(ifr,new String[] {cpDecisionLocal,cpRemarksLocal});
+                }
+            }
+        }
         cpSetDecision(ifr);
     }
 
     @Override
     public void cpSetDecision(IFormReference ifr) {
         setDecision(ifr, cpDecisionLocal,new String[]{decApprove,decReject});
+    }
+
+    private String setupCpWindow (IFormReference ifr, int rowCount){
+        if (isEmpty(getWindowSetupFlag(ifr))){
+            if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
+                return empty;
+            }
+            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+                return cpSetupSecondaryMarketWindow(ifr,rowCount);
+            }
+        }
+        return "Window already setup.";
     }
 
     /******************  TREASURY BILL CODE BEGINS *********************************/

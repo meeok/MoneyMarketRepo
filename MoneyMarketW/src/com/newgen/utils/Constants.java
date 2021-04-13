@@ -100,6 +100,7 @@ public interface Constants {
 	String cpPmMinPriAmtLocal = "cp_mp_amount";
 	String cpPmWinRefNoLocal = "cp_pmwu_ref";
 	String cpPmWinRefNoBranchLocal = "cp_pmwinref_br";
+	String cpSmWinRefNoBranchLocal = "cp_sec_id";
 	String cpPmMinPriAmtBranchLocal ="cp_pm_mpBr";
 	String cpCustomerNameLocal ="cp_custAcctName";
 	String cpCustomerAcctNoLocal ="cp_custAcctNum";
@@ -155,6 +156,28 @@ public interface Constants {
 	String cpSmWinRefLocal = "cp_sm_winref";
 	String cpSmMinPrincipalLocal = "cp_sec_miniPrincipalAmt";
 	String cpSmIFrameLocal = "cp_downloadBid_frame";
+	String cpSmCustIdLocal = "cp_sec_custId";
+	String cpSmMaturityDateBrLocal ="cp_sec_maturityDate";
+	String cpSmInstructionTypeLocal = "";
+	String cpSmConcessionRateLocal ="cp_sec_concessionRate";
+	String cpSmConcessionRateValueLocal ="cp_sec_concessionValue";
+	String cpApplyBtn = "apply_btn";
+	String cpSmInvestmentIdLocal = "cp_sec_investmentID";
+	String cpSmPrincipalBrLocal = "cp_sec_principal_br";
+	String cpSmBidInvestmentIdCol = "Investment ID";
+	String cpSmBidIssuerCol = "CP Issuer";
+	String cpSmBidDescCol = "CP Description";
+	String cpSmBidMaturityDateCol = "Maturity Date";
+	String cpSmBidDtmCol = "DTM (Days to Maturity)";
+	String cpSmBidStatusCol = "Status";
+	String cpSmBidAvailableAmountCol = "Available Amount";
+	String cpSmBidRateCol = "Rate";
+	String cpSmBidAmountSoldCol = "Amount Sold";
+	String cpSmBidMandatesCol = "Mandates";
+	String cpSmBidReminderCol = "Remainder";
+	String cpSmInvestmentBrTbl = "table91";
+	String cpSmMinPrincipalBrLocal = "cp_sec_miniPrincipalAmt_brch";
+
 
 
 	//common variables
@@ -187,6 +210,7 @@ public interface Constants {
 	String cpPmLabel = "CPPMA";
 	String cpSmLabel = "CPSMA";
 	String cpIdLabel ="CP";
+	String cpSmIdInvestmentLabel = "CPSMI";
 	String cpRefNoDateFormat ="ddMMyyyy";
 	String windowOpenFlag ="N";
 	String windowCloseFlag ="Y";
@@ -259,6 +283,7 @@ public interface Constants {
 	String cpUpdateBidEvent = "updateBids";
 	String cpSmSetupEvent = "smSetup";
 	String cpSmCpUpdateEvent = "smCpBidUpdate";
+	String cpSmApplyEvent ="smApply";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";
