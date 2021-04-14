@@ -243,6 +243,7 @@ public class Commons implements Constants {
         return empty;
     }
     public boolean compareDate(String startDate, String endDate){
+        logger.info("start Date-- "+ startDate + " end date-- "+endDate);
       return  LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern(dbDateTimeFormat)).isBefore(LocalDateTime.parse(startDate,DateTimeFormatter.ofPattern(dbDateTimeFormat)));
     }
     public String getCpOpenDate(IFormReference ifr){return getFieldValue(ifr,cpOpenDateLocal);}
@@ -262,8 +263,9 @@ public class Commons implements Constants {
     public String cpSetupPrimaryMarketWindow(IFormReference ifr){
         String winRefNo =  generateCpWinRefNo(cpPmLabel);
         logger.info("pmWinRefNo--"+ winRefNo);
-        logger.info("Query for setup-- "+ new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getPmMinPrincipal(ifr),empty,empty,empty,empty,getCpOpenDate(ifr),getCpCloseDate(ifr)));
-       int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getPmMinPrincipal(ifr),empty,empty,empty,empty,getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
+        logger.info("Query for setup-- "+ new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getPmMinPrincipal(ifr),getCpOpenDate(ifr),getCpCloseDate(ifr)));
+       int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getPmMinPrincipal(ifr),getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
+       logger.info("validate-- "+validate);
        if (validate >= 0) {
            setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
            disableFields(ifr, new String[]{cpTreasuryPriSection,cpCutOffTimeSection,cpMarketSection,cpSetupSection});
@@ -413,6 +415,9 @@ public class Commons implements Constants {
     }
     public String getCpSmWindowMinPrincipal(IFormReference ifr){
         return getFieldValue(ifr,cpSmMinPrincipalBrLocal);
+    }
+    public boolean isDateEqual (String date1, String date2){
+        return LocalDate.parse(date1).isEqual(LocalDate.parse(date2));
     }
 
 

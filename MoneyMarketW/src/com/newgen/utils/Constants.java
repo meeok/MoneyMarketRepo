@@ -158,7 +158,7 @@ public interface Constants {
 	String cpSmIFrameLocal = "cp_downloadBid_frame";
 	String cpSmCustIdLocal = "cp_sec_custId";
 	String cpSmMaturityDateBrLocal ="cp_sec_maturityDate";
-	String cpSmInstructionTypeLocal = "";
+	String cpSmInstructionTypeLocal = "cp_sec_instructionType";
 	String cpSmConcessionRateLocal ="cp_sec_concessionRate";
 	String cpSmConcessionRateValueLocal ="cp_sec_concessionValue";
 	String cpApplyBtn = "apply_btn";
@@ -254,6 +254,7 @@ public interface Constants {
 	String smStatusMature= "Matured";
 	String yes = "YES";
 	String no = "NO";
+	String cpSmMaturityDateErrMsg = "Maturity date differs from selected bid maturity date, please amend.";
 
 
 	//eventName/controlName
@@ -288,6 +289,7 @@ public interface Constants {
 	String cpSmCpUpdateEvent = "smCpBidUpdate";
 	String cpSmApplyEvent ="smApply";
 	String cpSmConcessionRateEvent = "smConcession";
+	String cpSmCheckMaturityDateEvent = "checkMaturityDate";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

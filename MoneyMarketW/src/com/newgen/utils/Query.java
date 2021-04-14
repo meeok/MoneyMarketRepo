@@ -47,7 +47,7 @@ public class Query {
     }
     public String getSetupMarketWindowQuery(String refId, String wiName, String process, String marketType, String landingMessage,String minimumPrincipal, String openDate, String closeDate) {
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,OPENDATE,CLOSEDATE)" +
-                "values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','"+minimumPrincipal+"','" + openDate + "','" + closeDate + "')";
+                " values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','"+minimumPrincipal+"','" + openDate + "','" + closeDate + "')";
     }
     public String getSetupMarketWindowQuery(String refId, String wiName, String process, String marketType, String landingMessage, String openDate, String closeDate) {
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,OPENDATE,CLOSEDATE)" +
