@@ -396,7 +396,24 @@ public class Commons implements Constants {
     public void setWindowSetupFlag (IFormReference ifr){
         setFields(ifr,windowSetupFlagLocal,flag);
     }
-
+    public String getCpSmConcessionRate(IFormReference ifr){
+        return getFieldValue(ifr,cpSmConcessionRateLocal);
+    }
+    public String getCpSmConcessionRateValue(IFormReference ifr){
+        return getFieldValue(ifr,cpSmConcessionRateValueLocal);
+    }
+    public void clearGrids(IFormReference ifr, String tableLocal){
+        ifr.clearTable(tableLocal);
+    }
+    public void clearGrids(IFormReference ifr, String [] tableLocals){
+       for (String tableLocal : tableLocals) ifr.clearTable(tableLocal);
+    }
+    public String getCpSmPrincipalBr(IFormReference ifr){
+        return getFieldValue(ifr,cpSmPrincipalBrLocal);
+    }
+    public String getCpSmWindowMinPrincipal(IFormReference ifr){
+        return getFieldValue(ifr,cpSmMinPrincipalBrLocal);
+    }
 
 
 

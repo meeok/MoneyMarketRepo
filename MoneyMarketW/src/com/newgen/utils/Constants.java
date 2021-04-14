@@ -224,7 +224,8 @@ public interface Constants {
 	String cpInvalidAccountErrorMessage ="This account is not valid for CP processing";
 	String rateTypeBank ="Bank";
 	String rateTypePersonal ="Personal";
-	String minPrincipalErrorMsg ="Customer principal cannot be less and window minimum principal";
+	String minPrincipalErrorMsg ="Customer principal cannot be less than window minimum principal";
+	String cpSmMinPrincipalErrorMsg ="Customer principal cannot be less than window minimum principal or greater than available investment amount";
 	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";
 	String cpValidateWindowErrorMsg ="This CP window has been closed. Kindly wait till the next window to initiate";
 	String tbDocumentName ="Proof of Investment for TB";
@@ -251,6 +252,8 @@ public interface Constants {
 	String smStatusOpen= "Open";
 	String smStatusClosed= "Closed";
 	String smStatusMature= "Matured";
+	String yes = "YES";
+	String no = "NO";
 
 
 	//eventName/controlName
@@ -284,6 +287,7 @@ public interface Constants {
 	String cpSmSetupEvent = "smSetup";
 	String cpSmCpUpdateEvent = "smCpBidUpdate";
 	String cpSmApplyEvent ="smApply";
+	String cpSmConcessionRateEvent = "smConcession";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";
