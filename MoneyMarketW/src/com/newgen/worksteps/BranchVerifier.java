@@ -125,6 +125,16 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
             }
         }
+        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+            if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
+                setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
+                setVisible(ifr,new String[]{cpBranchSecSection,cpCustomerDetailsSection,cpPostSection,cpDecisionSection,landMsgLabelLocal});
+                setVisible(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal, (getCpSmConcessionRateValue(ifr).equalsIgnoreCase(empty)) ? empty : cpSmConcessionRateValueLocal});
+                setInvisible(ifr, new String[]{cpAcctValidateBtn});
+                enableFields(ifr,new String[]{cpTokenLocal});
+                setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
+            }
+        }
     }
 
     @Override

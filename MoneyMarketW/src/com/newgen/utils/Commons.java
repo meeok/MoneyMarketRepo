@@ -306,7 +306,6 @@ public class Commons implements Constants {
         return Integer.parseInt(getFieldValue(ifr,cpPmTenorLocal));
     }
     public String cpGenerateCustomerId (IFormReference ifr){
-        logger.info("customer id--" + cpIdLabel+getUserSol(ifr)+getCpRandomId());
         return cpIdLabel+getUserSol(ifr)+getCpRandomId();
     }
     public static String getUtilityFlag (IFormReference ifr){

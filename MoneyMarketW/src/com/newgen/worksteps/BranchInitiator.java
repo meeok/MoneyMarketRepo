@@ -110,7 +110,6 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
                                 return cpSmCheckPrincipal(ifr,Integer.parseInt(data));
                             }
-
                         }
                         break;
                         case  cpCheckTenorEvent:{
