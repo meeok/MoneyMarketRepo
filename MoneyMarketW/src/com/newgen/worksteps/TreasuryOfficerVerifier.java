@@ -4,6 +4,7 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
+import com.newgen.processMethods.CpController;
 import com.newgen.utils.Commons;
 import com.newgen.utils.CommonsI;
 import com.newgen.utils.DBCalls;
@@ -55,6 +56,13 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                     }
                 }
                 break;
+                case cpApiCallEvent:{
+                    switch (controlName) {
+                        case cpTokenEvent: return CpController.tokenController(ifr);
+                        case cpPostEvent: return CpController.postTranController(ifr);
+                    }
+                    break;
+                }
                 case onChange:{}
                 break;
                 case custom:{}
@@ -112,7 +120,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         hideCpSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
         setGenDetails(ifr);
-        disableCpSections(ifr);
+//        disableCpSections(ifr);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)) {
@@ -127,6 +135,18 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                     setVisible(ifr, new String[]{cpLandingMsgSection,cpDecisionSection,cpMarketSection,cpTreasurySecSection,cpCutOffTimeSection,cpSmCutOffTimeLocal,cpSetupSection,cpSetupWindowBtn,cpSmCpBidTbl});
                     setInvisible(ifr,new String[]{cpOpenDateLocal,cpCloseDateLocal});
                     setMandatory(ifr,new String[] {cpDecisionLocal,cpRemarksLocal});
+                }
+            }
+        }
+        else if (getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
+            if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+                if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
+                    setVisible(ifr,new String[]{cpBranchSecSection,cpCustomerDetailsSection,cpDecisionSection,landMsgLabelLocal,
+                            cpSmMaturityDateBrLocal,cpPostSection,cpTokenLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal, (getCpSmConcessionRateValue(ifr).equalsIgnoreCase(empty)) ? empty : cpSmConcessionRateValueLocal});
+                    setInvisible(ifr, new String[]{cpAcctValidateBtn,cpApplyBtn,cpSmInvestmentBrTbl});
+                    disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal,cpSmInstructionTypeLocal});
+                    setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
+                    enableFields(ifr,new String[]{cpTokenLocal});
                 }
             }
         }

@@ -79,7 +79,7 @@ public class Commons implements Constants {
         setDecisionHistory(ifr,getLoginUser(ifr),commercialProcessName,marketType,getCpDecision(ifr),remarks,getActivityName(ifr),entryDate,exitDate,getTat(entryDate,exitDate));
         ifr.setValue(decHisFlagLocal,flag);
     }
-    public String getCpMarket(IFormReference ifr){return  getFieldValue(ifr,cpSelectMarketLocal);}
+    public static String getCpMarket(IFormReference ifr){return  getFieldValue(ifr,cpSelectMarketLocal);}
     public static String getProcess(IFormReference ifr){
         return getFieldValue(ifr,selectProcessLocal);
     }
@@ -252,11 +252,11 @@ public class Commons implements Constants {
         return getFieldValue(ifr,cpPmWinRefNoBranchLocal);
     }
     public String getCpSmWinRefNo(IFormReference ifr){
-        return null;
+        return getFieldValue(ifr,cpSmWinRefNoBranchLocal);
     }
     public String getCpPmCusRefNo(IFormReference ifr){return getFieldValue(ifr,cpPmCustomerIdLocal);}
     public String getCpSmCusRefNo(IFormReference ifr){
-        return null;
+        return getFieldValue(ifr,cpSmCustIdLocal);
     }
     public String getCpLandingMsg (IFormReference ifr){return getFieldValue(ifr,cpLandMsgLocal);}
     public String getPmMinPrincipal(IFormReference ifr){return getFieldValue(ifr,cpPmMinPriAmtLocal);}
@@ -316,10 +316,10 @@ public class Commons implements Constants {
         return String.valueOf(10000000000L + ((long)random.nextInt(900000000)*100) + random.nextInt(100));
     }
     public String getUserSol(IFormReference ifr){return getFieldValue(ifr,solLocal);}
-    public boolean cpCheckWindowStateById(IFormReference ifr){
-        logger.info("getCheckActiveWindowByIdQuery --"+ new Query().getCheckActiveWindowByIdQuery(getCpPmWinRefNo(ifr)));
+    public boolean cpCheckWindowStateById(IFormReference ifr,String id){
+        logger.info("getCheckActiveWindowByIdQuery --"+ new Query().getCheckActiveWindowByIdQuery(id));
         return Integer.parseInt(new DbConnect(ifr,
-                new Query().getCheckActiveWindowByIdQuery(getCpPmWinRefNo(ifr))).getData().get(0).get(0)) > 0;
+                new Query().getCheckActiveWindowByIdQuery(id)).getData().get(0).get(0)) > 0;
     }
     public void setupCpPmBid(IFormReference ifr){
         logger.info("query to setup bid-- "+   new Query().getSetupBidQuery(
@@ -332,6 +332,27 @@ public class Commons implements Constants {
                         getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
                 )).saveQuery();
     }
+    public void setupCpSmBid(IFormReference ifr){
+        resultSet = new DbConnect(ifr,new Query().getCpSmInvestmentsSelectQuery(getCpSmInvestmentId())).getData();
+        String tenor = resultSet.get(0).get(0);
+        String rate = resultSet.get(0).get(1);
+        int validate = new DbConnect(ifr,new Query().getSetupCpSmBidQuery(getCurrentDateTime(),getCpSmCusRefNo(ifr),getCpSmWinRefNo(ifr),
+                getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpAcctNo(ifr),getCpAcctName(ifr),getCpAcctEmail(ifr),getCpSmPrincipalBr(ifr),
+                tenor,rate,getCpSmMaturityDate(ifr))).saveQuery();
+
+        if (validate >= 0){
+            float availableAmount =   Float.parseFloat(resultSet.get(0).get(2)) - Float.parseFloat(getCpSmPrincipalBr(ifr)) ;
+            float totalAmountSold = Float.parseFloat(resultSet.get(0).get(3)) + Float.parseFloat(getCpSmPrincipalBr(ifr));
+            float mandates = Float.parseFloat(resultSet.get(0).get(4)) + 1;
+            new DbConnect(ifr,new Query().getCpSmInvestmentsUpdateQuery(getCpSmInvestmentId(),String.valueOf(availableAmount),String.valueOf(totalAmountSold),String.valueOf(mandates))).saveQuery();
+        }
+    }
+    public static String getCpAcctNo(IFormReference ifr){return getFieldValue(ifr,cpCustomerAcctNoLocal);}
+    public static String getCpAcctName(IFormReference ifr){return getFieldValue(ifr,cpCustomerNameLocal);}
+    public static String getCpAcctEmail(IFormReference ifr){return getFieldValue(ifr,cpCustomerEmailLocal);}
+    public static String getCpAcctSol(IFormReference ifr){return getFieldValue(ifr,cpCustomerSolLocal);}
+    public static String getCpSmInvestmentId(IFormReference ifr){return getFieldValue(ifr,cpSmInvestmentIdLocal);}
+    public static String getCpSmMaturityDate(IFormReference ifr){return getFieldValue(ifr,cpSmMaturityDateBrLocal);}
     public static void setTableGridData(IFormReference ifr, String tableLocal, String [] columns, String [] rowValues){
         JSONArray jsRowArray = new JSONArray();
         jsRowArray.add(setTableRows(columns,rowValues));

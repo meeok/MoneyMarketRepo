@@ -156,13 +156,16 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                 case onDone:{
                     switch (control){
                         case validateWindowEvent:{
-                            if (cpCheckWindowStateById(ifr)){
-                                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
-                                    setFields(ifr,cpPmCustomerIdLocal,cpGenerateCustomerId(ifr));
-                                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
-                                    setFields(ifr,cpSmCustIdLocal,cpGenerateCustomerId(ifr));
-                            }
-                            else return cpValidateWindowErrorMsg;
+                                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
+                                    if (cpCheckWindowStateById(ifr,getCpPmWinRefNo(ifr)))
+                                        setFields(ifr, cpPmCustomerIdLocal, cpGenerateCustomerId(ifr));
+                                    else return cpValidateWindowErrorMsg;
+                                }
+                                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
+                                    if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr)))
+                                         setFields(ifr, cpSmCustIdLocal, cpGenerateCustomerId(ifr));
+                                    else return cpValidateWindowErrorMsg;
+                                }
                         }
                         break;
                         //****************Treasury on Change Starts here *********************//
@@ -318,6 +321,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         if (getCpSmConcessionRate(ifr).equalsIgnoreCase(yes)) {
             setVisible(ifr, cpSmConcessionRateValueLocal);
             setMandatory(ifr, cpSmConcessionRateValueLocal);
+            enableField(ifr,cpSmConcessionRateValueLocal);
         }
         else{
             setInvisible(ifr, cpSmConcessionRateValueLocal);

@@ -54,11 +54,21 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                     switch (control){
                         case validateWindowEvent:{
                             if (getCpDecision(ifr).equalsIgnoreCase(decApprove)) {
-                                if (cpCheckWindowStateById(ifr))
-                                    setupCpPmBid(ifr);
-                                else return cpValidateWindowErrorMsg;
+                                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
+                                    if (cpCheckWindowStateById(ifr,getCpPmWinRefNo(ifr)))
+                                        setupCpPmBid(ifr);
+                                    else return cpValidateWindowErrorMsg;
+                                }
+                                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
+                                    if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr))) {
+                                        if (getCpSmConcessionRate(ifr).equalsIgnoreCase(no))
+                                            setupCpSmBid(ifr);
+                                    }
+                                    else return cpValidateWindowErrorMsg;
+                                }
                             }
                         }
+                        break;
                     }
                 }
                 break;
@@ -128,11 +138,16 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
                 setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
-                setVisible(ifr,new String[]{cpBranchSecSection,cpCustomerDetailsSection,cpPostSection,cpDecisionSection,landMsgLabelLocal});
-                setVisible(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal, (getCpSmConcessionRateValue(ifr).equalsIgnoreCase(empty)) ? empty : cpSmConcessionRateValueLocal});
-                setInvisible(ifr, new String[]{cpAcctValidateBtn});
-                enableFields(ifr,new String[]{cpTokenLocal});
-                setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
+                setVisible(ifr,new String[]{cpBranchSecSection,cpCustomerDetailsSection,cpDecisionSection,landMsgLabelLocal,
+                        cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal, (getCpSmConcessionRateValue(ifr).equalsIgnoreCase(empty)) ? empty : cpSmConcessionRateValueLocal});
+                setInvisible(ifr, new String[]{cpAcctValidateBtn,cpApplyBtn});
+                disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal,cpSmInstructionTypeLocal});
+                setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                if (getCpSmConcessionRate(ifr).equalsIgnoreCase(no)){
+                    enableFields(ifr,new String[]{cpTokenLocal});
+                    setMandatory(ifr,new String[]{cpTokenLocal});
+                    setVisible(ifr,new String[]{cpPostSection});
+                }
             }
         }
     }

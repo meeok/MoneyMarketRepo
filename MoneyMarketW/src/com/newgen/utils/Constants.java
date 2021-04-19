@@ -56,6 +56,7 @@ public interface Constants {
 	String downloadFlagLocal ="downloadFlag";
 	String utilityWs = "Utility_Initiation";
 
+
 	// cp sections
 	String cpBranchPriSection = "cp_branchPm_section";
 	String cpBranchSecSection = "cp_BranchSec_section";
@@ -105,6 +106,7 @@ public interface Constants {
 	String cpCustomerNameLocal ="cp_custAcctName";
 	String cpCustomerAcctNoLocal ="cp_custAcctNum";
 	String cpCustomerEmailLocal = "cp_custAcctEmail";
+	String cpCustomerSolLocal = "";
 	String cpLienStatusLocal ="cp_lien_status";
 	String cpPmRateTypeLocal = "cp_rate_type";
 	String cpPmPersonalRateLocal ="cp_personal_rate";
@@ -177,6 +179,7 @@ public interface Constants {
 	String cpSmBidReminderCol = "Remainder";
 	String cpSmInvestmentBrTbl = "table91";
 	String cpSmMinPrincipalBrLocal = "cp_sec_miniPrincipalAmt_brch";
+	String cpInvestBtn = "invest_btn";
 
 
 
