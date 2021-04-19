@@ -53,6 +53,10 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                         case cpSetupWindowEvent:{
                           return setupCpWindow(ifr, Integer.parseInt(data));
                         }
+                        case cpSmInvestEvent:{
+                             setupCpSmBid(ifr);
+                        }
+                        break;
                     }
                 }
                 break;

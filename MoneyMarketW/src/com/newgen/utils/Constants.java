@@ -293,6 +293,7 @@ public interface Constants {
 	String cpSmApplyEvent ="smApply";
 	String cpSmConcessionRateEvent = "smConcession";
 	String cpSmCheckMaturityDateEvent = "checkMaturityDate";
+	String cpSmInvestEvent = "cpSmInvest";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

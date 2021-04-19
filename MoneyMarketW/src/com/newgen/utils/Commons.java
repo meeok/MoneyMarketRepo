@@ -243,7 +243,6 @@ public class Commons implements Constants {
         return empty;
     }
     public boolean compareDate(String startDate, String endDate){
-        logger.info("start Date-- "+ startDate + " end date-- "+endDate);
       return  LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern(dbDateTimeFormat)).isBefore(LocalDateTime.parse(startDate,DateTimeFormatter.ofPattern(dbDateTimeFormat)));
     }
     public String getCpOpenDate(IFormReference ifr){return getFieldValue(ifr,cpOpenDateLocal);}
@@ -276,7 +275,6 @@ public class Commons implements Constants {
     }
     public String generateCpWinRefNo(String cpLabel) {
         return cpLabel + getCurrentDateTime(cpRefNoDateFormat);
-        //return cpLabel + new SimpleDateFormat(cpRefNoDateFormat).format(new Date());
     }
     public String getWindowSetupFlag (IFormReference ifr){return getFieldValue(ifr,windowSetupFlagLocal);}
     public String getCurrentWorkStep(IFormReference ifr){
@@ -317,7 +315,6 @@ public class Commons implements Constants {
     }
     public String getUserSol(IFormReference ifr){return getFieldValue(ifr,solLocal);}
     public boolean cpCheckWindowStateById(IFormReference ifr,String id){
-        logger.info("getCheckActiveWindowByIdQuery --"+ new Query().getCheckActiveWindowByIdQuery(id));
         return Integer.parseInt(new DbConnect(ifr,
                 new Query().getCheckActiveWindowByIdQuery(id)).getData().get(0).get(0)) > 0;
     }
@@ -343,7 +340,7 @@ public class Commons implements Constants {
         if (validate >= 0){
             float availableAmount =   Float.parseFloat(resultSet.get(0).get(2)) - Float.parseFloat(getCpSmPrincipalBr(ifr)) ;
             float totalAmountSold = Float.parseFloat(resultSet.get(0).get(3)) + Float.parseFloat(getCpSmPrincipalBr(ifr));
-            float mandates = Float.parseFloat(resultSet.get(0).get(4)) + 1;
+            int mandates = Integer.parseInt(resultSet.get(0).get(4)) + 1;
             new DbConnect(ifr,new Query().getCpSmInvestmentsUpdateQuery(getCpSmInvestmentId(),String.valueOf(availableAmount),String.valueOf(totalAmountSold),String.valueOf(mandates))).saveQuery();
         }
     }
@@ -424,11 +421,8 @@ public class Commons implements Constants {
     public String getCpSmConcessionRateValue(IFormReference ifr){
         return getFieldValue(ifr,cpSmConcessionRateValueLocal);
     }
-    public void clearGrids(IFormReference ifr, String tableLocal){
+    public void clearTable(IFormReference ifr, String tableLocal){
         ifr.clearTable(tableLocal);
-    }
-    public void clearGrids(IFormReference ifr, String [] tableLocals){
-       for (String tableLocal : tableLocals) ifr.clearTable(tableLocal);
     }
     public String getCpSmPrincipalBr(IFormReference ifr){
         return getFieldValue(ifr,cpSmPrincipalBrLocal);

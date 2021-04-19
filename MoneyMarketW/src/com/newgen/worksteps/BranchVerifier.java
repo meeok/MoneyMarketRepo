@@ -41,13 +41,22 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 case cpApiCallEvent:{
                     switch (control) {
                         case cpTokenEvent: return CpController.tokenController(ifr);
-                        case cpPostEvent: return CpController.postTranController(ifr);
+                        case cpPostEvent:{
+                            if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr))) return CpController.postTranController(ifr);
+                            else return cpValidateWindowErrorMsg;
+                        }
                     }
-                    break;
                 }
                 case formLoad:
                 case onLoad:
-                case onClick:
+                case onClick:{
+                    switch (control){
+                        case cpSmInvestEvent:{
+                            if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr))) setupCpSmBid(ifr);
+                            else return cpValidateWindowErrorMsg;
+                        }
+                    }
+                }
                 case onChange:
                 case custom:
                 case onDone:{
@@ -60,11 +69,8 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                                     else return cpValidateWindowErrorMsg;
                                 }
                                 else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
-                                    if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr))) {
-                                        if (getCpSmConcessionRate(ifr).equalsIgnoreCase(no))
-                                            setupCpSmBid(ifr);
-                                    }
-                                    else return cpValidateWindowErrorMsg;
+                                    if (!cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr)))
+                                         return cpValidateWindowErrorMsg;
                                 }
                             }
                         }
