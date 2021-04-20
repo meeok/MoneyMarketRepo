@@ -393,6 +393,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             String cpBillAmount = ifr.getTableCellValue(cpSmCpBidTbl,i,3);
             String minimumPrincipal = getFieldValue(ifr,cpSmMinPrincipalLocal);
             long dayToMaturity =  getDaysToMaturity(maturityDate);
+            logger.info("days to maturity-- "+dayToMaturity);
 
             if (Float.parseFloat(cpBillAmount) < Float.parseFloat(minimumPrincipal))
                 return "CP Bill Amount cannot be less than the minimum principal Amount. Correct row No. "+i+".";

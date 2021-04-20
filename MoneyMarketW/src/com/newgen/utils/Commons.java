@@ -329,20 +329,25 @@ public class Commons implements Constants {
                         getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
                 )).saveQuery();
     }
-    public void setupCpSmBid(IFormReference ifr){
-        resultSet = new DbConnect(ifr,new Query().getCpSmInvestmentsSelectQuery(getCpSmInvestmentId())).getData();
+    public String setupCpSmBid(IFormReference ifr){
+        resultSet = new DbConnect(ifr,new Query().getCpSmInvestmentsSelectQuery(getSelectedCpSmInvestmentId(ifr))).getData();
         String tenor = resultSet.get(0).get(0);
         String rate = resultSet.get(0).get(1);
         int validate = new DbConnect(ifr,new Query().getSetupCpSmBidQuery(getCurrentDateTime(),getCpSmCusRefNo(ifr),getCpSmWinRefNo(ifr),
                 getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpAcctNo(ifr),getCpAcctName(ifr),getCpAcctEmail(ifr),getCpSmPrincipalBr(ifr),
                 tenor,rate,getCpSmMaturityDate(ifr))).saveQuery();
 
+        logger.info("is saved -- "+ validate);
+
         if (validate >= 0){
             float availableAmount =   Float.parseFloat(resultSet.get(0).get(2)) - Float.parseFloat(getCpSmPrincipalBr(ifr)) ;
             float totalAmountSold = Float.parseFloat(resultSet.get(0).get(3)) + Float.parseFloat(getCpSmPrincipalBr(ifr));
             int mandates = Integer.parseInt(resultSet.get(0).get(4)) + 1;
-            new DbConnect(ifr,new Query().getCpSmInvestmentsUpdateQuery(getCpSmInvestmentId(),String.valueOf(availableAmount),String.valueOf(totalAmountSold),String.valueOf(mandates))).saveQuery();
+            new DbConnect(ifr,new Query().getCpSmInvestmentsUpdateQuery(getSelectedCpSmInvestmentId(ifr),String.valueOf(availableAmount),String.valueOf(totalAmountSold),String.valueOf(mandates))).saveQuery();
+            disableField(ifr,cpInvestBtn);
+            return "Customer Bid has been invested, Thank You.";
         }
+        return "Customer Bid cannot be invested right now. Contact IBPS support";
     }
     public static String getCpAcctNo(IFormReference ifr){return getFieldValue(ifr,cpCustomerAcctNoLocal);}
     public static String getCpAcctName(IFormReference ifr){return getFieldValue(ifr,cpCustomerNameLocal);}
@@ -392,6 +397,9 @@ public class Commons implements Constants {
     private String getCpSmInvestmentId(){
         return cpSmIdInvestmentLabel+getCpRandomId();
     }
+    public String getSelectedCpSmInvestmentId(IFormReference ifr){
+        return getFieldValue(ifr,cpSmInvestmentIdLocal);
+    }
     private void setCpSmCloseDate(IFormReference ifr){
         String time = " 14:00:01";
         setFields(ifr,cpCloseDateLocal,LocalDate.now().toString() +time);
@@ -409,7 +417,7 @@ public class Commons implements Constants {
             String guaranteedCp = ifr.getTableCellValue(cpSmCpBidTbl,i,9);
 
             new DbConnect(ifr,new Query().getSetSmInvestmentQuery(getCpSmInvestmentId(),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpSmWinRefLocal),
-                    corporateName,description,maturityDate,billAmount,billAmount,rate,tenor,dtm,status,guaranteedCp,getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
+                    corporateName,description,maturityDate,billAmount,billAmount,rate,tenor,dtm,status,guaranteedCp,getCpOpenDate(ifr),getCpCloseDate(ifr),getCurrentDateTime())).saveQuery();
         }
     }
     public void setWindowSetupFlag (IFormReference ifr){

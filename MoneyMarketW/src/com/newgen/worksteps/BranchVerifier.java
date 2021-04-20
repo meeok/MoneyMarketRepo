@@ -52,7 +52,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 case onClick:{
                     switch (control){
                         case cpSmInvestEvent:{
-                            if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr))) setupCpSmBid(ifr);
+                            if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr))) return setupCpSmBid(ifr);
                             else return cpValidateWindowErrorMsg;
                         }
                     }

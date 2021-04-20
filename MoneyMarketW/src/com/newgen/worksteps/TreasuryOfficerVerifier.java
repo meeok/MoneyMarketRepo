@@ -54,9 +54,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                           return setupCpWindow(ifr, Integer.parseInt(data));
                         }
                         case cpSmInvestEvent:{
-                             setupCpSmBid(ifr);
+                           return  setupCpSmBid(ifr);
                         }
-                        break;
                     }
                 }
                 break;
@@ -139,6 +138,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                     setVisible(ifr, new String[]{cpLandingMsgSection,cpDecisionSection,cpMarketSection,cpTreasurySecSection,cpCutOffTimeSection,cpSmCutOffTimeLocal,cpSetupSection,cpSetupWindowBtn,cpSmCpBidTbl});
                     setInvisible(ifr,new String[]{cpOpenDateLocal,cpCloseDateLocal});
                     setMandatory(ifr,new String[] {cpDecisionLocal,cpRemarksLocal});
+                    disableFields(ifr,new String[]{cpSmCpBidTbl,cpSmMinPrincipalLocal});
                 }
             }
         }

@@ -298,6 +298,7 @@ public interface Constants {
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";
 	String configPath = "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/installedApps/HO-IBPSUTIL01Cell01/MoneyMarketW.ear/MoneyMarketW.war/config/moneymarket.properties";
+	String configPath2 = "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/installedApps/HO-IBPSAPP01Cell01/MoneyMarketW_war.ear/MoneyMarketW.war/config/moneymarket.properties";
 	String mailFromField ="MAILFROM";
 	String processDefIdField = "PROCESSDEFID";
 	
