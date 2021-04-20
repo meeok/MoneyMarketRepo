@@ -141,9 +141,19 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         //approving of landing message 
         logger.info("getTbUpdateLandingMsg>>"+getTbUpdateLandingMsg(ifr));
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) || getTbUpdateLandingMsg(ifr)) { // for approval of landing page
-            setVisible(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
-            enableField(ifr,tbDecisionSection);
+            setVisible(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbValidatebtn});
+            enableFields(ifr,new String[] {tbDecisionSection,tbValidatebtn});
             setMandatory(ifr, new String[]{tbDecisiondd,tbRemarkstbx});
+        }
+      
+        else if(getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){  //bid has been approved by branch verifier and customer's account has been liened.assign to utility or verifier
+        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchPriCusotmerDetails,tbBranchPriSection,
+        	tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID});
+        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection});
+        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
+        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
+          //  disableFields(ifr, new String[] {});
+            enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
         }
         else {//Modification of Primary Market Cut-off Time 
         	

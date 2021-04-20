@@ -59,7 +59,6 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         //****************Treasurry Starts here *********************//
                         case tbValidateCustomer:{
                         	return tbValidateCustomer(ifr);
-                            
                         }
                         
                         //****************Treasurry Ends here *********************//
@@ -147,8 +146,11 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             }
                             else return cpValidateWindowErrorMsg;
                         }
+                        
                         //****************Treasurry on Change Starts here *********************//
-    	                
+                        case tbOndone:{
+                        	return tbOnDone(ifr);
+                        }
                         
                         //****************Treasurry on Change Ends here *********************//
 
@@ -266,7 +268,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     }
 
     private void tbFormLoad(IFormReference ifr) {
-    	setDropDown(ifr,tbDecisiondd,new String[]{decApprove,decDiscard});
+    	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
         setVisible(ifr, new String[]{tbMarketSection, tbDecisionSection});
         enableFields(ifr,new String[]{tbMarketTypedd});
         setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx});
@@ -303,8 +305,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     		setVisible(ifr,tbBrcnhPriPersonalRate);
     		setMandatory(ifr,tbBrcnhPriPersonalRate);
     	}
-    	else
+    	else {
     		hideField(ifr,tbBrcnhPriPersonalRate);
+    		clearFields(ifr,tbBrcnhPriPersonalRate);
+    	}
     	
     	String retMsg ="";
     	retMsg = tbValidatePrincipalAmt(ifr);
@@ -316,7 +320,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     		setVisible(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection});
     		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
     		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
-    		tbGenerateCustRefNo(ifr, getTbMarket(ifr));
+    		//tbGenerateCustRefNo(ifr, getTbMarket(ifr));)
     	}
     	else {
     		setTbBrnchPriRqsttype(ifr,"");
@@ -324,6 +328,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     		undoMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
 
     	}
+    	//logger.info("tbOnDone1>>>");
+    	//tbOnDone(ifr);
+    	//logger.info("tbOnDone2>>>");
     }
     
     /*
@@ -343,7 +350,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     		if(!isEmpty(getTbBrnchPriPrncplAmt(ifr))) {
     			logger.info("getTbBrnchPriPrncplAmt>>>>"+Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)));
     			try {
-    				retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbPrsnlMinPrincipalAmt ? "Principal Amount must be minimum of "+String.valueOf(tbPrsnlMinPrincipalAmt) :"";
+    				retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbPrsnlMinPrincipalAmt ? "Principal Amount must be minimum of "+String.valueOf(tbPrsnlMinPrincipalAmt):"";
     			}
     			catch(Exception ex) {retMsg ="Invalid Principal amount";}
     		}
@@ -352,16 +359,33 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     		if(!isEmpty(getTbBrnchPriPrncplAmt(ifr))) {
     			logger.info("getTbBrnchPriPrncplAmt>>>>"+Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)));
 	    		try {
-					clearFields(ifr,tbBrnchPriPrncplAmt);
 					retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbBnkMinPrincipalAmt ? "Principal Amount must be minimum of "+String.valueOf(tbBnkMinPrincipalAmt) :"";
 				}
 				catch(Exception ex) {retMsg ="Invalid Principal amount";}
 			}
     	}
+    	if(!isEmpty(retMsg))
+    		clearFields(ifr,tbBrnchPriPrncplAmt);
    
     	return retMsg;
     }
-
+    
+    /*
+     * generate customer unique ref for bid
+     */
+    private String tbOnDone(IFormReference ifr) {
+    	logger.info("tbOnDone>>");
+    	String retMsg="";
+    	//if(getTbDecision(ifr).equalsIgnoreCase(decSubmit)) {
+    	 if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+    		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid) ){//generate customer unique ref
+    			setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
+	    	}
+    	}
+    	
+    	//logger.info("Validate retMsg>>"+retMsg);
+    	return retMsg;
+    }
     
     //**********************Treasury Ends here **********************//
 

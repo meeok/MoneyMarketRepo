@@ -482,7 +482,6 @@ public class Commons implements Constants {
         	logger.info("isTbWindowOpen CloseDTe>>>"+closedte);
         	return tbConvertStringToDate(closedte).compareTo(new Date())>0 ? true:false;
         }
-        
         return false;
     }
     
@@ -491,7 +490,7 @@ public class Commons implements Constants {
      * else return false
      */
      public boolean isTbWindowClosed(IFormReference ifr,String refid){
-     	String qry = new Query().getClosedMarketWinRefIDQuery(treasuryProcessName,getTbMarket(ifr),refid);
+     	String qry = new Query().getClosedMarketWinRefIDQuery(treasuryProcessName,getTbMarket(ifr),refid,getWorkItemNumber(ifr));
          logger.info("isTbWindowClosed query --"+ qry);
          List<List<String>> dbr = new DbConnect(ifr,qry).getData();
          logger.info("isTbWindowClosed db output>>"+dbr);
@@ -591,7 +590,14 @@ public class Commons implements Constants {
 	public  String getTbTranID(IFormReference ifr) {return (String) ifr.getValue(tbTranID);}
 	public  void setTbTranID(IFormReference ifr, String value) {ifr.setValue(tbTranID,value);}
 	public  String getPostStatus(IFormReference ifr) {return tbSuccess;}
-	
+	public static void setTbBrnchCustPriRefNo(IFormReference ifr, String value) {ifr.setValue(tbBrnchCustPriRefNo,value);}
+	public static String getTbBrnchCustPriRefNo(IFormReference ifr) {return (String) ifr.getValue(tbBrnchCustPriRefNo);}
+	public static void setTbAssigndd(IFormReference ifr, String value) {ifr.setValue(tbAssigndd,value);}
+	public static String getTbAssigndd(IFormReference ifr) {return (String) ifr.getValue(tbAssigndd);}
+	public static void setTb_BrnchPri_LienID(IFormReference ifr, String value) {ifr.setValue(tb_BrnchPri_LienID,value);}
+	public static String getTb_BrnchPri_LienID(IFormReference ifr) {return (String) ifr.getValue(tb_BrnchPri_LienID);}
+	//public static void setTbPoolManager(IFormReference ifr, String value) {ifr.setValue(tbPoolManager,value);}
+	//public static String getTbPoolManager(IFormReference ifr) {return (String) ifr.getValue(tbPoolManager);}
 	
 	
 	public static void setWiName(IFormReference ifr){
@@ -616,13 +622,16 @@ public class Commons implements Constants {
     }
 	public String generateTbUniqueReference(IFormReference ifr) {
     	//generate ref. check if its in db
+		logger.info("generateTbUniqueReference");
+		String unqno ="";
     	 if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
-    		 return "TBPMA"+getDateWithoutTime();	
+    		 unqno ="TBPMA"+getDateWithoutTime();	
          }
          else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
-        	 return "TBSEC"+getDateWithoutTime();	
+        	 unqno= "TBSEC"+getDateWithoutTime();	
          }
-    	return "";
+    	 logger.info("unqno>>"+unqno);
+    	return unqno;
     }
 	
 	/*
@@ -635,18 +644,19 @@ public class Commons implements Constants {
 		45678 represents five digit serial numbers for each TBills processed bank wide
 		Reference number (unique identifier) must be a hypertext (hyperlink) which enables user explode on the transaction to view full transaction details.
 		*/
-	public String tbGenerateCustRefNo(IFormReference ifr,String marketType) {
+	public String tbGenerateCustRefNo(IFormReference ifr) {
 		Date date =new Date();
-		String randNo = Character.toUpperCase((marketType.charAt(0))) + getUserSol(ifr) + 
+		String randNo = (getTbMarket(ifr).charAt(0)) + getUserSol(ifr) + 
 				new SimpleDateFormat("yyyy").format(date)+new SimpleDateFormat("MMM").format(date) + 
 				((int)(Math.random()*9000)+1000);
 		
 		String qry = new Query().getCustomerRefIdQuery(randNo);
 		logger.info("getCustomerRefIdQuery>>"+qry);
 		if(new DbConnect(ifr,qry).getData().size()>0)
-			tbGenerateCustRefNo(ifr,marketType);
+			tbGenerateCustRefNo(ifr);
+		//else save in db
 		logger.info("randNo>>>"+randNo);
-		return randNo;
+		return randNo.toUpperCase();
 	}
 	
 	 //check if cutoff time has elapsed

@@ -18,10 +18,18 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     private static Logger logger = LogGen.getLoggerInstance(BranchVerifier.class);
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
+    	logger.info("3993");
         clearDecHisFlag(ifr);
-        if (!isEmpty(getProcess(ifr))) showSelectedProcessSheet(ifr);
+        logger.info("44");
+        if (!isEmpty(getProcess(ifr))) {
+        	logger.info("111");
+        	showSelectedProcessSheet(ifr);
+        }
         if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
-        else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) tbFormLoadActivity(ifr);
+        else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) {
+        	logger.info("122");
+        	tbFormLoadActivity(ifr);
+        }
     }
 
     @Override
@@ -49,9 +57,16 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 case onLoad:
                 case onClick:{
                 	switch(control) {
-	                	case tbPost:{
-	                		return tbPost(ifr);
+	                	case tbLienCustFaceValue:{
+	                		return tbLienCustFaceValue(ifr);
 	                	}
+	                	 //****************Treasurry Starts here *********************//
+                        case tbValidateCustomer:{
+                        	return tbValidateCustomer(ifr);
+                            
+                        }
+                        
+                        //****************Treasurry Ends here *********************//
                 	}
                 }
                 case onChange:{
@@ -152,17 +167,21 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     /*********************************  Treasury Starts here ****************/
 
     private void tbFormLoadActivity(IFormReference ifr){
-        hideTbSections(ifr);
+    	hideTbSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
-        disableTbSections(ifr);
+        //disableTbSections(ifr);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{tbRemarkstbx,tbDecisiondd}); 
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
             if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
-            	setVisible(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection,tbPostSection});
+            	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchPriCusotmerDetails,tbBranchPriSection,
+            			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID});
+            	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection});
             	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
-                setInvisible(ifr, new String[]{cpAcctValidateBtn});
-                disableFields(ifr, new String[] {tbTranID});
+            	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
+              //  disableFields(ifr, new String[] {});
+                enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
+               
             }
         } else {}
        
@@ -193,6 +212,18 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     private String tbOndone(IFormReference ifr) {
     	return isTbDocUploaded(ifr,getWorkItemNumber(ifr),customers_instruction) ?"Kindly attach customers_instruction ":"";
   	}
+    /*
+     * Decision will automatically be populated as “approve” 
+     * when posting status is successful
+     */
+    private String tbLienCustFaceValue(IFormReference ifr) {
+    	setTbDecisiondd(ifr,decApprove);
+    	disableFields(ifr, new String[] {tbLienPrincipalbtn,tbDecisiondd});
+    	undoMandatory(ifr,tbRemarkstbx);
+    	setTb_BrnchPri_LienID(ifr,"L234");
+    	return "Customer Principal liened Succesfully";
+  	}
+    
 
     
     /***************************Treaury ends here ************************/

@@ -243,6 +243,9 @@ public interface Constants {
 	String tbTokenChange ="tbTokenChange";
 	String tbPost ="tbPost";
 	String tbOndone ="tbOndone";
+	String tbLienCustFaceValue = "tbLienCustFaceValue";
+	String tbViewPriBidSmryReport ="tbViewPriBidSmryReport";
+	String tbDownloadPriBidSmryReport ="tbDownloadPriBidSmryReport";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -255,6 +258,7 @@ public interface Constants {
 	//tbMarketSection - Market
 	String tbMarketTypedd = "tb_select_market";
 	String tbCategorydd = "tb_category";
+	String tbAssigndd ="assign";
 	//tbLandingMsgSection- Setup Landing Message
 	String tbLandMsgtbx = "tb_landingMsg";
 	String tbUpdateLandingMsgcbx = "tb_updateMsg";
@@ -273,6 +277,9 @@ public interface Constants {
 	String tbCustAcctLienStatus ="tb_lien_status";
 	String tbCustSchemeCode ="tb_schemecode";
 	String tbValidatebtn ="tb_validate_btn";
+	String tbFetchMandatebtn ="tb_fetchmandate_btn";
+	String tbLienPrincipalbtn ="tb_LienPrincipal";
+	String tb_BrnchPri_LienID ="tb_BrnchPri_LienID";
 	//branch Primary
 	String tbBrnchPriTenordd ="tb_pm_tenor";
 	String tbBrnchPriRollovrdd="tb_rollover_type";
@@ -293,13 +300,17 @@ public interface Constants {
 	
 	//tb_Primary Bid
 	String tbViewPriBidReportbtn = "tb_viewReport_btn";
-	String tbPriBidReportTable ="table69";
+	String tbViewPriBidDwnldBidSmrybtn="tb_downloadBidSmry_btn";
+	String tbPriBidReportTable ="table69"; //cmplx tb name =  tb_bidReport 
 	String tbPriBidAllocationTable ="table68";
 	String tbPriBidAllocationbtn ="tb_allocation_btn";
 	String tbPriBidAllocatebtn ="tb_allocate_btn";
 	String tbPriBidApprovebtn ="tb_allocation_btn";
 	String tbPriBidCustRqstTable ="table67";
+	String tbPriBidViewCustRqstbtn="tb_viewCustPriBids";
+	String tbPriBidUpdateCustBid ="tb_updateCustPriBids";
 	//String tbPriBidApprovebtn ="tb_allocation_btn";
+	
 	
 	//sections
 	String tbMarketSection = "tb_market_section";
@@ -333,6 +344,9 @@ public interface Constants {
 	String tbCategoryCutOff = "Cut off time modification";
 	String tbCategoryReport = "Report";
 	String tbCategoryMandate = "Mandate";
+	String tbPoolManager ="Pool_Manager";
+	String tbPoolManagerLabel ="Pool Manager";
+	
 	
 	// roll over dropdown
 	String tbBrnchPriRoPrincipal ="Principal";
@@ -353,6 +367,20 @@ public interface Constants {
 	double tbPrsnlMinPrincipalAmt = 50000000;
 	String tbSuccess ="success";
 	
+	//assigndd
+	String tbTreasuryUtility ="Treasury_Utility";
+	String tbTreasuryVerifier ="Treasury_Verifier";
+	String tbTreasuryUtilityLabel ="Treasury Utility";
+	String tbTreasuryVerifierLable ="Treasury Verifier";
+	
+	//table69 ( Bid Report ) column names
+	String tbBidRptRqstTypeCol = "Request Type";
+	String tbBidRptTenorCol ="Tenor";
+	String tbBidRptRateCol="Rate";
+	String tbBidRptRateTypeCol="Rate Type";
+	String tbBidRptTtlAmtCol ="Total Amount";
+	String tbBidRptTxnCoutnCol = "Transaction Count";
+	String tbBidRptStatusCol ="Status";
 	
 	//Document names
 	String customers_instruction ="customers_instruction";
@@ -383,8 +411,8 @@ public interface Constants {
 	String tbBidRqstType ="Fresh Mandate";
 	
 	String[] allTbSections = {tbBrnchPriCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
-			tbPrimaryBidSection, tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
-			tbTreasuryOpsSection ,tbTreasurySecReportSection ,tbPostSection,tbSecRediscountRate };
+			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
+			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbSecRediscountRate };
 	
 	/*************TREASURY BILLS ENDS HERE********************/
 

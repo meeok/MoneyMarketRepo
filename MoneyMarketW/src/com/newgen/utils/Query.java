@@ -67,6 +67,10 @@ public class Query {
         return "select REFID from mm_setup_tbl where process = '"+process+"' "
         		+ "and upper(markettype) = upper('"+marketType+"') and upper(refid) = upper('"+refid+"') and upper(closeflag) = ('Y')";
     }
+    public String getClosedMarketWinRefIDQuery(String process, String marketType,String refid,String winame){
+        return "select REFID from mm_setup_tbl where process = '"+process+"' "
+        		+ "and upper(markettype) = upper('"+marketType+"') and upper(refid) = upper('"+refid+"') and upper(closeflag) = ('Y') and  upper(winame) =upper('"+winame+"')";
+    }
     //get window close date of a refid
     public String getWinCloseDateByIdQuery(String winRefId){
         return "select CLOSEDATE from mm_setup_tbl where refid = '"+winRefId+"";
@@ -113,6 +117,11 @@ public class Query {
       return "select tenor , rate , sum(custprincipal) as TotalAmount ,ratetype, count(*) as TransactionCount, groupindex from mm_bid_tbl where utilitywiname = '"+utilityWiName+"' group by tenor, rate ,ratetype,groupindex";
 
     }
+    public String getTbPmBidSummaryQuery(String refid){
+    	return "select tb_request_type,tb_pm_tenor, sum(tb_pm_mpBr) as TotalAmount,tb_rate_type, count(*) as TransactionCount from moneymarket_ext " + 
+    	"where tb_request_type is not null and tb_uniqueNum in (select refid from mm_setup_tbl where closeflag ='Y' and refid='"+refid+"') group by " + 
+    	"tb_request_type,tb_pm_tenor,tb_rate_type";
+      }
     /*
      * get attached documents
      * @param winame
