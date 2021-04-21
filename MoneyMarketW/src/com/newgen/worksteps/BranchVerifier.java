@@ -42,7 +42,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                     switch (control) {
                         case cpTokenEvent: return CpController.tokenController(ifr);
                         case cpPostEvent:{
-                            if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr))) return CpController.postTranController(ifr);
+                            if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
                             else return cpValidateWindowErrorMsg;
                         }
                     }
@@ -52,7 +52,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 case onClick:{
                     switch (control){
                         case cpSmInvestEvent:{
-                            if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr))) return setupCpSmBid(ifr);
+                            if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return setupCpSmBid(ifr);
                             else return cpValidateWindowErrorMsg;
                         }
                     }
@@ -64,12 +64,12 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         case validateWindowEvent:{
                             if (getCpDecision(ifr).equalsIgnoreCase(decApprove)) {
                                 if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                                    if (cpCheckWindowStateById(ifr,getCpPmWinRefNo(ifr)))
+                                    if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr)))
                                         setupCpPmBid(ifr);
                                     else return cpValidateWindowErrorMsg;
                                 }
                                 else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
-                                    if (!cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr)))
+                                    if (!cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr)))
                                          return cpValidateWindowErrorMsg;
                                 }
                             }

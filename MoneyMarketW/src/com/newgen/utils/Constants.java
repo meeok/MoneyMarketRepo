@@ -74,6 +74,7 @@ public interface Constants {
 	String cpSetupSection="cp_setup_section";
 	String cpCutOffTimeSection = "cp_cutoff_section";
 	String cpCustomerDetailsSection ="cp_custDetails_section";
+	String cpRediscountRateSection = "rediscountratesection";
 
     // end of cp sections
 
@@ -88,7 +89,8 @@ public interface Constants {
 	String cpCategorySetup = "Setup";
 	String cpCategoryBid = "Bid";
 	String cpCategoryReDiscountRate = "Re-discount Rate";
-	String cpCategoryCutOff = "Cut off time modification";
+	String cpCategoryModifyCutOffTime = "Cut off time modification";
+	String cpCategoryUpdateLandingMsg = "Update Landing Message";
 	String cpCategoryReport = "Report";
 	String cpCategoryMandate = "Mandate";
 	String cpSetupWindowBtn = "cp_setupWin_btn";
@@ -180,6 +182,10 @@ public interface Constants {
 	String cpSmInvestmentBrTbl = "table91";
 	String cpSmMinPrincipalBrLocal = "cp_sec_miniPrincipalAmt_brch";
 	String cpInvestBtn = "invest_btn";
+	String cpReDiscountRateLess90Local = "cp_less90_prim";
+	String cpReDiscountRate90To180Local = "cp_91_180days_prim";
+	String cpReDiscountRate181To270Local = "cp_181_270days_prim";
+	String cpReDiscountRate271To364Local = "cp_271_364days_prim";
 
 
 
@@ -294,6 +300,7 @@ public interface Constants {
 	String cpSmConcessionRateEvent = "smConcession";
 	String cpSmCheckMaturityDateEvent = "checkMaturityDate";
 	String cpSmInvestEvent = "cpSmInvest";
+	String cpUpdateCutOffTimeEvent = "updateCutOffTime";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

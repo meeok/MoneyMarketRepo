@@ -127,4 +127,7 @@ public class Query {
     public String getCpSmInvestmentsSelectQuery(String id){
         return "select tenor, rate,availableamount,totalamountsold,mandates  from mm_sminvestments_tbl where investmentid = '"+id+"'";
     }
+    public String getUpdateCutoffTimeQuery(String id, String closeDate){
+        return "update mm_setup_tbl set closedate = '"+closeDate+"' where refid = '"+id+"'";
+    }
 }

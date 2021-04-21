@@ -157,12 +157,12 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                     switch (control){
                         case validateWindowEvent:{
                                 if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                                    if (cpCheckWindowStateById(ifr,getCpPmWinRefNo(ifr)))
+                                    if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr)))
                                         setFields(ifr, cpPmCustomerIdLocal, cpGenerateCustomerId(ifr));
                                     else return cpValidateWindowErrorMsg;
                                 }
                                 else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
-                                    if (cpCheckWindowStateById(ifr,getCpSmWinRefNo(ifr)))
+                                    if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr)))
                                          setFields(ifr, cpSmCustIdLocal, cpGenerateCustomerId(ifr));
                                     else return cpValidateWindowErrorMsg;
                                 }

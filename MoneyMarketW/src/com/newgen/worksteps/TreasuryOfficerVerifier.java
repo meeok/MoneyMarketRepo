@@ -5,11 +5,7 @@ import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.processMethods.CpController;
-import com.newgen.utils.Commons;
-import com.newgen.utils.CommonsI;
-import com.newgen.utils.DBCalls;
-import com.newgen.utils.LogGen;
-import com.newgen.utils.MailSetup;
+import com.newgen.utils.*;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -51,10 +47,13 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 case onClick:{
                     switch (controlName){
                         case cpSetupWindowEvent:{
-                          return setupCpWindow(ifr, Integer.parseInt(data));
+                          return cpSetupWindow(ifr, Integer.parseInt(data));
                         }
                         case cpSmInvestEvent:{
                            return  setupCpSmBid(ifr);
+                        }
+                        case cpUpdateCutOffTimeEvent:{
+                            return cpUpdateCutOffTime(ifr);
                         }
                     }
                 }
@@ -141,6 +140,22 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                     disableFields(ifr,new String[]{cpSmCpBidTbl,cpSmMinPrincipalLocal});
                 }
             }
+            else {
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
+                    setVisible(ifr,new String[]{cpMarketSection,cpDecisionSection,cpCategoryLocal});
+                    setMandatory(ifr, new String[]{cpDecisionLocal,cpRemarksLocal});
+                    disableFields(ifr,new String[]{cpMarketSection});
+                    if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryModifyCutOffTime)){
+                        setVisible(ifr,new String[]{cpCutOffTimeSection,cpSetupSection,cpUpdateCutoffTimeBtn});
+                    }
+                   else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryReDiscountRate)){
+                        setVisible(ifr,new String[]{cpRediscountRateSection,cpSetupSection,cpSetReDiscountRateBtn});
+                    }
+                   else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryUpdateLandingMsg)){
+                       setVisible(ifr,new String[]{cpLandingMsgSection});
+                    }
+                }
+            }
         }
         else if (getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
             if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
@@ -162,7 +177,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         setDecision(ifr, cpDecisionLocal,new String[]{decApprove,decReject});
     }
 
-    private String setupCpWindow (IFormReference ifr, int rowCount){
+    private String cpSetupWindow(IFormReference ifr, int rowCount){
         if (isEmpty(getWindowSetupFlag(ifr))){
             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
                 return empty;
@@ -172,6 +187,22 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
             }
         }
         return "Window already setup.";
+    }
+    private String cpUpdateCutOffTime(IFormReference ifr){
+        String id = null;
+
+        if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
+            id = getCpPmWinRefNo(ifr);
+        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
+            id = getCpSmWinRefNo(ifr);
+
+      int validate = new DbConnect(ifr, new Query().getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
+        if (validate >=0 ) {
+            setFields(ifr,cpDecisionLocal,decApprove);
+            disableFields(ifr,new String[]{cpDecisionLocal,cpUpdateCutoffTimeBtn});
+            return "Cut off time updated successfully. Kindly submit workitem";
+        }
+        return "Unable to update cut off time. Contact iBPS support";
     }
 
     /******************  TREASURY BILL CODE BEGINS *********************************/
