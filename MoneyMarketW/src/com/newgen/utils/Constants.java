@@ -382,6 +382,24 @@ public interface Constants {
 	String tbBidRptTxnCoutnCol = "Transaction Count";
 	String tbBidRptStatusCol ="Status";
 	
+	//table67 ( Customer Request ) column names
+	String tbBidCustRefNocol ="RefNumber";
+	String tbBidAcctNoCol ="AccountNo";
+	String tbBidAcctNamecol ="AccountName";
+	String tbBidTenorCol ="Tenor";
+	String tbBidRateCol ="tbRate";
+	String tbBidCBNRateCol="CBNRtae";
+	String tbCidBankRateCol ="BankRate";
+	String tbBidPersonalRateCol ="PersonalRate";
+	String tbBidPrincipalCol ="Principal";
+	String tbBidMaturityDteCol ="MaturityDate";
+	String tbBidDefaultAllCol ="DefaultAllocation";
+	String tbBidNewAllCol ="NewAllocation";
+	String tbBidTotalAmtCol ="TotalAmt";
+	String tbBidStausCol ="Status";
+	
+
+	
 	//Document names
 	String customers_instruction ="customers_instruction";
 	

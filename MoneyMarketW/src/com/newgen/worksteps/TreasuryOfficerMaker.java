@@ -515,7 +515,43 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         }
         else {//return a message of no bids for this window
         	}
+     }
+    
+    //view 
+    private void tbViewCustomerBids(IFormReference ifr, int rowIndex){
+        ifr.clearTable(tbPriBidCustRqstTable);
+        String refid = getTbUniqueRef(ifr);
+        logger.info("refid>> "+ refid);
+        String rqstType = ifr.getTableCellValue(tbPriBidReportTable,rowIndex,0);
+        logger.info("rqstType>> "+ rqstType);
+        String tenorgrp = ifr.getTableCellValue(tbPriBidReportTable,rowIndex,1);
+        logger.info("tenor>> "+ tenorgrp);
+        String personalRate = ifr.getTableCellValue(tbPriBidReportTable,rowIndex,2);
+        logger.info("personalRate>> "+ personalRate);
+        String rateType = ifr.getTableCellValue(tbPriBidReportTable,rowIndex,4);
+        
+        String qry = new Query().getTbPmCustomerRqstyQuery(refid, rqstType, tenorgrp, rateType, personalRate);
+    	logger.info("getTbPmCustomerRqstyQuery>>"+qry);
+        List<List<String>> dbr = new DbConnect(ifr,qry).getData();
+        logger.info("getTbPmCustomerRqst>>"+dbr);
+        if(dbr.size()>0)
+        { 
+        	for(List<String> ls : dbr){
+        		 String id = ls.get(1);
+                 String acctNo = ls.get(2);
+                 String acctName = ls.get(3);
+                 String tenor = ls.get(4);
+                 String rate = ls.get(6);
+                 String principal = ls.get(7);
+                 String defaultAllocation ="100";
+                 setTableData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol},
+                         new String[]{id,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation});
+             }
+             setVisible(ifr,new String[]{cpBidReportTbl,cpUpdateBtn});
         }
+      
+           
+    }
         	
        
     
