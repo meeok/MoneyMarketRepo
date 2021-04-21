@@ -323,6 +323,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         hideFields(ifr, new String[] {goBackDashboardSection,tbPriSetupbtn});
         setDropDown(ifr,tbAssigndd,new String[]{tbTreasuryUtilityLabel,tbTreasuryVerifierLable},new String[]{tbTreasuryUtility,tbTreasuryVerifier});
         //disableTbSections(ifr);
+        disableField(ifr,tbAssigndd);
         setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard}); //cannot discard if bids have been placed by bi
     	//setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
     	clearFields(ifr,new String[]{tbRemarkstbx});
@@ -410,7 +411,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             	setVisible(ifr,new String [] {tbPrimaryBidSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
         		enableFields(ifr,new String[]{tbPriBidAllocationbtn,tbViewPriBidReportbtn,tbPrimaryBidSection,tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {});
-                disableFields(ifr, new String[]{tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd});
+                disableFields(ifr, new String[]{tbAssigndd,tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd});
                 hideFields(ifr, new String[] {tbPriBidAllocationTable,tbPriBidCustRqstTable,tbPriBidReportTable});
             }
             else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryCutOff)){
@@ -564,14 +565,13 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                  String ratetype = ls.get(5);
                  String rate = ls.get(6);
                  String principal = ls.get(7);
+                 String wino = ls.get(8);
                  String defaultAllocation ="100";
-                 setTableData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol,tbBidRateTypeCol},
-                         new String[]{id,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation,tbBidRateTypeCol});
+                 setTableData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidWorkItemNoCol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidPersonalRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol,tbBidRateTypeCol},
+                         new String[]{id,wino,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation,tbBidRateTypeCol});
              }
-             setVisible(ifr,new String[]{tbPriBidCustRqstTable,tbPriBidUpdateCustBid});
-        }
-      
-           
+             setVisible(ifr,new String[]{tbPriBidCustRqstTable,tbPriBidUpdateCustBid,tbPriBidBulkAllbtn,tbPriBidBulkAllbtn,tbPriBidBlkCbnRate,tbPriBidBlkBankRate,tbPriBidBlkDefaultAll,tbPriBidBlkNewAll});
+        }    
     }
    /* private void updateTbPmBids(IFormReference ifr, int rowIndex){
     	tb_rate_type

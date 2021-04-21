@@ -310,6 +310,11 @@ public interface Constants {
 	String tbPriBidCustRqstTable ="table67";
 	String tbPriBidViewCustRqstbtn="tb_viewCustPriBids";
 	String tbPriBidUpdateCustBid ="tb_updateCustPriBids";
+	String tbPriBidBulkAllbtn ="tb_allocation_btn";
+	String tbPriBidBlkCbnRate ="tb_bulk_cbnrate";
+	String tbPriBidBlkBankRate ="tb_bulk_bankrate";
+	String tbPriBidBlkDefaultAll ="tb_bulk_default_all";
+	String tbPriBidBlkNewAll ="tb_bulk_new_all";
 	//String tbPriBidApprovebtn ="tb_allocation_btn";
 	
 	
@@ -399,6 +404,7 @@ public interface Constants {
 	String tbBidNewAllCol ="NewAllocation";
 	String tbBidTotalAmtCol ="TotalAmt";
 	String tbBidStausCol ="Status";
+	String tbBidWorkItemNoCol ="WorkItemNo";
 	
 
 	
