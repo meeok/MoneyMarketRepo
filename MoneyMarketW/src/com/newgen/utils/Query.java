@@ -118,14 +118,21 @@ public class Query {
 
     }
     public String getTbPmBidSummaryQuery(String refid){
-    	return "select tb_request_type,tb_pm_tenor, sum(tb_pm_mpBr) as TotalAmount,tb_rate_type, count(*) as TransactionCount from moneymarket_ext " + 
+    	return "select tb_request_type,tb_pm_tenor, sum(tb_pm_mpBr) as TotalAmount,tb_rate_type, count(*) as TransactionCount,tb_pm_personal from moneymarket_ext " + 
     	"where tb_request_type is not null and tb_uniqueNum in (select refid from mm_setup_tbl where closeflag ='Y' and refid='"+refid+"') group by " + 
     	"tb_request_type,tb_pm_tenor,tb_rate_type,tb_pm_personal";
       }
+    //with personal rate
     public String getTbPmCustomerRqstyQuery(String refid,String rqstType, String tenor,String rateType,String personalRate){
-    	return "select tb_request_type,tb_pm_custId, tb_custAcctNum,tb_custAcctName, tb_pm_tenor, tb_rate_type,tb_pm_personal,tb_pm_mpBr,tb_rollover_type from moneymarket_ext " + 
+    	return "select tb_request_type,tb_pm_custId, tb_custAcctNum,tb_custAcctName, tb_pm_tenor,tb_rate_type,tb_pm_personal,tb_pm_mpBr,tb_rollover_type from moneymarket_ext " + 
     	"where tb_request_type is not null and tb_uniqueNum in (select refid from mm_setup_tbl where closeflag ='Y' and refid='"+refid+"') and tb_request_type ='"+rqstType+"'"
-    			+ " and tb_pm_tenor ='"+tenor+"' and tb_rate_type='"+rateType+" and tb_pm_personal = '"+personalRate+"'";
+    			+ " and tb_pm_tenor ='"+tenor+"' and tb_rate_type='"+rateType+"' and tb_pm_personal = '"+personalRate+"'";
+      }
+    //query with bank rate
+    public String getTbPmCustomerRqstyQuery(String refid,String rqstType, String tenor,String rateType){
+    	return "select tb_request_type,tb_pm_custId, tb_custAcctNum,tb_custAcctName, tb_pm_tenor,tb_rate_type,tb_pm_personal,tb_pm_mpBr,tb_rollover_type from moneymarket_ext " + 
+    	"where tb_request_type is not null and tb_uniqueNum in (select refid from mm_setup_tbl where closeflag ='Y' and refid='"+refid+"') and tb_request_type ='"+rqstType+"'"
+    			+ " and tb_pm_tenor ='"+tenor+"' and tb_rate_type='"+rateType+"'";
       }
     /*
      * get attached documents

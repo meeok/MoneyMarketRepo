@@ -68,6 +68,20 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         	//tbDownloadPriBidSmryReport(ifr);
                         }
                         break;
+                        case tbViewPriCustomerBids:{
+                        	try {
+                        		int selectedrow = Integer.parseInt(data);
+                        		logger.info("selectedrow>>"+selectedrow);
+                        		tbViewPriCustomerBids(ifr,Integer.parseInt(data));
+                        	}
+                        	catch(Exception ex) {
+                        		logger.info("tbViewPriCustomerBids Exception>>"+ex.toString());
+                        	}
+                        	
+                        }
+                        break;
+                        	
+                        
                         /**** Treasury onClick End ****/
                         case cpViewReportEvent:{
                             viewReport(ifr);
@@ -489,6 +503,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     }
     private void tbViewPriBidSmryReport(IFormReference ifr){
     	logger.info("tbViewRepor>>>");
+    	ifr.clearTable(tbPriBidReportTable);
     	String qry = new Query().getTbPmBidSummaryQuery(getTbUniqueRef(ifr));
     	logger.info("getTbPmBidSummaryQuery>>"+qry);
         List<List<String>> dbr = new DbConnect(ifr,qry).getData();
@@ -506,19 +521,21 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	            logger.info("rateType-- "+ rateType);
 	            String count = ls.get(4);
 	            logger.info("count-- "+ count);
-	            setTableData(ifr,tbPriBidReportTable,new String[]{tbBidRptRqstTypeCol,tbBidRptTenorCol,tbBidRptRateTypeCol,tbBidRptTtlAmtCol,tbBidRptTxnCoutnCol,tbBidRptStatusCol},
-	                    new String[]{rqstType,tenor,rateType,totalAmount,count, statusAwaitingTreasury});
+	            String personalrate = ls.get(5);
+	            logger.info("personalrate-- "+ personalrate);
+	            setTableData(ifr,tbPriBidReportTable,new String[]{tbBidRptRqstTypeCol,tbBidRptRateCol,tbBidRptTenorCol,tbBidRptRateTypeCol,tbBidRptTtlAmtCol,tbBidRptTxnCoutnCol,tbBidRptStatusCol},
+	                    new String[]{rqstType,personalrate,tenor,rateType,totalAmount,count, statusAwaitingTreasury});
 	        }
-	        setVisible(ifr,new String[]{tbPriBidReportTable,tbViewPriBidReportbtn});
+	        setVisible(ifr,new String[]{tbPriBidReportTable,tbViewPriBidReportbtn,tbViewPriBidDwnldBidSmrybtn,tbPriBidViewCustRqstbtn});
 	        disableFields(ifr,new String[]{tbViewPriBidReportbtn});
-	        enableFields(ifr,new String[]{tbViewPriBidDwnldBidSmrybtn});
+	        enableFields(ifr,new String[]{tbViewPriBidDwnldBidSmrybtn,tbPriBidViewCustRqstbtn});
         }
         else {//return a message of no bids for this window
         	}
      }
     
     //view 
-    private void tbViewCustomerBids(IFormReference ifr, int rowIndex){
+    private void tbViewPriCustomerBids(IFormReference ifr, int rowIndex){
         ifr.clearTable(tbPriBidCustRqstTable);
         String refid = getTbUniqueRef(ifr);
         logger.info("refid>> "+ refid);
@@ -530,7 +547,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         logger.info("personalRate>> "+ personalRate);
         String rateType = ifr.getTableCellValue(tbPriBidReportTable,rowIndex,4);
         
-        String qry = new Query().getTbPmCustomerRqstyQuery(refid, rqstType, tenorgrp, rateType, personalRate);
+        String qry = rateType.equalsIgnoreCase(tbBrnchPriRtBanKRate) ? 
+        		new Query().getTbPmCustomerRqstyQuery(refid, rqstType, tenorgrp, rateType) :
+        		new Query().getTbPmCustomerRqstyQuery(refid, rqstType, tenorgrp, rateType, personalRate) ;
+        		
     	logger.info("getTbPmCustomerRqstyQuery>>"+qry);
         List<List<String>> dbr = new DbConnect(ifr,qry).getData();
         logger.info("getTbPmCustomerRqst>>"+dbr);
@@ -541,17 +561,61 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                  String acctNo = ls.get(2);
                  String acctName = ls.get(3);
                  String tenor = ls.get(4);
+                 String ratetype = ls.get(5);
                  String rate = ls.get(6);
                  String principal = ls.get(7);
                  String defaultAllocation ="100";
-                 setTableData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol},
-                         new String[]{id,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation});
+                 setTableData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol,tbBidRateTypeCol},
+                         new String[]{id,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation,tbBidRateTypeCol});
              }
-             setVisible(ifr,new String[]{cpBidReportTbl,cpUpdateBtn});
+             setVisible(ifr,new String[]{tbPriBidCustRqstTable,tbPriBidUpdateCustBid});
         }
       
            
     }
+   /* private void updateTbPmBids(IFormReference ifr, int rowIndex){
+    	tb_rate_type
+        String bankRate =ifr.getTableCellValue(cpBidReportTbl,rowIndex,0);
+        String personalRate = empty;
+        String tbRate = getFieldValue(ifr,cpAllocCpRateLocal);
+        String defaultAlloc = getFieldValue(ifr,cpAllocDefaultAllocLocal);
+        String id = ifr.getTableCellValue(cpBidReportTbl,rowIndex,0);
+        String rateType = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,rateTypeBidTblCol)).getData().get(0).get(0);
+        String tenor = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,tenorBidTblCol)).getData().get(0).get(0);
+
+        if (rateType.equalsIgnoreCase(rateTypePersonal))
+            personalRate = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,rateBidTblCol)).getData().get(0).get(0);
+
+        if (rateType.equalsIgnoreCase(rateTypeBank)){
+            if (checkBidStatus(bankRate,cpRate)){
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,5,bankRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,7,getMaturityDate(Integer.parseInt(tenor)));
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
+                new DbConnect(ifr, new Query().getCpPmBidUpdateBankQuery(id,cpRate,bankRate,getMaturityDate(Integer.parseInt(tenor)),defaultAlloc,bidSuccess,statusAwaitingMaturity)).saveQuery();
+            }
+            else {
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidFailed);
+                new DbConnect(ifr, new Query().getCpPmUpdateFailedBidsQuery(id,bidFailed)).saveQuery();
+            }
+        }
+        else if (rateType.equalsIgnoreCase(rateTypePersonal)){
+            if (checkBidStatus(personalRate,cpRate)){
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,7,getMaturityDate(Integer.parseInt(tenor)));
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
+                ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
+                new DbConnect(ifr,new Query().getCpPmBidUpdatePersonalQuery(id,cpRate,getMaturityDate(Integer.parseInt(tenor)),defaultAlloc,bidSuccess,statusAwaitingMaturity)).saveQuery();
+            }
+            else {
+                ifr.setTableCellValue(cpBidReportTbl, rowIndex, 11, bidFailed);
+                new DbConnect(ifr, new Query().getCpPmUpdateFailedBidsQuery(id, bidFailed)).saveQuery();
+            }
+        }
+    }*/
         	
        
     

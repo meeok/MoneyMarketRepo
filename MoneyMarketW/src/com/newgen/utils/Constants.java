@@ -246,7 +246,8 @@ public interface Constants {
 	String tbLienCustFaceValue = "tbLienCustFaceValue";
 	String tbViewPriBidSmryReport ="tbViewPriBidSmryReport";
 	String tbDownloadPriBidSmryReport ="tbDownloadPriBidSmryReport";
-	
+	String tbViewPriCustomerBids ="tbViewPriCustomerBids";
+	String tbupdatePriCustomerBids ="tbUpdatePriCustomerBids";
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
 	String tbSecondaryMarket = "secondary";
@@ -388,6 +389,7 @@ public interface Constants {
 	String tbBidAcctNamecol ="AccountName";
 	String tbBidTenorCol ="Tenor";
 	String tbBidRateCol ="tbRate";
+	String tbBidRateTypeCol ="RateType";
 	String tbBidCBNRateCol="CBNRtae";
 	String tbCidBankRateCol ="BankRate";
 	String tbBidPersonalRateCol ="PersonalRate";

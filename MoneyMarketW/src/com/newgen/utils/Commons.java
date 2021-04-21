@@ -514,7 +514,7 @@ public class Commons implements Constants {
         try{
         	return new DbConnect(ifr,qry).getData().get(0).get(0); 
         }
-        catch(Exception ex){return null; }
+        catch(Exception ex){return ""; }
     }
     
     //primary branch validations
@@ -538,17 +538,23 @@ public class Commons implements Constants {
     	if(getTbCustAcctNo(ifr).equalsIgnoreCase("22")){
 	    	setTbCustAcctName(ifr, "John Doe");
 	    	setTbCustAcctLienStatus(ifr, "Yes");
-	    	setTbCustAcctEmail(ifr, "");
-	    	setTbCustSchemeCode(ifr,"SA531");
+	    	setTbCustAcctEmail(ifr, "someone@gmail.com");
+	    	setTbCustSchemeCode(ifr,"SA931");
 	    }
     	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("33")){
 	    	setTbCustAcctName(ifr, "Miranda");
 	    	setTbCustAcctLienStatus(ifr, "No");
 	    	setTbCustAcctEmail(ifr, "someone@gmail.com");
-	    	setTbCustSchemeCode(ifr,SA231);
+	    	setTbCustSchemeCode(ifr,"SA931");
 	    }
     	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("44")){
 	    	setTbCustAcctName(ifr, "Mercy Lee");
+	    	setTbCustAcctLienStatus(ifr, "No");
+	    	setTbCustAcctEmail(ifr, "ogb@gmail.com");
+	    	setTbCustSchemeCode(ifr,"SA931");
+	    }
+    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("55")){
+	    	setTbCustAcctName(ifr, "Nabcy bbbe");
 	    	setTbCustAcctLienStatus(ifr, "No");
 	    	setTbCustAcctEmail(ifr, "ogb@gmail.com");
 	    	setTbCustSchemeCode(ifr,"SA931");

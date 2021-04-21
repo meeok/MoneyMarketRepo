@@ -110,9 +110,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         
                       //****************Treasurry Starts here *********************//
     	                case tbMarketTypeddChange:{
-    	                	tbMarketTypeddChange(ifr);
+    	                	return tbMarketTypeddChange(ifr);
     	                }
-    	                break;
     	                case tbCustAcctNoChange:{
     	                	tbFetchAccountDetails(ifr);
     	                }
@@ -288,6 +287,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     			//disableFields(ifr, new String[]{tbMarketSection});
     		}
     		else {
+    			clearFields(ifr,tbMarketTypedd);
     			retMsg = getTbMarket(ifr)+tbWindowInactiveMessage;
     			//hide or disable all fields
     		}
@@ -317,6 +317,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     }
     private void tbCategoryddChange(IFormReference ifr){
     	if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
+    		//check if market is setup
     		setVisible(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection});
     		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
     		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
