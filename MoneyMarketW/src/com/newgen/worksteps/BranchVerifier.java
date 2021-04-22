@@ -59,6 +59,10 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 case onLoad:
                 case onClick:{
                 	switch(control) {
+	                	case cpSmInvestEvent:{
+	                        if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return setupCpSmBid(ifr);
+	                        else return cpValidateWindowErrorMsg;
+	                    }
 	                	case tbLienCustFaceValue:{
 	                		return tbLienCustFaceValue(ifr);
 	                	}
@@ -71,20 +75,8 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         //****************Treasurry Ends here *********************//
                 	}
                 }
-                case onChange:{
-                	switch(control) {
-	                	case tbTokenChange:{
-	                		tbTokenChange(ifr);
-	                	}
-                	}
-                }
-                    switch (control){
-                        case cpSmInvestEvent:{
-                            if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return setupCpSmBid(ifr);
-                            else return cpValidateWindowErrorMsg;
-                        }
-                    }
-                }
+                
+                
                 case onChange:
                 case custom:
                 case onDone:{
@@ -105,8 +97,9 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         case tbOndone:{
                         	return tbOndone(ifr);
                         }
-                        	
-                        break;
+                        case tbTokenChange:{
+	                		tbTokenChange(ifr);
+	                	}
                     }
                 }
                 break;

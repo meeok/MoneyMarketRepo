@@ -81,12 +81,13 @@ public class Query {
     
     public String getWinCloseFlagById (String winRefId){
         return "select closeflag from mm_setup_tbl where refid = '"+winRefId+"'";
+    }
     public String getWinDetailsByIdQuery(String winRefId) {
         return "select * from mm_setup_tbl where refid = '" + winRefId + "";
     }
-    public String getWinCloseFlagById(String winRefId) {
+   /* public String getWinCloseFlagById(String winRefId) {
         return "select closeflag from mm_setup_tbl where refid = '" + winRefId + "'";
-    }
+    }*/
     public String getUpdateSetupQuery(String columnName, String value, String condition) {
         return "update mm_setup_tbl set " + columnName + " = " + value + " where condition = " + condition + "";
     }
@@ -102,16 +103,15 @@ public class Query {
         return "select * from MONEYMARKET_EXT where upper(refid) = upper('"+custrefId+"')";
     }
 
-    public String getCpPmBidsToProcessQuery(){
     public String getSetupCpSmBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rate,String maturityDate) {
         return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rate,maturitydate) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rate + "', '"+maturityDate+"')";
     }
     public String getTBInsertSetupQuery() {
     return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE,CLOSEFLAG) values (values)";
 }
-    public String getCustomerRefIdQuery(String custrefId) {
+    /*public String getCustomerRefIdQuery(String custrefId) {
         return "select * from MONEYMARKET_EXT where upper(refid) = upper('" + custrefId + "')";
-    }
+    }*/
     public String getCpPmBidsToProcessQuery () {
         return "select custrefid, tenor, rate, ratetype from mm_bid_tbl where process = 'Commercial Paper' and markettype= 'primary' and processflag ='N' and groupindexflag = 'N'";
     }

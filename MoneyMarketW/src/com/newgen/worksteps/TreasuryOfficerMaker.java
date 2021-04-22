@@ -742,7 +742,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	            logger.info("count-- "+ count);
 	            String personalrate = ls.get(5);
 	            logger.info("personalrate-- "+ personalrate);
-	            setTableData(ifr,tbPriBidReportTable,new String[]{tbBidRptRqstTypeCol,tbBidRptRateCol,tbBidRptTenorCol,tbBidRptRateTypeCol,tbBidRptTtlAmtCol,tbBidRptTxnCoutnCol,tbBidRptStatusCol},
+	            setTableGridData(ifr,tbPriBidReportTable,new String[]{tbBidRptRqstTypeCol,tbBidRptRateCol,tbBidRptTenorCol,tbBidRptRateTypeCol,tbBidRptTtlAmtCol,tbBidRptTxnCoutnCol,tbBidRptStatusCol},
 	                    new String[]{rqstType,personalrate,tenor,rateType,totalAmount,count, statusAwaitingTreasury});
 	        }
 	        setVisible(ifr,new String[]{tbPriBidReportTable,tbViewPriBidReportbtn,tbViewPriBidDwnldBidSmrybtn,tbPriBidViewCustRqstbtn});
@@ -785,7 +785,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                  String principal = ls.get(7);
                  String wino = ls.get(8);
                  String defaultAllocation ="100";
-                 setTableData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidWorkItemNoCol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidPersonalRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol,tbBidRateTypeCol},
+                 setTableGridData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidWorkItemNoCol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidPersonalRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol,tbBidRateTypeCol},
                          new String[]{id,wino,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation,tbBidRateTypeCol});
              }
              setVisible(ifr,new String[]{tbPriBidCustRqstTable,tbPriBidUpdateCustBid,tbPriBidBulkAllbtn,tbPriBidBulkAllbtn,tbPriBidBlkCbnRate,tbPriBidBlkBankRate,tbPriBidBlkDefaultAll,tbPriBidBlkNewAll});
