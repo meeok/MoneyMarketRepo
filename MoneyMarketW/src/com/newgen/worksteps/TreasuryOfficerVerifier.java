@@ -4,13 +4,8 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.utils.Commons;
-import com.newgen.utils.CommonsI;
-import com.newgen.utils.DBCalls;
-import com.newgen.utils.DbConnect;
-import com.newgen.utils.LogGen;
-import com.newgen.utils.MailSetup;
-import com.newgen.utils.Query;
+import com.newgen.processMethods.CpController;
+import com.newgen.utils.*;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -49,8 +44,30 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 break;
                 case onLoad:{}
                 break;
-                case onClick:{}
+                case onClick:{
+                    switch (controlName){
+                        case cpSetupWindowEvent:{
+                          return cpSetupWindow(ifr, Integer.parseInt(data));
+                        }
+                        case cpSmInvestEvent:{
+                           return  setupCpSmBid(ifr);
+                        }
+                        case cpUpdateCutOffTimeEvent:{
+                            return cpUpdateCutOffTime(ifr);
+                        }
+                        case cpUpdateReDiscountRateEvent:{
+                            return cpUpdateReDiscountRate(ifr);
+                        }
+                    }
+                }
                 break;
+                case cpApiCallEvent:{
+                    switch (controlName) {
+                        case cpTokenEvent: return CpController.tokenController(ifr);
+                        case cpPostEvent: return CpController.postTranController(ifr);
+                    }
+                    break;
+                }
                 case onChange:{}
                 break;
                 case custom:{}
@@ -108,13 +125,51 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         hideCpSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
         setGenDetails(ifr);
-        disableCpSections(ifr);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)) {
             setVisible(ifr,new String[] {cpLandingMsgSection,cpDecisionSection,cpMarketSection});
             enableFields(ifr,new String[]{cpDecisionSection});
             setMandatory(ifr, new String[]{cpDecisionLocal,cpRemarksLocal});
+        }
+        else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerMaker)){
+            if (isEmpty(getWindowSetupFlag(ifr))){
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){}
+                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+                    setVisible(ifr, new String[]{cpLandingMsgSection,cpDecisionSection,cpMarketSection,cpTreasurySecSection,cpCutOffTimeSection,cpSmCutOffTimeLocal,cpSetupSection,cpSetupWindowBtn,cpSmCpBidTbl});
+                    setInvisible(ifr,new String[]{cpOpenDateLocal,cpCloseDateLocal});
+                    setMandatory(ifr,new String[] {cpDecisionLocal,cpRemarksLocal});
+                    disableFields(ifr,new String[]{cpSmCpBidTbl,cpSmMinPrincipalLocal});
+                }
+            }
+            else {
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket) || getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+                    setVisible(ifr,new String[]{cpMarketSection,cpDecisionSection,cpCategoryLocal});
+                    setMandatory(ifr, new String[]{cpDecisionLocal,cpRemarksLocal});
+                    disableFields(ifr,new String[]{cpMarketSection});
+                    if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryModifyCutOffTime)){
+                        setVisible(ifr,new String[]{cpCutOffTimeSection,cpSetupSection,cpUpdateCutoffTimeBtn});
+                    }
+                   else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryReDiscountRate)){
+                        setVisible(ifr,new String[]{cpRediscountRateSection,cpSetupSection,cpSetReDiscountRateBtn});
+                    }
+                   else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryUpdateLandingMsg)){
+                       setVisible(ifr,new String[]{cpLandingMsgSection});
+                    }
+                }
+            }
+        }
+        else if (getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
+            if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+                if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
+                    setVisible(ifr,new String[]{cpBranchSecSection,cpCustomerDetailsSection,cpDecisionSection,landMsgLabelLocal,
+                            cpSmMaturityDateBrLocal,cpPostSection,cpTokenLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal, (getCpSmConcessionRateValue(ifr).equalsIgnoreCase(empty)) ? empty : cpSmConcessionRateValueLocal});
+                    setInvisible(ifr, new String[]{cpAcctValidateBtn,cpApplyBtn,cpSmInvestmentBrTbl});
+                    disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal,cpSmInstructionTypeLocal});
+                    setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
+                    enableFields(ifr,new String[]{cpTokenLocal});
+                }
+            }
         }
         cpSetDecision(ifr);
     }
@@ -123,8 +178,52 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     public void cpSetDecision(IFormReference ifr) {
         setDecision(ifr, cpDecisionLocal,new String[]{decApprove,decReject});
     }
-    
-    //*************** Treasury Start *************************/
+
+    private String cpSetupWindow(IFormReference ifr, int rowCount){
+        if (isEmpty(getWindowSetupFlag(ifr))){
+            if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
+                return empty;
+            }
+            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+                return cpSetupSecondaryMarketWindow(ifr,rowCount);
+            }
+        }
+        return "Window already setup.";
+    }
+    private String cpUpdateCutOffTime(IFormReference ifr){
+        String id = null;
+
+        if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
+            id = getCpPmWinRefNo(ifr);
+        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
+            id = getCpSmWinRefNo(ifr);
+
+      int validate = new DbConnect(ifr, new Query().getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
+        if (validate >=0 ) {
+            setFields(ifr,cpDecisionLocal,decApprove);
+            disableFields(ifr,new String[]{cpDecisionLocal,cpUpdateCutoffTimeBtn});
+            return "Cut off time updated successfully. Kindly submit workitem";
+        }
+        return "Unable to update cut off time. Contact iBPS support";
+    }
+    private String cpUpdateReDiscountRate(IFormReference ifr){
+        String id = null;
+
+        if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
+            id = getCpPmWinRefNo(ifr);
+        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
+            id = getCpSmWinRefNo(ifr);
+
+        int validate = new DbConnect(ifr, new Query().getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
+        if (validate >=0 ) {
+            setFields(ifr,cpDecisionLocal,decApprove);
+            disableFields(ifr,new String[]{cpDecisionLocal,cpSetReDiscountRateBtn});
+            return "Re-discount Rate updated successfully. Kindly submit workitem";
+        }
+        return "Unable to update Re-discount Rate. Contact iBPS support";
+    }
+
+    /******************  TREASURY BILL CODE BEGINS *********************************/
     /*
      * set controls for task to be performed before the formloads
      */

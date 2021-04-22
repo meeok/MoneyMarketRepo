@@ -49,9 +49,11 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 case cpApiCallEvent:{
                     switch (control) {
                         case cpTokenEvent: return CpController.tokenController(ifr);
-                        case cpPostEvent: return CpController.postTranController(ifr);
+                        case cpPostEvent:{
+                            if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                            else return cpValidateWindowErrorMsg;
+                        }
                     }
-                    break;
                 }
                 case formLoad:
                 case onLoad:
@@ -76,20 +78,35 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
 	                	}
                 	}
                 }
+                    switch (control){
+                        case cpSmInvestEvent:{
+                            if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return setupCpSmBid(ifr);
+                            else return cpValidateWindowErrorMsg;
+                        }
+                    }
+                }
+                case onChange:
                 case custom:
                 case onDone:{
                     switch (control){
                         case validateWindowEvent:{
                             if (getCpDecision(ifr).equalsIgnoreCase(decApprove)) {
-                                if (cpCheckWindowStateById(ifr))
-                                    setupCpPmBid(ifr);
-                                else return cpValidateWindowErrorMsg;
+                                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
+                                    if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr)))
+                                        setupCpPmBid(ifr);
+                                    else return cpValidateWindowErrorMsg;
+                                }
+                                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
+                                    if (!cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr)))
+                                         return cpValidateWindowErrorMsg;
+                                }
                             }
                         }
                         case tbOndone:{
                         	return tbOndone(ifr);
                         }
                         	
+                        break;
                     }
                 }
                 break;
@@ -151,10 +168,25 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
                 setDropDown(ifr,cpPmReqTypeLocal,new String[]{cpPmReqFreshLabel},new String[]{cpPmReqFreshValue});
                 setFields(ifr,cpPmReqTypeLocal,cpPmReqFreshValue);
-                setVisible(ifr,new String[]{cpBranchPriSection,cpCustomerDetailsSection,cpPostSection,cpDecisionSection});
+                setVisible(ifr,new String[]{cpBranchPriSection,cpCustomerDetailsSection,cpPostSection,cpDecisionSection,landMsgLabelLocal});
                 setInvisible(ifr, new String[]{cpAcctValidateBtn});
                 enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
                 setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
+            }
+        }
+        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+            if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
+                setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
+                setVisible(ifr,new String[]{cpBranchSecSection,cpCustomerDetailsSection,cpDecisionSection,landMsgLabelLocal,
+                        cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal, (getCpSmConcessionRateValue(ifr).equalsIgnoreCase(empty)) ? empty : cpSmConcessionRateValueLocal});
+                setInvisible(ifr, new String[]{cpAcctValidateBtn,cpApplyBtn});
+                disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal,cpSmInstructionTypeLocal});
+                setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                if (getCpSmConcessionRate(ifr).equalsIgnoreCase(no)){
+                    enableFields(ifr,new String[]{cpTokenLocal});
+                    setMandatory(ifr,new String[]{cpTokenLocal});
+                    setVisible(ifr,new String[]{cpPostSection});
+                }
             }
         }
     }
@@ -213,7 +245,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     	return isTbDocUploaded(ifr,getWorkItemNumber(ifr),customers_instruction) ?"Kindly attach customers_instruction ":"";
   	}
     /*
-     * Decision will automatically be populated as “approve” 
+     * Decision will automatically be populated as ï¿½approveï¿½ 
      * when posting status is successful
      */
     private String tbLienCustFaceValue(IFormReference ifr) {

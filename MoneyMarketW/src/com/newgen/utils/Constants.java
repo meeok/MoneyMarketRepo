@@ -20,27 +20,7 @@ public interface Constants {
 	String discardWs = "Discard";
 	String exit = "Exit";
 	String query = "Query";
-	String utilityWs = "Utility_Initiation";
 	// Please input workSteps between comment bracket
-
-	// cp sections
-	String cpBranchPriSection = "cp_branchPm_section";
-	String cpBranchSecSection = "cp_BranchSec_section";
-	String cpLandingMsgSection = "cp_landingMsg_section";
-	String cpMarketSection = "cp_market_section";
-	String cpPrimaryBidSection = "cp_primaryBid_section";
-	String cpTerminationSection = "cp_termination_section";
-	String cpProofOfInvestSection = "cp_poi_section";
-	String cpDecisionSection = "cp_dec_section";
-	String cpTreasuryPriSection = "cp_pmTreasury_section";
-	String cpTreasurySecSection = "cp_secTreasury_section";
-	String cpTreasuryOpsSecSection = "cp_treasuryOpsSec_section";
-	String cpTreasuryOpsPriSection = "cp_treasuryOpsPm_section";
-	String cpPostSection = "cp_post_section";
-	String cpSetupSection="cp_setup_section";
-	String cpCutOffTimeSection = "cp_cutoff_section";
-	String cpCustomerDetailsSection ="cp_custDetails_section";
-	// end of cp sections
 
 	//general process Ids
 	String selectProcessLocal = "g_select_market";
@@ -50,6 +30,7 @@ public interface Constants {
 	String treasuryTab = "2";
 	String omoTab = "3";
 	String moneyMarketSection = "g_moneyMarket_section";
+	String landMsgLabelSection = "landingMsgLabelSection";
 	String solLocal = "g_sol";
 	String loginUserLocal ="g_loginUser";
 	String currWsLocal = "g_currWs";
@@ -71,10 +52,31 @@ public interface Constants {
 	String goBackDashboardSection = "g_goBackDashboard_section";
 	String windowSetupFlagLocal = "g_setupFlag";
 	String wiNameFormLocal ="winame";
-
 	String utilityFlagLocal = "cp_utilityFlag";
 	String downloadFlagLocal ="downloadFlag";
+	String utilityWs = "Utility_Initiation";
 
+
+	// cp sections
+	String cpBranchPriSection = "cp_branchPm_section";
+	String cpBranchSecSection = "cp_BranchSec_section";
+	String cpLandingMsgSection = "cp_landingMsg_section";
+	String cpMarketSection = "cp_market_section";
+	String cpPrimaryBidSection = "cp_primaryBid_section";
+	String cpTerminationSection = "cp_termination_section";
+	String cpProofOfInvestSection = "cp_poi_section";
+	String cpDecisionSection = "cp_dec_section";
+	String cpTreasuryPriSection = "cp_pmTreasury_section";
+	String cpTreasurySecSection = "cp_secTreasury_section";
+	String cpTreasuryOpsSecSection = "cp_treasuryOpsSec_section";
+	String cpTreasuryOpsPriSection = "cp_treasuryOpsPm_section";
+	String cpPostSection = "cp_post_section";
+	String cpSetupSection="cp_setup_section";
+	String cpCutOffTimeSection = "cp_cutoff_section";
+	String cpCustomerDetailsSection ="cp_custDetails_section";
+	String cpRediscountRateSection = "rediscountratesection";
+
+    // end of cp sections
 
 	// commercial Paper process ids
 	String cpSelectMarketLocal = "cp_select_market";
@@ -87,7 +89,8 @@ public interface Constants {
 	String cpCategorySetup = "Setup";
 	String cpCategoryBid = "Bid";
 	String cpCategoryReDiscountRate = "Re-discount Rate";
-	String cpCategoryCutOff = "Cut off time modification";
+	String cpCategoryModifyCutOffTime = "Cut off time modification";
+	String cpCategoryUpdateLandingMsg = "Update Landing Message";
 	String cpCategoryReport = "Report";
 	String cpCategoryMandate = "Mandate";
 	String cpSetupWindowBtn = "cp_setupWin_btn";
@@ -100,10 +103,12 @@ public interface Constants {
 	String cpPmMinPriAmtLocal = "cp_mp_amount";
 	String cpPmWinRefNoLocal = "cp_pmwu_ref";
 	String cpPmWinRefNoBranchLocal = "cp_pmwinref_br";
+	String cpSmWinRefNoBranchLocal = "cp_sec_id";
 	String cpPmMinPriAmtBranchLocal ="cp_pm_mpBr";
 	String cpCustomerNameLocal ="cp_custAcctName";
 	String cpCustomerAcctNoLocal ="cp_custAcctNum";
 	String cpCustomerEmailLocal = "cp_custAcctEmail";
+	String cpCustomerSolLocal = "";
 	String cpLienStatusLocal ="cp_lien_status";
 	String cpPmRateTypeLocal = "cp_rate_type";
 	String cpPmPersonalRateLocal ="cp_personal_rate";
@@ -118,7 +123,7 @@ public interface Constants {
 	String cpTxnIdLocal ="cp_tsnId";
 	String cpDebitPrincipalBtn ="cp_debitPrincipal_btn";
 	String cpTokenLocal ="cp_token";
-	String cpAllocationTbl ="table88";
+	String cpAllocSummaryTbl ="table88";
 	String cpAllocationReqTbl ="table89";
 	String cpBidReportTbl ="table90";
 	String cpAllocTenorCol = "Tenor";
@@ -133,8 +138,55 @@ public interface Constants {
 	String cpViewGroupBtn ="cp_viewGroup_btn";
 	String cpViewReportBtn ="cp_viewReport_btn";
 	String cpAllocBankRateLocal ="cp_bank_rate";
-	String cpAllocDefaultAllocLocal ="cp_default_app";
+	String cpAllocDefaultAllocLocal ="cp_default_ap";
 	String cpAllocCpRateLocal ="cp_cpRate";
+	String cpBidCustIdCol ="Customer ID";
+	String cpBidAcctNoCol ="Account Number";
+	String cpBidAcctNameCol ="Account Name";
+	String cpBidTenorCol ="Tenor";
+	String cpBidCpRateCol ="CP Rate";
+	String cpBidBankRateCol = "Bank Rate";
+	String cpBidPersonalRateCol ="Personal Rate";
+	String cpBidMaturityDateCol = "Maturity Date";
+	String cpBidDefAllocCol = "Default Allocation percentage";
+	String cpBidNewAllocCol = "New Allocation Percentage";
+	String cpBidTotalAmountCol = "Total Amount";
+	String cpBidStatusCol ="Status";
+	String cpBidStatusBidCol ="Bid Status";
+	String cpPmAllocFlagLocal = "cp_pm_allocflag";
+	String cpSmCutOffTimeLocal = "cp_secCuttoff";
+	String cpSmCpBidTbl = "table93";
+	String cpSmSetupLocal = "cp_sec_setUp";
+	String cpSmWinRefLocal = "cp_sm_winref";
+	String cpSmMinPrincipalLocal = "cp_sec_miniPrincipalAmt";
+	String cpSmIFrameLocal = "cp_downloadBid_frame";
+	String cpSmCustIdLocal = "cp_sec_custId";
+	String cpSmMaturityDateBrLocal ="cp_sec_maturityDate";
+	String cpSmInstructionTypeLocal = "cp_sec_instructionType";
+	String cpSmConcessionRateLocal ="cp_sec_concessionRate";
+	String cpSmConcessionRateValueLocal ="cp_sec_concessionValue";
+	String cpApplyBtn = "apply_btn";
+	String cpSmInvestmentIdLocal = "cp_sec_investmentID";
+	String cpSmPrincipalBrLocal = "cp_sec_principal_br";
+	String cpSmBidInvestmentIdCol = "Investment ID";
+	String cpSmBidIssuerCol = "CP Issuer";
+	String cpSmBidDescCol = "CP Description";
+	String cpSmBidMaturityDateCol = "Maturity Date";
+	String cpSmBidDtmCol = "DTM (Days to Maturity)";
+	String cpSmBidStatusCol = "Status";
+	String cpSmBidAvailableAmountCol = "Available Amount";
+	String cpSmBidRateCol = "Rate";
+	String cpSmBidAmountSoldCol = "Amount Sold";
+	String cpSmBidMandatesCol = "Mandates";
+	String cpSmBidReminderCol = "Remainder";
+	String cpSmInvestmentBrTbl = "table91";
+	String cpSmMinPrincipalBrLocal = "cp_sec_miniPrincipalAmt_brch";
+	String cpInvestBtn = "invest_btn";
+	String cpReDiscountRateLess90Local = "cp_less90_prim";
+	String cpReDiscountRate90To180Local = "cp_91_180days_prim";
+	String cpReDiscountRate181To270Local = "cp_181_270days_prim";
+	String cpReDiscountRate271To364Local = "cp_271_364days_prim";
+
 
 
 	//common variables
@@ -167,6 +219,7 @@ public interface Constants {
 	String cpPmLabel = "CPPMA";
 	String cpSmLabel = "CPSMA";
 	String cpIdLabel ="CP";
+	String cpSmIdInvestmentLabel = "CPSMI";
 	String cpRefNoDateFormat ="ddMMyyyy";
 	String windowOpenFlag ="N";
 	String windowCloseFlag ="Y";
@@ -180,7 +233,8 @@ public interface Constants {
 	String cpInvalidAccountErrorMessage ="This account is not valid for CP processing";
 	String rateTypeBank ="Bank";
 	String rateTypePersonal ="Personal";
-	String minPrincipalErrorMsg ="Customer principal cannot be less and window minimum principal";
+	String minPrincipalErrorMsg ="Customer principal cannot be less than window minimum principal";
+	String cpSmMinPrincipalErrorMsg ="Customer principal cannot be less than window minimum principal or greater than available investment amount";
 	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";
 	String cpValidateWindowErrorMsg ="This CP window has been closed. Kindly wait till the next window to initiate";
 	String tbDocumentName ="Proof of Investment for TB";
@@ -193,6 +247,24 @@ public interface Constants {
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";
 	String exceptionMsg ="Exception occurred contact IBPS support";
 	String statusAwaitingTreasury = "Awaiting Treasury";
+	String statusAwaitingMaturity = "Awaiting Maturity";
+	String bidSuccess = "Successful";
+	String bidFailed = "Failed";
+	String defaultAllocation = "100";
+	String rateBidTblCol = "rate";
+	String tenorBidTblCol = "tenor";
+	String rateTypeBidTblCol = "ratetype";
+	String smDefaultCutOffTime = "2 PM";
+	String smMinPrincipal = "1000000";
+	String smSetupNew = "New";
+	String smSetupUpdate = "Update";
+	String smStatusOpen= "Open";
+	String smStatusClosed= "Closed";
+	String smStatusMature= "Matured";
+	String yes = "YES";
+	String no = "NO";
+	String cpSmMaturityDateErrMsg = "Maturity date differs from selected bid maturity date, please amend.";
+
 
 	//eventName/controlName
 	String formLoad = "formLoad";
@@ -219,10 +291,22 @@ public interface Constants {
 	String cpPostFlag ="cp_postFlag";
 	String cpViewReportEvent ="cpViewReport";
 	String cpDownloadEvent = "cpDownloadGrid";
+	String cpGetPmGridEvent = "cpPmGrid";
+	String cpViewGroupBidEvent = "viewGroupBids";
+	String cpUpdateBidEvent = "updateBids";
+	String cpSmSetupEvent = "smSetup";
+	String cpSmCpUpdateEvent = "smCpBidUpdate";
+	String cpSmApplyEvent ="smApply";
+	String cpSmConcessionRateEvent = "smConcession";
+	String cpSmCheckMaturityDateEvent = "checkMaturityDate";
+	String cpSmInvestEvent = "cpSmInvest";
+	String cpUpdateCutOffTimeEvent = "updateCutOffTime";
+	String cpUpdateReDiscountRateEvent = "updateRediscountRate";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";
 	String configPath = "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/installedApps/HO-IBPSUTIL01Cell01/MoneyMarketW.ear/MoneyMarketW.war/config/moneymarket.properties";
+	String configPath2 = "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/installedApps/HO-IBPSAPP01Cell01/MoneyMarketW_war.ear/MoneyMarketW.war/config/moneymarket.properties";
 	String mailFromField ="MAILFROM";
 	String processDefIdField = "PROCESSDEFID";
 	

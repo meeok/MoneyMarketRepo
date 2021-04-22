@@ -45,6 +45,9 @@ public class CpController implements Constants {
                 Commons.setVisible(ifr,new String[]{cpTxnIdLocal});
                 Commons.setFields(ifr, new String[]{cpTxnIdLocal, cpDecisionLocal,cpPostFlag}, new String[]{txnId, decApprove,flag});
                 Commons.disableFields(ifr, new String[]{cpDecisionLocal,cpDebitPrincipalBtn,cpTxnIdLocal});
+                if (Commons.getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
+                    Commons.setVisible(ifr,new String[]{cpSetupSection,cpInvestBtn});
+
                 return cpPostSuccessMsg;
             }
         }
@@ -67,10 +70,7 @@ public class CpController implements Constants {
     }
     public  static  String  limitController (IFormReference ifr){
         try {
-            float ngnLimit = Float.parseFloat(FetchLimit.fetchLimit().get(currencyNgn));
-            logger.info("ngnLimit-- "+ ngnLimit);
-            if (Commons.getCpPmCustomerPrincipal(ifr) > ngnLimit) return cpApiLimitErrorMsg;
-          else return apiSuccess;
+             return apiSuccess;
         }
         catch (Exception e){
             logger.error("Exception occurred-- "+ e.getMessage());
