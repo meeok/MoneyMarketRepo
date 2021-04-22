@@ -666,7 +666,7 @@ public class Commons implements Constants {
 	}
 	
 	 //check if cutoff time has elapsed
-    public static boolean isTbWinValid(IFormReference ifr){
+	 public static boolean isTbWinValid(IFormReference ifr){
     	String qry = new Query().getWinCloseDateByIdQuery(getTbPriWindownUnqNo(ifr));
         logger.info("check tb window query --"+ qry);
         Date closeDte = null;
