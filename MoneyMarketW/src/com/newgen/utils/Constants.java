@@ -301,6 +301,7 @@ public interface Constants {
 	String cpSmCheckMaturityDateEvent = "checkMaturityDate";
 	String cpSmInvestEvent = "cpSmInvest";
 	String cpUpdateCutOffTimeEvent = "updateCutOffTime";
+	String cpUpdateReDiscountRateEvent = "updateRediscountRate";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

@@ -55,6 +55,9 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                         case cpUpdateCutOffTimeEvent:{
                             return cpUpdateCutOffTime(ifr);
                         }
+                        case cpUpdateReDiscountRateEvent:{
+                            return cpUpdateReDiscountRate(ifr);
+                        }
                     }
                 }
                 break;
@@ -122,7 +125,6 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         hideCpSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
         setGenDetails(ifr);
-//        disableCpSections(ifr);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)) {
@@ -141,7 +143,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 }
             }
             else {
-                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket) || getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
                     setVisible(ifr,new String[]{cpMarketSection,cpDecisionSection,cpCategoryLocal});
                     setMandatory(ifr, new String[]{cpDecisionLocal,cpRemarksLocal});
                     disableFields(ifr,new String[]{cpMarketSection});
@@ -203,6 +205,22 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
             return "Cut off time updated successfully. Kindly submit workitem";
         }
         return "Unable to update cut off time. Contact iBPS support";
+    }
+    private String cpUpdateReDiscountRate(IFormReference ifr){
+        String id = null;
+
+        if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
+            id = getCpPmWinRefNo(ifr);
+        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
+            id = getCpSmWinRefNo(ifr);
+
+        int validate = new DbConnect(ifr, new Query().getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
+        if (validate >=0 ) {
+            setFields(ifr,cpDecisionLocal,decApprove);
+            disableFields(ifr,new String[]{cpDecisionLocal,cpSetReDiscountRateBtn});
+            return "Re-discount Rate updated successfully. Kindly submit workitem";
+        }
+        return "Unable to update Re-discount Rate. Contact iBPS support";
     }
 
     /******************  TREASURY BILL CODE BEGINS *********************************/

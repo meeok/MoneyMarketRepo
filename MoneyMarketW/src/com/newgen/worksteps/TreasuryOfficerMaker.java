@@ -57,7 +57,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                     switch (controlName){
                         case cpUpdateMsg:{cpUpdateLandingMsg(ifr);}
                         break;
-                        case cpSetupWindowEvent:{ return setupCpWindow(ifr);}
+                        case cpSetupWindowEvent:{ return cpSetupWindow(ifr);}
                         
                         /**** Treasury onClick Start ****/
                         case tbOnClickUpdateMsg:{tbUpdateLandingMsg(ifr);}
@@ -224,6 +224,18 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                     }
                 }
             }
+            else{
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
+                        setVisible(ifr,new String[]{cpMarketSection,cpTreasuryPriSection,cpCategoryLocal,cpDecisionSection});
+                        setMandatory(ifr,new String[] {cpCategoryLocal,cpDecisionLocal,cpRemarksLocal});
+                        setCpCategory(ifr,new String[]{cpCategoryUpdateLandingMsg,cpCategoryReDiscountRate,cpCategoryModifyCutOffTime});
+                }
+                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+                        setVisible(ifr,new String[]{cpMarketSection,cpTreasurySecSection,cpCategoryLocal,cpDecisionSection});
+                        setMandatory(ifr,new String[] {cpCategoryLocal,cpDecisionLocal,cpRemarksLocal});
+                        setCpCategory(ifr,new String[]{cpCategoryUpdateLandingMsg,cpCategoryReDiscountRate,cpCategoryModifyCutOffTime});
+                }
+            }
         }
          else if(getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerMaker))  {
              if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
@@ -233,7 +245,13 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                      setCpCategory(ifr,new String[]{cpCategoryUpdateLandingMsg,cpCategoryReDiscountRate,cpCategoryModifyCutOffTime});
                  }
              }
-             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){}
+             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+                 if (!isEmpty(getWindowSetupFlag(ifr))){
+                     setVisible(ifr,new String[]{cpMarketSection,cpTreasurySecSection,cpCategoryLocal,cpDecisionSection});
+                     setMandatory(ifr,new String[] {cpCategoryLocal,cpDecisionLocal,cpRemarksLocal});
+                     setCpCategory(ifr,new String[]{cpCategoryUpdateLandingMsg,cpCategoryReDiscountRate,cpCategoryModifyCutOffTime});
+                 }
+             }
          }
         cpSetDecision(ifr);
     }
@@ -244,7 +262,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         setDecision(ifr,cpDecisionLocal,new String [] {decSubmit,decDiscard});
     }
 
-    private String setupCpWindow (IFormReference ifr){
+    private String cpSetupWindow(IFormReference ifr){
         if (isEmpty(getSetupFlag(ifr))){
             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
                 if (!compareDate(getCpOpenDate(ifr),getCpCloseDate(ifr))) return cpSetupPrimaryMarketWindow(ifr);
@@ -311,6 +329,28 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 setFields(ifr, new String[]{cpSmCutOffTimeLocal, cpSmMinPrincipalLocal}, new String[]{smDefaultCutOffTime,smMinPrincipal});
                 enableFields(ifr,new String[]{cpSmSetupLocal});
                 setMandatory(ifr,new String[]{cpSmSetupLocal,cpSmMinPrincipalLocal});
+            }
+            else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryModifyCutOffTime)){
+                setVisible(ifr,new String[]{cpCutOffTimeSection});
+                enableFields(ifr,new String[] {cpCloseDateLocal});
+                undoMandatory(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate90To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
+                setInvisible(ifr,new String[]{cpRediscountRateSection,cpLandingMsgSection});
+            }
+            else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryReDiscountRate)){
+                setVisible(ifr,new String[]{cpRediscountRateSection});
+                setMandatory(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate90To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
+                enableFields(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate90To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
+                setInvisible(ifr,new String[]{cpCutOffTimeSection,cpLandingMsgSection});
+            }
+            else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryUpdateLandingMsg)){
+                setVisible(ifr,new String[]{cpLandingMsgSection});
+                enableFields(ifr,new String[]{cpLandMsgLocal});
+                setMandatory(ifr,new String[]{cpLandMsgLocal});
+                undoMandatory(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate90To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
+                setInvisible(ifr,new String[]{cpRediscountRateSection,cpCutOffTimeSection});
+            }
+            else {
+                setInvisible(ifr,new String[]{cpRediscountRateSection,cpCutOffTimeSection,cpLandingMsgSection});
             }
         }
     }
