@@ -332,6 +332,10 @@ public interface Constants {
 	String tbDownloadPriBidSmryReport ="tbDownloadPriBidSmryReport";
 	String tbViewPriCustomerBids ="tbViewPriCustomerBids";
 	String tbupdatePriCustomerBids ="tbUpdatePriCustomerBids";
+	String tbGetPmGrid = "tbGetPmGrid";
+	String tbDownload= "tbDownload";
+	String tbCheckUnallocatedBids ="tbCheckUnallocatedBids";
+	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
 	String tbSecondaryMarket = "secondary";
@@ -340,6 +344,7 @@ public interface Constants {
 	String tbSetReDiscountRateBtn = "tb_rediscRate_btn";
 	String tbLandingMsgSubmitBtn="tb_landMsgSubmit_btn";
 	String tbPmMinPriAmtLocal = "tb_mp_amount";
+	String tbMaturityDte ="tb_maturity_date";
 	//tbMarketSection - Market
 	String tbMarketTypedd = "tb_select_market";
 	String tbCategorydd = "tb_category";
@@ -388,7 +393,7 @@ public interface Constants {
 	String tbViewPriBidDwnldBidSmrybtn="tb_downloadBidSmry_btn";
 	String tbPriBidReportTable ="table69"; //cmplx tb name =  tb_bidReport 
 	String tbPriBidAllocationTable ="table68";
-	String tbPriBidAllocationbtn ="tb_allocation_btn";
+	//String tbPriBidAllocationbtn ="tb_allocation_btn";
 	String tbPriBidAllocatebtn ="tb_allocate_btn";
 	String tbPriBidApprovebtn ="tb_allocation_btn";
 	String tbPriBidCustRqstTable ="table67";
@@ -397,7 +402,7 @@ public interface Constants {
 	String tbPriBidBulkAllbtn ="tb_allocation_btn";
 	String tbPriBidBlkCbnRate ="tb_bulk_cbnrate";
 	String tbPriBidBlkBankRate ="tb_bulk_bankrate";
-	String tbPriBidBlkDefaultAll ="tb_bulk_default_all";
+	//String tbPriBidBlkDefaultAll ="tb_bulk_default_all";
 	String tbPriBidBlkNewAll ="tb_bulk_new_all";
 	//String tbPriBidApprovebtn ="tb_allocation_btn";
 	
@@ -487,7 +492,8 @@ public interface Constants {
 	String tbBidDefaultAllCol ="DefaultAllocation";
 	String tbBidNewAllCol ="NewAllocation";
 	String tbBidTotalAmtCol ="TotalAmt";
-	String tbBidStausCol ="Status";
+	String tbStausCol ="Status";
+	String tbBidStausCol ="BidStatus";
 	String tbBidWorkItemNoCol ="WorkItemNo";
 	
 
@@ -518,7 +524,10 @@ public interface Constants {
 	String tbWindowActiveMessage = " Market Window is currently open, You cannot setup another window";
 	String yesFlag  ="Y";
 	String noFlag ="N";
+	String tbBidRqstTypelbl ="Fresh Mandate";
 	String tbBidRqstType ="Fresh Mandate";
+	String tbBidRllovrMndtelbl ="Roll Over Mandate";
+	String tbBidRllovrMndte ="RollOverMandate";
 	
 	String[] allTbSections = {tbBrnchPriCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,

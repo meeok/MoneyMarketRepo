@@ -381,6 +381,9 @@ public class Commons implements Constants {
     public boolean checkBidStatus(String rate, String cpRate){
         return Float.parseFloat(rate) <= Float.parseFloat(cpRate);
     }
+    public boolean checkBidStatus(double rate, double cbnRate){
+        return rate <= cbnRate;
+    }
     public static String getMaturityDate(int tenor){
         return LocalDate.now().plusDays(tenor).toString();
     }
@@ -780,6 +783,7 @@ public class Commons implements Constants {
         }
         return  closeDte.compareTo(new Date())>=0  ?true:false;
     }
+	 
     
     /*
      * check if a document has been uploaded

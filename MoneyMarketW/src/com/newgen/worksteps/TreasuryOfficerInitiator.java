@@ -170,6 +170,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     	setMandatory(ifr,new String [] {tbMarketTypedd,tbCategorydd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
     	enableFields(ifr,new String[]{tbLandingMsgSection,tbDecisionSection,tbMarketSection});
     	hideFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbCategorydd});
+        setDropDown(ifr,tbAssigndd,new String[]{tbTreasuryUtilityLabel,tbTreasuryVerifierLable},new String[]{tbTreasuryUtility,tbTreasuryVerifier});
     }
     public void tbSendMail(IFormReference ifr){
         String message = "A window open request for "+treasuryProcessName+" has been Initiated with ref number "+getWorkItemNumber(ifr)+".";

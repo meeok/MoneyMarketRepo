@@ -77,7 +77,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         	try {
                         		int selectedrow = Integer.parseInt(data);
                         		logger.info("selectedrow>>"+selectedrow);
-                        		tbViewPriCustomerBids(ifr,Integer.parseInt(data));
+                        		tbViewPriCustomerBids(ifr,selectedrow);
                         	}
                         	catch(Exception ex) {
                         		logger.info("tbViewPriCustomerBids Exception>>"+ex.toString());
@@ -85,6 +85,20 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         	
                         }
                         break;
+                        case tbupdatePriCustomerBids:{
+                        	try {
+                        		int selectedrow = Integer.parseInt(data);
+                        		logger.info("selectedrow>>"+selectedrow);
+                        		tbupdatePriCustomerBids(ifr,selectedrow);
+                        	}
+                        	catch(Exception ex) {
+                        		logger.info("tbupdatePriCustomerBids Exception>>"+ex.toString());
+                        	}
+                        }
+                        case tbDownload:{
+                            setFields(ifr,downloadFlagLocal,flag);
+                            break;
+                        }
                         	
                         
                         /**** Treasury onClick End ****/
@@ -105,6 +119,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                             updateCpPmBids(ifr,Integer.parseInt(data));
                             break;
                         }
+                        
                     }
                 }
                 break;
@@ -134,6 +149,17 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         case cpGetPmGridEvent:{
                         return getCpPmBidGrid(ifr,Integer.parseInt(data));
                         }
+                        case tbGetPmGrid:{
+                        	try {
+                        		int gridcnt = Integer.parseInt(data);
+                        		logger.info("selectedrow>>"+gridcnt);
+                        		return tbGetPmGrid(ifr,gridcnt);
+                        	}
+                        	catch(Exception ex) {
+                        		logger.info("tbGetPmGrid Exception>>"+ex.toString());
+                        	}
+                           
+                         }
                     }
                 }
                 break;
@@ -145,6 +171,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 	case tbOnDone:{
                 		return tbOnDone(ifr);
                 		}
+                	case tbCheckUnallocatedBids:{
+                		return tbCheckUnallocatedBids(ifr);
+                	}
                 
 	                /**** Treasury onDone End  ****/
                 	}
@@ -538,10 +567,11 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     private void tbFormLoad(IFormReference ifr) {
     	setGenDetails(ifr);
     	hideTbSections(ifr);
+    	disableField(ifr,tbAssigndd);
         hideFields(ifr, new String[] {goBackDashboardSection,tbPriSetupbtn});
         setDropDown(ifr,tbAssigndd,new String[]{tbTreasuryUtilityLabel,tbTreasuryVerifierLable},new String[]{tbTreasuryUtility,tbTreasuryVerifier});
         //disableTbSections(ifr);
-        disableField(ifr,tbAssigndd);
+        
         setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard}); //cannot discard if bids have been placed by bi
     	//setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
     	clearFields(ifr,new String[]{tbRemarkstbx});
@@ -570,7 +600,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
         		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate,tbCategorydd});
-                disableFields(ifr, new String[]{tbPriOpenDate,tbPriCloseDate,tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd});
+                disableFields(ifr, new String[]{tbPriOpenDate,tbPriCloseDate,tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd,tbAssigndd});
         	}
         	
         	//At cutoff time show select view report to view all bid requests for both fresh and rollover mandate
@@ -578,8 +608,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		setVisible(ifr,new String [] {tbPrimaryBidSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
         		enableFields(ifr,new String[]{tbViewPriBidReportbtn,tbPrimaryBidSection,tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {});
-                disableFields(ifr, new String[]{tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd});
-                hideFields(ifr, new String[] {tbPriBidAllocationTable,tbPriBidAllocationbtn,tbPriBidCustRqstTable,tbPriBidReportTable});
+                disableFields(ifr, new String[]{tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd,tbAssigndd});
+                hideFields(ifr, new String[] {tbPriBidAllocationTable,tbPriBidCustRqstTable,tbPriBidReportTable});
                 
                 //bid allocation
                 setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup,tbCategoryBid},new String[]{tbCategorySetup,tbCategoryBid});
@@ -627,7 +657,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             }
             else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
             	setVisible(ifr,new String [] {tbPrimaryBidSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
-        		enableFields(ifr,new String[]{tbPriBidAllocationbtn,tbViewPriBidReportbtn,tbPrimaryBidSection,tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
+        		enableFields(ifr,new String[]{tbViewPriBidReportbtn,tbPrimaryBidSection,tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {});
                 disableFields(ifr, new String[]{tbAssigndd,tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd});
                 hideFields(ifr, new String[] {tbPriBidAllocationTable,tbPriBidCustRqstTable,tbPriBidReportTable});
@@ -706,6 +736,15 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     	logger.info("Validate retMsg>>"+retMsg);
     	return retMsg;
     }
+    //on done check if all approved bids have been allocated befor submitting
+    private String tbCheckUnallocatedBids(IFormReference ifr) {
+    	//get the refid  of the workitem
+    	String qry = new Query().getTbPmNoBidAllocationQuery(getFieldValue(ifr,tbUniqueReftbx));
+    	logger.info("getTbPmNoBidAllocationQuery>>"+qry);
+        List<List<String>> dbr = new DbConnect(ifr,qry).getData();
+        logger.info("getTbPmNoBidAllocationQuery>>"+dbr);
+        return dbr.size()>0 ? "All Approved Bids have not been allocated.Do you want to set all as failed bids?" : "";
+    }
     private String tbOnDone(IFormReference ifr) {
     	logger.info("tbOnDone>>");
     	String retMsg="";
@@ -715,6 +754,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     			if(!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))) //market not set
 	    				retMsg = setUpTbMarketWindow(ifr);// set market
 	    		
+    		}
+    		else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
+    		//	check if all bids are set --- get bdStatus
+    			retMsg =tbCheckUnallocatedBids(ifr);
     		}
     	//}
     	logger.info("Validate retMsg>>"+retMsg);
@@ -785,55 +828,170 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                  String principal = ls.get(7);
                  String wino = ls.get(8);
                  String defaultAllocation ="100";
-                 setTableGridData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidWorkItemNoCol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidPersonalRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol,tbBidRateTypeCol},
-                         new String[]{id,wino,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation,tbBidRateTypeCol});
+                 String cbnRate = ls.get(10);
+                 String bankRate = ls.get(11);
+                 String matDte = ls.get(12);
+                 String newAll = ls.get(13);
+                 String bidStatus = ls.get(14);
+                 String status = ls.get(15);
+                 setTableGridData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidWorkItemNoCol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidPersonalRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol,tbBidRateTypeCol,
+                		 tbBidCBNRateCol,tbCidBankRateCol,tbBidMaturityDteCol,tbBidNewAllCol, tbBidStausCol,tbStausCol},
+                         new String[]{id,wino,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation,ratetype,
+                        		 cbnRate,bankRate,matDte,newAll,bidStatus,status});
              }
-             setVisible(ifr,new String[]{tbPriBidCustRqstTable,tbPriBidUpdateCustBid,tbPriBidBulkAllbtn,tbPriBidBulkAllbtn,tbPriBidBlkCbnRate,tbPriBidBlkBankRate,tbPriBidBlkDefaultAll,tbPriBidBlkNewAll});
+             setVisible(ifr,new String[]{tbPriBidCustRqstTable,tbPriBidUpdateCustBid,tbPriBidBulkAllbtn,tbPriBidBulkAllbtn,tbPriBidBlkCbnRate,tbPriBidBlkBankRate,tbPriBidBlkNewAll});
         }    
     }
-   /* private void updateTbPmBids(IFormReference ifr, int rowIndex){
-    	tb_rate_type
-        String bankRate =ifr.getTableCellValue(cpBidReportTbl,rowIndex,0);
-        String personalRate = empty;
-        String tbRate = getFieldValue(ifr,cpAllocCpRateLocal);
-        String defaultAlloc = getFieldValue(ifr,cpAllocDefaultAllocLocal);
-        String id = ifr.getTableCellValue(cpBidReportTbl,rowIndex,0);
-        String rateType = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,rateTypeBidTblCol)).getData().get(0).get(0);
-        String tenor = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,tenorBidTblCol)).getData().get(0).get(0);
-
-        if (rateType.equalsIgnoreCase(rateTypePersonal))
-            personalRate = new DbConnect(ifr,new Query().getCpPmBidDetailByIdQuery(id,rateBidTblCol)).getData().get(0).get(0);
-
-        if (rateType.equalsIgnoreCase(rateTypeBank)){
-            if (checkBidStatus(bankRate,cpRate)){
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,5,bankRate);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,7,getMaturityDate(Integer.parseInt(tenor)));
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
-                new DbConnect(ifr, new Query().getCpPmBidUpdateBankQuery(id,cpRate,bankRate,getMaturityDate(Integer.parseInt(tenor)),defaultAlloc,bidSuccess,statusAwaitingMaturity)).saveQuery();
-            }
-            else {
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidFailed);
-                new DbConnect(ifr, new Query().getCpPmUpdateFailedBidsQuery(id,bidFailed)).saveQuery();
-            }
+    //write general update without selecting index
+    //update the grid table with bulk data --update external table with the updates
+    private String tbupdatePriCustomerBids(IFormReference ifr, int rowIndex){
+		logger.info("tbupdatePriCustomerBids>>>");
+    	String retMsg ="";
+    	
+    	String gridcbnRate = getFieldValue(ifr,tbPriBidBlkCbnRate);//ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,6);
+        String gridbankRate =getFieldValue(ifr,tbPriBidBlkBankRate);//ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,7);
+        String newallocation = getFieldValue(ifr,tbPriBidBlkNewAll);//ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,9);
+        String gridpersonalRate =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,8); 
+        
+        if(gridpersonalRate.equalsIgnoreCase(rateTypeBank)) {
+        	if(isEmpty(gridcbnRate) || isEmpty(gridbankRate))
+        		retMsg = "CBN rate and Bank Rate Cannot be empty";
         }
-        else if (rateType.equalsIgnoreCase(rateTypePersonal)){
-            if (checkBidStatus(personalRate,cpRate)){
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,4,cpRate);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,7,getMaturityDate(Integer.parseInt(tenor)));
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,9,defaultAlloc);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,11,bidSuccess);
-                ifr.setTableCellValue(cpBidReportTbl,rowIndex,12,statusAwaitingMaturity);
-                new DbConnect(ifr,new Query().getCpPmBidUpdatePersonalQuery(id,cpRate,getMaturityDate(Integer.parseInt(tenor)),defaultAlloc,bidSuccess,statusAwaitingMaturity)).saveQuery();
-            }
-            else {
-                ifr.setTableCellValue(cpBidReportTbl, rowIndex, 11, bidFailed);
-                new DbConnect(ifr, new Query().getCpPmUpdateFailedBidsQuery(id, bidFailed)).saveQuery();
-            }
+        else {
+        	if(isEmpty(gridcbnRate))
+        		retMsg = "CBN rate aCannot be empty";
         }
-    }*/
+    	
+        if(isEmpty(retMsg)) {
+	    	logger.info("gridcbnRate>>>"+gridcbnRate);
+	    	double cbnRate = 0;
+	    	try{cbnRate = Double.parseDouble(gridcbnRate);}
+	    	catch(Exception ex) {
+	    		retMsg = "parsing cbnrate error:>>>"+ ex.toString();
+	    		logger.info(retMsg);
+	    	}
+	    	logger.info("cbnRate>>>"+cbnRate);
+	    	
+	   
+	        logger.info("gridbankRate>>>"+gridbankRate);
+	        double bankRate = 0;
+	    	try{bankRate = Double.parseDouble(gridbankRate);}
+	    	catch(Exception ex) {logger.info("parsing cbnrate error:>>>"+ ex.toString());}
+	    	logger.info("bankRate>>>"+bankRate);
+	    	
+	    	
+	         logger.info("newallocation>>>"+newallocation);
+	         double allocation = 100;
+	         try {allocation = Double.parseDouble(newallocation);}
+	         catch(Exception ex) {logger.info("parsing allocation error:>>>"+ ex.toString());}
+	         logger.info("allocation>>>"+allocation);
+	        
+	    	
+	    	String wino = ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,0);
+	    	logger.info("wino>>>"+wino);
+	    	
+	    	String tenor = ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,4);
+	    	logger.info("tenor>>>"+tenor);
+	    	logger.info("tenor2>>>"+tenor.substring(0, tenor.indexOf(" ")));
+	    	
+	    
+	    	
+	    	//to do: get from db 
+	        
+	        logger.info("gridpersonalRate>>>"+gridpersonalRate);
+	        double personalRate = 0;
+	    	try{personalRate = Double.parseDouble(gridpersonalRate);}
+	    	catch(Exception ex) {
+	    		retMsg = "parsing Bank error:>>>"+ ex.toString();
+	    		logger.info(retMsg);
+	    	}
+	    	logger.info("personalRate>>>"+personalRate);
+	    	
+	       
+	       // String defaultAll =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,10);
+	        String maturityDate =getMaturityDate(Integer.parseInt(tenor.substring(0, tenor.indexOf(" "))));
+	        logger.info("maturityDate>>>"+maturityDate);
+	        String rateType =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,15);
+	        logger.info("rateType>>>"+rateType);
+	        
+	        if (rateType.equalsIgnoreCase(rateTypePersonal)) {
+	        	if (checkBidStatus(personalRate,cbnRate)) {
+	        		
+	        		//update gridview
+	            	ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
+	               // ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,11,maturityDate);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,9,newallocation);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidSuccess);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,statusAwaitingMaturity);
+	                
+	                //update table
+	        		String qry = new Query().getTbPmBidUpdatePersonalQuery(wino, cbnRate, maturityDate, allocation, bidSuccess, statusAwaitingMaturity);
+	        		int dbr = new DbConnect(ifr, qry).saveQuery();
+	                logger.info("getTbPmBidUpdatePersonalQuery save db result>>>"+dbr);
+	        	}
+	        	else {
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
+	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed);
+	            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
+	                int dbr = new DbConnect(ifr, qry).saveQuery();
+	                logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);
+	                if(dbr<0)
+	                	retMsg ="Update bidFailed failed";
+	            }
+	        	
+	        }
+	        else if (rateType.equalsIgnoreCase(rateTypeBank)){
+	            if (checkBidStatus(bankRate,cbnRate)){
+	            	
+	            	//update gridview
+	            	ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,11,maturityDate);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,9,newallocation);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidSuccess);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,statusAwaitingMaturity);
+	                
+	            	//update db
+	            	String qry = new Query().getTbPmBidUpdateBankQuery(wino, cbnRate, bankRate, maturityDate, allocation, bidSuccess, statusAwaitingMaturity);
+	            	logger.info("getTbPmBidUpdateBankQuery>>"+ qry);
+	                int dbr = new DbConnect(ifr, qry).saveQuery();
+	                logger.info("getTbPmBidUpdateBankQuery save db result>>>"+dbr);
+	                if(dbr<0)
+	                	retMsg ="Update failed";
+	            }
+	            else {
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
+	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed);
+	            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
+	                int dbr = new DbConnect(ifr, qry).saveQuery();
+	                logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);
+	                if(dbr<0)
+	                	retMsg ="Update failed";
+	            }
+	        }
+        }
+        return retMsg;
+    
+            
+    }
+    
+    //download primary bid report
+    private String tbGetPmGrid(IFormReference ifr, int rowCount){
+        StringBuilder output = new StringBuilder(empty);
+        for (int i = 0; i < rowCount; i++){
+        	String reqstType =  ifr.getTableCellValue(tbPriBidReportTable,i,0);
+	        String tenor =  ifr.getTableCellValue(tbPriBidReportTable,i,1);
+	        String rate =  ifr.getTableCellValue(tbPriBidReportTable,i,2);
+	        String totalAmount =  ifr.getTableCellValue(tbPriBidReportTable,i,3);
+	        String rateType =  ifr.getTableCellValue(tbPriBidReportTable,i,4);
+	        String count =  ifr.getTableCellValue(tbPriBidReportTable,i,5);
+	        String status =  ifr.getTableCellValue(tbPriBidReportTable,i,6);
+	        output.append("{\"reqstType\": \"").append(reqstType).append("\", \"tenor\": \"").append(tenor).append("\", \"rate\": \"").append(rate).append("\", \"totalAmount\": \"").append(totalAmount).append("\", \"rateType\": \"").append(rateType).append("\", \"count\": \"").append(count).append("\", \"status\": \"").append(status).append("\"}$");
+	      }
+        logger.info("output from grid: "+output.toString());
+        return output.toString().trim();
+    }
         	
        
     
