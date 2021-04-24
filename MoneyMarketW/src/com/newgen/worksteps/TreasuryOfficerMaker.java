@@ -371,6 +371,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             String groupIndex = result.get(5);
             logger.info("groupIndex-- "+ groupIndex);
 
+
             setTableGridData(ifr, cpAllocSummaryTbl,new String[]{cpAllocTenorCol,cpAllocRateCol,cpAllocTotalAmountCol,cpAllocRateTypeCol,cpAllocCountCol,cpAllocStatusCol,cpAllocGroupIndexCol},
                     new String[]{tenor,rate,totalAmount,rateType,count, statusAwaitingTreasury,groupIndex});
         }

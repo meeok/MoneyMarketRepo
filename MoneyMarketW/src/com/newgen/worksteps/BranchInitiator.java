@@ -380,7 +380,12 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         }
         else { setInvisible(ifr,new String[]{cpTerminationSection,cpProofOfInvestSection,cpLienSection});}
     }
-    private void fetchMandatesForTermination(){
+    private void fetchMandatesForTermination(IFormReference ifr){
+        resultSet = new DbConnect(ifr,Query.getCpBidForTerminationQuery(commercialProcessName,getCpMarket(ifr),getCpMandateToTerminate(ifr))).getData();
+
+        for (List<String> result : resultSet){
+
+        }
 
     }
 

@@ -34,10 +34,10 @@ public class MailSetup {
         try {
             if (isMailSent(ifr)) logger.info("Mail sent successfully.");
             else logger.info("Mail not sent.");
-        } catch (Exception e){ logger.info("Exception occurred -- Mail was not sent-- "+ e.getMessage());}
+        } catch (Exception e){ logger.error("Exception occurred -- Mail was not sent-- "+ e.getMessage());}
     }
 
     private boolean isMailSent(IFormReference ifr){
-        return new DbConnect(ifr, new Query().getMailQuery(wiName,sendMail,copyMail,mailSubject,mailMessage)).saveQuery() >= 0;
+        return new DbConnect(ifr, Query.getMailQuery(wiName,sendMail,copyMail,mailSubject,mailMessage)).saveQuery() >= 0;
     }
 }

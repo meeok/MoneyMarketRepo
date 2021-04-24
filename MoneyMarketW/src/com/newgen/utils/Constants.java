@@ -194,6 +194,7 @@ public interface Constants {
 	String cpMandateTypePoi = "POI";
 	String cpMandateTypeSetupLien = "Setup Lien";
 	String cpMandateTypeRemoveLien = "Remove Lien";
+	String cpTermMandateLocal = "";
 
 
 	//common variables

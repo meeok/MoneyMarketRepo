@@ -7,7 +7,7 @@ public class Query {
     public String getUsersInGroup(String groupName) {
         return "select username from pdbuser where userindex in (select userindex from pdbgroupmember where groupindex = (select groupindex from PDBGroup where GroupName='" + groupName + "'))";
     }
-    public String getMailQuery(String wiName, String sendMail, String copyMail, String mailSubject, String mailMessage) {
+    public static String getMailQuery(String wiName, String sendMail, String copyMail, String mailSubject, String mailMessage) {
         return "insert into wfmailqueuetable (" +
                 "mailfrom," +
                 "mailto," +
@@ -127,13 +127,13 @@ public class Query {
     public String getCpSmInvestmentsSelectQuery(String id){
         return "select tenor, rate,availableamount,totalamountsold,mandates  from mm_sminvestments_tbl where investmentid = '"+id+"'";
     }
-    public String getUpdateCutoffTimeQuery(String id, String closeDate){
+    public static String getUpdateCutoffTimeQuery(String id, String closeDate){
         return "update mm_setup_tbl set closedate = '"+closeDate+"' where refid = '"+id+"'";
     }
-    public String getUpdateReDiscountRateQuery(String id,String redicsountless90, String rediscount91180, String rediscount181270, String rediscount271364){
+    public static String getUpdateReDiscountRateQuery(String id,String redicsountless90, String rediscount91180, String rediscount181270, String rediscount271364){
         return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+redicsountless90+"', REDISCOUNTRATELESS180 = '"+rediscount91180+"', REDISCOUNTRATELESS270 = '"+rediscount181270+"', REDISCOUNTRATELESS364 = '"+rediscount271364+"' where  refid = '"+id+"'";
     }
-    public String getCpBidForTerminationQuery(String process, String marketType){
-        return "SELECT reqdate, custrefid, custprincipal, custacctno, custname, maturitydate, status FROM MM_BID_TBL where process = '"+process+"' and markettype = '"+marketType+"' and  awaitingmaturityflag = 'Y'";
+    public static String getCpBidForTerminationQuery(String process, String marketType, String data){
+        return "SELECT reqdate,winrefid, custrefid, custprincipal, custacctno, custname, maturitydate, status FROM MM_BID_TBL where process = '"+process+"' and markettype = '"+marketType+"' and  awaitingmaturityflag = 'Y' and (custrefid = '"+data+"' or custacctno = '"+data+"' )";
     }
 }

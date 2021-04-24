@@ -451,6 +451,9 @@ public class Commons implements Constants {
     public String getCpMandateType (IFormReference ifr){
         return getFieldValue(ifr,cpMandateTypeLocal);
     }
+    public String getCpMandateToTerminate(IFormReference ifr){
+        return getFieldValue(ifr,cpTermMandateLocal);
+    }
 
 
 

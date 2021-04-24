@@ -198,7 +198,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
             id = getCpSmWinRefNo(ifr);
 
-      int validate = new DbConnect(ifr, new Query().getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
+      int validate = new DbConnect(ifr,Query.getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
         if (validate >=0 ) {
             setFields(ifr,cpDecisionLocal,decApprove);
             disableFields(ifr,new String[]{cpDecisionLocal,cpUpdateCutoffTimeBtn});
@@ -219,7 +219,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
             id = getCpSmWinRefNo(ifr);
 
-        int validate = new DbConnect(ifr, new Query().getUpdateReDiscountRateQuery(id,rediscount90,rediscount91180,rediscount181270,rediscount271364)).saveQuery();
+        int validate = new DbConnect(ifr,Query.getUpdateReDiscountRateQuery(id,rediscount90,rediscount91180,rediscount181270,rediscount271364)).saveQuery();
         if (validate >=0 ) {
             setFields(ifr,cpDecisionLocal,decApprove);
             disableFields(ifr,new String[]{cpDecisionLocal,cpSetReDiscountRateBtn});
