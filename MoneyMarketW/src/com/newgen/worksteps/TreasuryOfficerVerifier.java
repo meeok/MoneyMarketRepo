@@ -209,12 +209,17 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     private String cpUpdateReDiscountRate(IFormReference ifr){
         String id = null;
 
+        String rediscount90 = getFieldValue(ifr,cpReDiscountRateLess90Local);
+        String rediscount91180 = getFieldValue(ifr, cpReDiscountRate91To180Local);
+        String rediscount181270 = getFieldValue(ifr,cpReDiscountRate181To270Local);
+        String rediscount271364 = getFieldValue(ifr,cpReDiscountRate271To364Local);
+
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
             id = getCpPmWinRefNo(ifr);
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
             id = getCpSmWinRefNo(ifr);
 
-        int validate = new DbConnect(ifr, new Query().getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
+        int validate = new DbConnect(ifr, new Query().getUpdateReDiscountRateQuery(id,rediscount90,rediscount91180,rediscount181270,rediscount271364)).saveQuery();
         if (validate >=0 ) {
             setFields(ifr,cpDecisionLocal,decApprove);
             disableFields(ifr,new String[]{cpDecisionLocal,cpSetReDiscountRateBtn});

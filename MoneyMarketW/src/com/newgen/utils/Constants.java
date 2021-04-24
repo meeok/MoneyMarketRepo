@@ -17,6 +17,7 @@ public interface Constants {
 	String treasuryOpsFailed = "TreasuryOps_Failed";
 	String awaitingMaturity = "AwaitingMaturity";
 	String treasuryOpsSuccessful = "TreasuryOps_Successful";
+	String utilityWs = "Utility_Initiation";
 	String discardWs = "Discard";
 	String exit = "Exit";
 	String query = "Query";
@@ -54,7 +55,7 @@ public interface Constants {
 	String wiNameFormLocal ="winame";
 	String utilityFlagLocal = "cp_utilityFlag";
 	String downloadFlagLocal ="downloadFlag";
-	String utilityWs = "Utility_Initiation";
+
 
 
 	// cp sections
@@ -75,6 +76,8 @@ public interface Constants {
 	String cpCutOffTimeSection = "cp_cutoff_section";
 	String cpCustomerDetailsSection ="cp_custDetails_section";
 	String cpRediscountRateSection = "rediscountratesection";
+	String cpMandateTypeSection = "cp_mandatetypesection";
+	String cpLienSection = "cpLienSection";
 
     // end of cp sections
 
@@ -183,10 +186,14 @@ public interface Constants {
 	String cpSmMinPrincipalBrLocal = "cp_sec_miniPrincipalAmt_brch";
 	String cpInvestBtn = "invest_btn";
 	String cpReDiscountRateLess90Local = "cp_less90_prim";
-	String cpReDiscountRate90To180Local = "cp_91_180days_prim";
+	String cpReDiscountRate91To180Local = "cp_91_180days_prim";
 	String cpReDiscountRate181To270Local = "cp_181_270days_prim";
 	String cpReDiscountRate271To364Local = "cp_271_364days_prim";
-
+	String cpMandateTypeLocal = "cp_mandatetype";
+	String cpMandateTypeTerminate = "Termination";
+	String cpMandateTypePoi = "POI";
+	String cpMandateTypeSetupLien = "Setup Lien";
+	String cpMandateTypeRemoveLien = "Remove Lien";
 
 
 	//common variables
@@ -302,6 +309,7 @@ public interface Constants {
 	String cpSmInvestEvent = "cpSmInvest";
 	String cpUpdateCutOffTimeEvent = "updateCutOffTime";
 	String cpUpdateReDiscountRateEvent = "updateRediscountRate";
+	String cpMandateTypeEvent = "mandateType";
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

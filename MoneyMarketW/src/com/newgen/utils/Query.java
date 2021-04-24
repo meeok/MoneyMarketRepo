@@ -130,4 +130,10 @@ public class Query {
     public String getUpdateCutoffTimeQuery(String id, String closeDate){
         return "update mm_setup_tbl set closedate = '"+closeDate+"' where refid = '"+id+"'";
     }
+    public String getUpdateReDiscountRateQuery(String id,String redicsountless90, String rediscount91180, String rediscount181270, String rediscount271364){
+        return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+redicsountless90+"', REDISCOUNTRATELESS180 = '"+rediscount91180+"', REDISCOUNTRATELESS270 = '"+rediscount181270+"', REDISCOUNTRATELESS364 = '"+rediscount271364+"' where  refid = '"+id+"'";
+    }
+    public String getCpBidForTerminationQuery(String process, String marketType){
+        return "SELECT reqdate, custrefid, custprincipal, custacctno, custname, maturitydate, status FROM MM_BID_TBL where process = '"+process+"' and markettype = '"+marketType+"' and  awaitingmaturityflag = 'Y'";
+    }
 }

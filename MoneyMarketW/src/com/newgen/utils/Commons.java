@@ -173,7 +173,7 @@ public class Commons implements Constants {
         catch (Exception e){ logger.error("Exception occurred in getSol Method-- "+e.getMessage());return  null;}
     }
     public void hideCpSections (IFormReference ifr){
-        setInvisible(ifr,new String []{cpRediscountRateSection,cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
+        setInvisible(ifr,new String []{cpLienSection,cpMandateTypeSection,cpRediscountRateSection,cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
         cpTerminationSection,cpCutOffTimeSection,cpDecisionSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection,cpSetupSection,cpCustomerDetailsSection});
     }
     public void disableCpSections (IFormReference ifr){
@@ -447,6 +447,9 @@ public class Commons implements Constants {
     }
     public boolean isDateEqual (String date1, String date2){
         return LocalDate.parse(date1).isEqual(LocalDate.parse(date2));
+    }
+    public String getCpMandateType (IFormReference ifr){
+        return getFieldValue(ifr,cpMandateTypeLocal);
     }
 
 

@@ -86,7 +86,6 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                                 undoMandatory(ifr,new String[]{cpCategoryLocal});
                                 hideCpSections(ifr);
                             }
-
                         }
                         break;
                         case cpOnSelectCategory:{return cpSelectCategory(ifr);}
@@ -122,6 +121,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         case cpSmConcessionRateEvent:{ cpSmSetConcessionRate(ifr);}
                         break;
                         case cpSmCheckMaturityDateEvent:{return cpSmCheckMaturityDate(ifr,Integer.parseInt(data));}
+                        case cpMandateTypeEvent:{
+                            cpSelectMandateType(ifr);
+                            break;
+                        }
                         
                       //****************Treasurry Starts here *********************//
     	                case tbMarketTypeddChange:{
@@ -250,7 +253,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         setVisible(ifr, new String[]{cpDecisionSection, cpMarketSection});
         enableFields(ifr,new String[]{cpSelectMarketLocal});
         setMandatory(ifr,new String [] {cpSelectMarketLocal,cpDecisionLocal,cpRemarksLocal});
-        setDropDown(ifr,cpCategoryLocal,new String[]{cpCategoryBid,cpCategoryMandate,cpCategoryReport});
+        setDropDown(ifr,cpCategoryLocal,new String[]{cpCategoryBid,cpCategoryMandate});
     }
    
 
@@ -279,10 +282,14 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                     }
                 } else return windowInactiveMessage;
             }
+            else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryMandate)){
+                setVisible(ifr,cpMandateTypeSection);
+                enableField(ifr,cpMandateTypeLocal);
+                setMandatory(ifr,cpMandateTypeLocal);
+            }
             else {
                 hideCpSections(ifr);
             }
-
         return null;
     }
 
@@ -357,7 +364,26 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 
         return empty;
     }
-    
+
+    private void cpSelectMandateType(IFormReference ifr){
+        if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+            setVisible(ifr,new String[]{cpTerminationSection});
+            setInvisible(ifr,new String[]{cpProofOfInvestSection,cpLienSection});
+        }
+        else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypePoi)){
+            setVisible(ifr,new String[]{cpProofOfInvestSection});
+            setInvisible(ifr,new String[]{cpTerminationSection,cpLienSection});
+        }
+        else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeSetupLien)){
+            setVisible(ifr,new String[]{cpLienSection});
+            setInvisible(ifr,new String[]{cpTerminationSection,cpProofOfInvestSection});
+        }
+        else { setInvisible(ifr,new String[]{cpTerminationSection,cpProofOfInvestSection,cpLienSection});}
+    }
+    private void fetchMandatesForTermination(){
+
+    }
+
     //**********************Treasury Starts here **********************//
   
     private void tbBackToDashboard(IFormReference ifr) {
