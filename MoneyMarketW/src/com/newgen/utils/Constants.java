@@ -194,7 +194,18 @@ public interface Constants {
 	String cpMandateTypePoi = "POI";
 	String cpMandateTypeSetupLien = "Setup Lien";
 	String cpMandateTypeRemoveLien = "Remove Lien";
-	String cpTermMandateLocal = "";
+	String cpTermMandateLocal = "CP_TERMMANDATE";
+	String cpTermMandateDateCol = "Date";
+	String cpTermMandateRefNoCol = "Reference Number";
+	String cpTermMandateAmountCol = "Amount";
+	String cpTermMandateAcctNoCol = "Account Number";
+	String cpTermMandateCustNameCol = "Customer Name";
+	String cpTermMandateDtmCol = "Number of Days to Maturity";
+	String cpTermMandateStatusCol = "Status";
+	String cpTermMandateWinRefCol = "winref";
+	String cpTermMandateTbl = "table94";
+	String cpSelectMandateTermBtn = "cpTerminateMandateBtn";
+	String cpSearchMandateTermBtn = "cpTermMandateSearchBtn";
 
 
 	//common variables
@@ -311,6 +322,9 @@ public interface Constants {
 	String cpUpdateCutOffTimeEvent = "updateCutOffTime";
 	String cpUpdateReDiscountRateEvent = "updateRediscountRate";
 	String cpMandateTypeEvent = "mandateType";
+	String cpSearchTermMandateEvent ="searchTermMandate";
+	String cpSelectTermMandateEvent = "selectTermMandate";
+
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";

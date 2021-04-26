@@ -42,8 +42,14 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                     switch (control) {
                         case cpTokenEvent: return CpController.tokenController(ifr);
                         case cpPostEvent:{
-                            if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
-                            else return cpValidateWindowErrorMsg;
+                            if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
+                                if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                                else return cpValidateWindowErrorMsg;
+                            }
+                            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
+                                if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                                else return cpValidateWindowErrorMsg;
+                            }
                         }
                     }
                 }
