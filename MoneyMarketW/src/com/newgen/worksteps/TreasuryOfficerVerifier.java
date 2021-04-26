@@ -4,7 +4,7 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.processMethods.CpController;
+import com.newgen.controller.CpController;
 import com.newgen.utils.*;
 
 import org.apache.log4j.Logger;

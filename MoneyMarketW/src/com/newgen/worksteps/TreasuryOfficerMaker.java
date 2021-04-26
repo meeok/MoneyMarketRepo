@@ -293,6 +293,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         }
     }
     private void cpSelectCategory(IFormReference ifr){
+        disableField(ifr,cpCategoryLocal);
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategorySetup)){
                 setVisible(ifr, new String [] {cpTreasuryPriSection,cpSetupSection,cpSetupWindowBtn,cpCutOffTimeSection});

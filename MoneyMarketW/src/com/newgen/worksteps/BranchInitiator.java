@@ -1,6 +1,6 @@
 package com.newgen.worksteps;
 
-import com.newgen.processMethods.CpController;
+import com.newgen.controller.CpController;
 import com.newgen.utils.*;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
@@ -268,6 +268,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     }
 
     private String cpSelectCategory(IFormReference ifr) {
+        disableField(ifr,cpCategoryLocal);
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
                 if (isCpWindowActive(ifr)) {
                     if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
@@ -396,44 +397,58 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
             String accountNo = result.get(3);
             String accountName = result.get(4);
             String maturityDate = result.get(5);
-            logger.info("maturity Date-- "+maturityDate);
             String status = result.get(6);
             String winId = result.get(7);
             String dtm = String.valueOf(getDaysToMaturity(maturityDate));
-            logger.info("dtm-- "+ dtm);
             setTableGridData(ifr,cpTermMandateTbl,new String[]{cpTermMandateDateCol,cpTermMandateRefNoCol,cpTermMandateAmountCol,cpTermMandateAcctNoCol,cpTermMandateCustNameCol,cpTermMandateDtmCol,cpTermMandateStatusCol,cpTermMandateWinRefCol},
                     new String [] {date,custId,amount,accountNo,accountName,dtm,status,winId});
         }
         setVisible(ifr,new String[]{cpTermMandateTbl,cpSelectMandateTermBtn});
         enableFields(ifr,new String[]{cpSelectMandateTermBtn});
     }
-    private void cpSelectMandateForTermination(IFormReference ifr, int rowIndex){
+    private String cpSelectMandateForTermination(IFormReference ifr, int rowIndex){
         String id = ifr.getTableCellValue(cpTermMandateTbl,rowIndex,7);
         String dtm = ifr.getTableCellValue(cpTermMandateTbl,rowIndex,5);
+        String rate;
+        String errMsg = "No Re-Discount rate set by Treasury for this bid.Termination cancelled. Contact Treasury Department.";
 
         resultSet = new DbConnect(ifr,Query.getCpReDiscountedRateForTermQuery(id)).getData();
 
         if (Long.parseLong(dtm) <= 90){
-            setVisible(ifr,new String[]{cpRediscountRateSection,cpReDiscountRateLess90Local});
-            setFields(ifr,cpReDiscountRateLess90Local,resultSet.get(0).get(0));
+            rate = resultSet.get(0).get(0);
+            if (!isEmpty(rate)) {
+                setVisible(ifr, new String[]{cpRediscountRateSection, cpReDiscountRateLess90Local});
+                setFields(ifr, cpReDiscountRateLess90Local,rate);
+            }
+            else  return errMsg;
         }
         else if (Long.parseLong(dtm) >= 91 && Long.parseLong(dtm) <= 180){
-            setVisible(ifr,new String[]{cpRediscountRateSection,cpReDiscountRate91To180Local});
-            setFields(ifr,cpReDiscountRate91To180Local,resultSet.get(0).get(1));
+            rate   = resultSet.get(0).get(1);
+            if (isEmpty(rate)) {
+                setVisible(ifr, new String[]{cpRediscountRateSection, cpReDiscountRate91To180Local});
+                setFields(ifr, cpReDiscountRate91To180Local,rate );
+            }
+            else return errMsg;
         }
         else if (Long.parseLong(dtm) >= 181 && Long.parseLong(dtm) <= 270){
-            setVisible(ifr,new String[]{cpRediscountRateSection,cpReDiscountRate181To270Local});
-            setFields(ifr,cpReDiscountRate181To270Local,resultSet.get(0).get(2));
+            rate = resultSet.get(0).get(2);
+            if (!isEmpty(rate)) {
+                setVisible(ifr, new String[]{cpRediscountRateSection, cpReDiscountRate181To270Local});
+                setFields(ifr, cpReDiscountRate181To270Local,rate );
+            }
+            else return errMsg;
         }
         else if (Long.parseLong(dtm) >= 271 && Long.parseLong(dtm) <= 364){
-            setVisible(ifr,new String[]{cpRediscountRateSection,cpReDiscountRate271To364Local});
-            setFields(ifr,cpReDiscountRate271To364Local,resultSet.get(0).get(3));
+            rate = resultSet.get(0).get(3);
+            if (!isEmpty(rate)) {
+                setVisible(ifr, new String[]{cpRediscountRateSection, cpReDiscountRate271To364Local});
+                setFields(ifr, cpReDiscountRate271To364Local, rate);
+            }
+            else return errMsg;
         }
-
-
-
-
-
+        setVisible(ifr, new String[]{});
+        enableFields(ifr, new String[]{});
+        return null;
     }
 
     //**********************Treasury Starts here **********************//
