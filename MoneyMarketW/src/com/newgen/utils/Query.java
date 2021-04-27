@@ -206,4 +206,16 @@ public class Query {
 	            "AND B.ParentFolderIndex=(select FolderIndex from PDBFolder where name ='"+ winame + "') " +
 	            "AND upper(A.Name) like '"+docName+"%'";
       }
+    
+    /*
+     * update rediscount rate
+     */
+    public String getUpdateRdRateQuery(String refid, String winame,String tb90, String tb180, String tb270, String tb364){
+        return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+tb90+"', REDISCOUNTRATELESS180 = '"+tb180+"',"
+        		+ "REDISCOUNTRATELESS270 = '"+tb270+"', REDISCOUNTRATELESS364 = '"+tb364+"', where refid = '"+refid+"' and winame ='"+winame+"'";
+    }
+    //update minimum principal
+    public String getUpdateminPrincipalQuery(String refid, String minPrincipal){
+        return "update mm_setup_tbl set MINPRINCIPALAMOUNT = '"+minPrincipal+"' where refid = '"+refid+"'";
+    }
 }

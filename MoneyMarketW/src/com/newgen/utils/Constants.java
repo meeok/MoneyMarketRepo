@@ -335,6 +335,8 @@ public interface Constants {
 	String tbGetPmGrid = "tbGetPmGrid";
 	String tbDownload= "tbDownload";
 	String tbCheckUnallocatedBids ="tbCheckUnallocatedBids";
+	String tbVerificationAmtChanged = "tbVerificationAmtChanged";
+	String tbUpdateSmIssuedBids ="tbUpdateSmIssuedBids";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -436,7 +438,7 @@ public interface Constants {
 	String tbCategorySetup = "Setup";
 	String tbCategoryBid = "Bid";
 	String tbCategoryReDiscountRate = "Re-discount Rate";
-	String tbCategoryCutOff = "Cut off time modification";
+	String tbCategoryCutOff = "Cutoff time modification";
 	String tbCategoryReport = "Report";
 	String tbCategoryMandate = "Mandate";
 	String tbPoolManager ="Pool_Manager";
@@ -496,7 +498,26 @@ public interface Constants {
 	String tbBidStausCol ="BidStatus";
 	String tbBidWorkItemNoCol ="WorkItemNo";
 	
-
+	
+	//Secondary Setup
+	String tbSecUniqueReftbx = "tb_secwu_ref";
+	String tbVerificationAmtttbx ="tb_veriAmt";
+	String tbSecCuttOfftime = "tb_sec_cuttoff";
+	//String tbsSmDefaultCutOffTime = "3 PM";
+	double tbSmMinVerificationAmt = 100000;
+	String tbSmIssuedTBillTbl="table85";
+	String tbSmUploadTbills ="button93";
+	String tbSmSetupdd ="tb_setup";
+	String tbUpdteSmMatDte = "tb_maturityDateUpdate";
+	String tbUpdteSmTBillsAmt ="tb_amtUpdate";
+	String tbUpdteSmRate = "tb_rateUpdate";
+	String tbUpdateSmIssuedBidsbtn ="tb_UpdateSmIssuedBids_btn";
+	
+	//Primary re discount rate
+	String tbRdrlessEqualto90tbx = "tb_less90";
+	String tbRdr91to180 ="tb_91to180";
+	String tbRdr181to270 = "tb_181to270";
+	String tbRdr271to364days = "tb_271to364days";
 	
 	//Document names
 	String customers_instruction ="customers_instruction";
@@ -507,7 +528,15 @@ public interface Constants {
 	
 
 	String tbLandingMsgApprovedFlg ="tb_landingMsgApprovedFlg";
+	String tbRediscoutApprovedFlg ="tb_RediscoutApprovedFlg";
+	String tbCutoffApproveFlg="tb_CutoffApproveFlg";
+	String tbSetupApprovedFlg ="tb_SetupApprovedFlg";
 	String tbInvalidAccountErrorMessage ="This account is not valid for CP processing";
+	String tbSecBidStatusClosed = "Closed";
+	String tbSecBidStatusOpen = "Open";
+	String tbSecBidStatusMatureBids = "Mature-Bids";
+	String tbSecBidStatusCancelledBids = "Cancelled-Bids";
+	
 	
 	/*String minPrincipalErrorMsg ="Customer principal cannot be less and window minimum principal";
 	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";

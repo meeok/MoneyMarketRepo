@@ -74,7 +74,9 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 break;
                 case onDone:{
                 	switch(controlName){
-                	
+                	case tbOndone:{
+                		return tbOnDone(ifr);
+                	}
                 	/*** Treasury start****/
                 	case tbUpDateLndingMsgFlg:{
                 		tbUpDateLndingMsgFlg(ifr);
@@ -229,35 +231,70 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
      */
     private void tbFormLoadActivity(IFormReference ifr){
     	logger.info("tbFormLoadActivity");
-    	 
-        hideTbSections(ifr);
+    	 hideTbSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
         setGenDetails(ifr);
         disableTbSections(ifr);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{tbRemarkstbx});
-        //set controls for task to be performed
-        //approving of landing message 
-        logger.info("getTbUpdateLandingMsg>>"+getTbUpdateLandingMsg(ifr));
-        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) || getTbUpdateLandingMsg(ifr)) { // for approval of landing page
-            setVisible(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbValidatebtn});
-            enableFields(ifr,new String[] {tbDecisionSection,tbValidatebtn});
-            setMandatory(ifr, new String[]{tbDecisiondd,tbRemarkstbx});
-        }
-      
-        else if(getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){  //bid has been approved by branch verifier and customer's account has been liened.assign to utility or verifier
-        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchPriCusotmerDetails,tbBranchPriSection,
-        	tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID});
-        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection});
-        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
-        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
-          //  disableFields(ifr, new String[] {});
-            enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
-        }
-        else {//Modification of Primary Market Cut-off Time 
-        	
-        }
-        setDropDown(ifr,tbDecisiondd,new String[]{decApprove,decReject});
+     	if(getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
+	        //set controls for task to be performed
+	        //approving of landing message 
+	        logger.info("getTbUpdateLandingMsg>>"+getTbUpdateLandingMsg(ifr));
+	        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) || getTbUpdateLandingMsg(ifr)) { // for approval of landing page
+	            setVisible(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbValidatebtn});
+	            enableFields(ifr,new String[] {tbDecisionSection,tbValidatebtn});
+	            setMandatory(ifr, new String[]{tbDecisiondd,tbRemarkstbx});
+	        }
+	      
+	        else if(getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){  //bid has been approved by branch verifier and customer's account has been liened.assign to utility or verifier
+	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchPriCusotmerDetails,tbBranchPriSection,
+	        	tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID});
+	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection});
+	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
+	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
+	          //  disableFields(ifr, new String[] {});
+	            enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
+	        }
+	     	
+	        else {//Modification of Primary Market Cut-off Time 
+	        	
+	        }
+	        setDropDown(ifr,tbDecisiondd,new String[]{decApprove,decReject});
+     	}
+     	
+        //secondary Market
+        else if(getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) {
+ 	       hideField(ifr,tbAssigndd);
+ 	       setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
+ 	       if (!getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)) {//landing msg is not approved
+ 	    	   setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+               disableFields(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+               setMandatory(ifr,new String [] {tbDecisiondd,tbRemarkstbx});
+ 	       }
+ 	       else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){ //mApproving setup
+ 	    	   setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+ 	    	   disableFields(ifr, new String[]{tbTreasurySecSection,tbLandingMsgSection,tbMarketSection});
+ 	    	   enableFields(ifr,new String[]{tbDecisionSection});
+ 	    	   hideFields(ifr,new String[]{tbUpdteSmMatDte,tbUpdteSmRate,tbUpdteSmTBillsAmt,tbUpdateSmIssuedBidsbtn});
+ 	    	   setMandatory(ifr,new String [] {tbVerificationAmtttbx});
+   			}
+ 	       else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){// Approving rediscount rate
+ 	    	   setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbSecRediscountRate});
+               disableFields(ifr, new String[]{tbTreasurySecSection,tbLandingMsgSection,tbMarketSection,tbSecRediscountRate});
+               enableFields(ifr,new String[]{tbDecisionSection,tbDecisiondd,tbRemarkstbx});
+               setMandatory(ifr,new String [] {tbDecisiondd,tbDecisiondd,tbRemarkstbx});
+   		}
+   		
+   		else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryCutOff)) {//market is set user can only update
+       		setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+       		disableFields(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbMarketSection});
+       		hideFields(ifr,new String[]{tbUpdteSmMatDte,tbUpdteSmRate,tbUpdteSmTBillsAmt,tbUpdateSmIssuedBidsbtn});
+	       	enableFields(ifr,new String[]{tbDecisionSection,tbDecisiondd,tbRemarkstbx});
+	        setMandatory(ifr,new String [] {tbDecisiondd,tbDecisiondd,tbRemarkstbx});
+            disableFields(ifr, new String[]{tbVerificationAmtttbx,tbSmIssuedTBillTbl,tbLandingMsgSection,tbSecUniqueReftbx,tbDecisionSection});
+	    }
+      }
     }
     
     /*
@@ -266,16 +303,16 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
      */
     private void tbUpDateLndingMsgFlg(IFormReference ifr) {
     	logger.info("tbUpDateLndingMsgFlg");
-    	 if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) ||getTbUpdateLandingMsg(ifr) ){
-             if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
-            	 setTbLandingMsgApprovedFlg(ifr,yesFlag);
-             }
-             else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {
-            	 setTbLandingMsgApprovedFlg(ifr,noFlag);
-             }
+    	//if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) ||getTbUpdateLandingMsg(ifr) ){
+         if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
+        	 setTbLandingMsgApprovedFlg(ifr,yesFlag);
          }
+         else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {
+        	 setTbLandingMsgApprovedFlg(ifr,noFlag);
+         }
+         //}
 	}
-    
+
     public void tbSendMail(IFormReference ifr) {
         String message;
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)){
@@ -289,6 +326,110 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
             }
     }
     }
+    
+    private String tbOnDone(IFormReference ifr) {
+    	logger.info("tbOnDone>>");
+    	String retMsg="";
+    	 if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+    		 if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) ||getTbUpdateLandingMsg(ifr) ) {//approving or rejecitng landing message
+
+        		 tbUpDateLndingMsgFlg(ifr);
+    		 }
+    	}
+    	 
+    	 //secondary Market
+    	 else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+    		 
+    		 //landing message approval
+    		 if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) ||getTbUpdateLandingMsg(ifr) ||!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))) {//approving or rejecitng landing message
+
+        		 tbUpDateLndingMsgFlg(ifr);
+    		 }
+    		 
+    		 //// Approving setup both new and update
+    		 else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){ 
+    			 if(getFieldValue(ifr,tbSmSetupdd).equalsIgnoreCase(smSetupNew)) { //new setup; Set up market
+    				 if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
+    					 String dte =getCurrentDateTime();
+    					 logger.info("dte>>."+dte);
+    					 retMsg = setUpTbMarketWindow(ifr,tbSecUniqueReftbx,dte,getFieldValue(ifr,tbSecCuttOfftime),getFieldValue(ifr,tbVerificationAmtttbx));// set market
+    					 updateApprovalFlg(ifr,tbSetupApprovedFlg,retMsg);
+    				 }
+    		         else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {
+    		        	 setFields(ifr,tbSetupApprovedFlg,yesFlag);
+    		         }
+    	    			
+    	    	}
+    			 else { //Updating setup--- ****make setupdd mandatory at maker...//update setup table with minimum principal  
+    				 if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
+    					 String qry = new Query().getUpdateminPrincipalQuery(getTbSecUniqueReftbx(ifr),getFieldValue(ifr,tbVerificationAmtttbx));
+	        			 logger.info("getUpdateminPrincipalQuery>>"+qry);
+	        		     int dbr = new DbConnect(ifr,qry).saveQuery();
+	        		     logger.info("dbr>>"+dbr);
+	        		     if (dbr < 0) 
+	        		    	 retMsg ="Unable to update Verification Amount on Setup table";
+	        		     updateApprovalFlg(ifr,tbSetupApprovedFlg,retMsg);
+    				 }
+    				 else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) { 
+    					 setFields(ifr,tbSetupApprovedFlg,yesFlag);
+    		         }
+        		 }
+    		}
+    		 //updating rediscount rate
+    		 else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){
+    			 if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
+	    			 //update setuptable with details
+	    			 String tb90 = getFieldValue(ifr,tbRdrlessEqualto90tbx);
+	    			 String tb180 = getFieldValue(ifr,tbRdr91to180);
+	    			 String tb270 = getFieldValue(ifr,tbRdr181to270);
+	    			 String tb364 = getFieldValue(ifr,tbRdr271to364days);
+	    			 
+	    			 String qry = new Query().getUpdateRdRateQuery(getTbSecUniqueReftbx(ifr), getWorkItemNumber(ifr), tb90, tb180, tb270, tb364);
+	    			 logger.info("getUpdateRdRateQuery>>"+qry);
+	    		     int dbr = new DbConnect(ifr,qry).saveQuery();
+	    		     logger.info("dbr>>"+dbr);
+	    		     if (dbr < 0) 
+	    		    	 retMsg ="Unable to update rediscount rate on Setup table";
+	    		     updateApprovalFlg(ifr,tbRediscoutApprovedFlg,retMsg);
+    			 }
+    			 else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {
+		        	 setFields(ifr,tbRediscoutApprovedFlg,yesFlag);
+		         }
+    		 }
+    		 else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryCutOff)){
+    			 if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
+	    			 //update setuptable with details
+	    			 String cutofftime = getFieldValue(ifr,tbSecCuttOfftime);
+	    			 String qry = new Query().getUpdateCutoffTimeQuery(getTbSecUniqueReftbx(ifr), cutofftime);
+	    			 logger.info("getUpdateCutoffTimeQuery>>"+qry);
+	    		     int dbr = new DbConnect(ifr,qry).saveQuery();
+	    		     logger.info("dbr>>"+dbr);
+	    		     if (dbr < 0) 
+	    		    	 retMsg ="Unable to update cut off time on Setup table";
+	    		     updateApprovalFlg(ifr,tbCutoffApproveFlg,retMsg);
+    			 }
+    		     else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {
+		        	 setFields(ifr,tbRediscoutApprovedFlg,yesFlag);
+		         }
+    		 }
+    		
+    	 }
+    	 
+    	logger.info("Ondone Validate retMsg>>"+retMsg);
+    	return retMsg;
+    }
+    
+    //set approval flags
+    private void updateApprovalFlg(IFormReference ifr,String cntrlName,String retMsg) {
+    	if(isEmpty(retMsg)) {
+    		setFields(ifr,cntrlName,yesFlag);
+    	}
+    	else {//clear decision setup was not successful
+    		clearFields(ifr,tbDecisiondd);
+    		setFields(ifr,cntrlName,noFlag);
+    	}
+    }
+    
     //*************** Treasury End *************************/
 
     @Override

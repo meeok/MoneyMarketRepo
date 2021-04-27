@@ -82,18 +82,30 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         	catch(Exception ex) {
                         		logger.info("tbViewPriCustomerBids Exception>>"+ex.toString());
                         	}
-                        	
                         }
                         break;
                         case tbupdatePriCustomerBids:{
                         	try {
                         		int selectedrow = Integer.parseInt(data);
                         		logger.info("selectedrow>>"+selectedrow);
-                        		tbupdatePriCustomerBids(ifr,selectedrow);
+                        		return tbupdatePriCustomerBids(ifr,selectedrow);
                         	}
                         	catch(Exception ex) {
                         		logger.info("tbupdatePriCustomerBids Exception>>"+ex.toString());
+                        		return "Updates failed for row Number :"+data;
                         	}
+                        }
+                        case tbUpdateSmIssuedBids:{
+                        	try {
+                        		int selectedrow = Integer.parseInt(data);
+                        		logger.info("selectedrow>>"+selectedrow);
+                        		return tbUpdateSmIssuedBids(ifr,selectedrow);
+                        	}
+                        	catch(Exception ex) {
+                        		logger.info("tbupdatePriCustomerBids Exception>>"+ex.toString());
+                        		return "Updates failed for row Number :"+data;
+                        	}
+                        	
                         }
                         case tbDownload:{
                             setFields(ifr,downloadFlagLocal,flag);
@@ -131,7 +143,6 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                             if (getCpSmSetup(ifr).equalsIgnoreCase(smSetupNew) || getCpSmSetup(ifr).equalsIgnoreCase(smSetupUpdate))
                                 setVisible(ifr,new String[]{cpSmCpBidTbl, cpSmIFrameLocal});
                             else setInvisible(ifr,new String[]{cpSmCpBidTbl, cpSmIFrameLocal});
-
                             break;
                         }
 
@@ -140,6 +151,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         	tbCategoryChange(ifr);
                         }
                         break;
+                        case tbVerificationAmtChanged:{
+                        	return tbCheckVerificationAmt(ifr);
+                        }
                         /**** Treasury Onchange End  ****/
                     }
                 }
@@ -169,7 +183,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 	
 	                /**** Treasury onDOne Start ****/
                 	case tbOnDone:{
-                		return tbOnDone(ifr);
+                		logger.info("data>>" + data);
+                		return tbOnDone(ifr,data);
                 		}
                 	case tbCheckUnallocatedBids:{
                 		return tbCheckUnallocatedBids(ifr);
@@ -557,27 +572,26 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     	        }
     	        else {// setup not done
     	        	setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
-    	        }
-    	        	
+    	        }  	
     	}
        
-      
-      
     }
     private void tbFormLoad(IFormReference ifr) {
     	setGenDetails(ifr);
     	hideTbSections(ifr);
-    	disableField(ifr,tbAssigndd);
-        hideFields(ifr, new String[] {goBackDashboardSection,tbPriSetupbtn});
-        setDropDown(ifr,tbAssigndd,new String[]{tbTreasuryUtilityLabel,tbTreasuryVerifierLable},new String[]{tbTreasuryUtility,tbTreasuryVerifier});
-        //disableTbSections(ifr);
-        
-        setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard}); //cannot discard if bids have been placed by bi
+    	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard}); //cannot discard if bids have been placed by bi
     	//setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
     	clearFields(ifr,new String[]{tbRemarkstbx});
+    	//setVisible(ifr, new String[] {tbCategorydd});
+    	//disableFields(ifr, new String[]{tbLandingMsgSection});
     	
         //tb primary Market
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
+        	disableField(ifr,tbAssigndd);
+        	hideFields(ifr, new String[] {goBackDashboardSection,tbPriSetupbtn});
+            setDropDown(ifr,tbAssigndd,new String[]{tbTreasuryUtilityLabel,tbTreasuryVerifierLable},new String[]{tbTreasuryUtility,tbTreasuryVerifier});
+            //disableTbSections(ifr);
+            
         	if (!getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)) {//landing msg is not approved
         		clearDropDown(ifr,tbCategorydd);
         		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
@@ -627,6 +641,47 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         
         //tb secondary market
         else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) {
+        	
+        	hideFields(ifr, new String[] {tbAssigndd});
+        	
+        	if (!getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)) {//landing msg is not approved
+        		clearDropDown(ifr,tbCategorydd);
+        		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+                enableFields(ifr,new String[] {tbLandingMsgSection,tbDecisionSection});
+                setMandatory(ifr,new String [] {tbDecisiondd,tbRemarkstbx,tbLandMsgtbx});
+                //disableFields(ifr, new String[]{tbMarketTypedd});
+                hideFields(ifr, new String[] {tbCategorydd});
+        	}
+        	else if(!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))){// ready to set Market;
+        		setVisible(ifr,new String [] {tbMarketSection,tbLandingMsgSection,tbDecisionSection,tbCategorydd,tbUpdateLandingMsgcbx});
+        		enableFields(ifr,new String[]{tbDecisionSection,tbMarketSection,tbCategorydd});
+        		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbCategorydd});
+                disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketTypedd});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup},new String[]{tbCategorySetup});
+                
+        	}
+        	else if(getTbSetUpFlg(ifr).equalsIgnoreCase(flag)){// Market is set. Can perform rediscount rate etc
+        		setVisible(ifr,new String [] {tbMarketSection,tbLandingMsgSection,tbDecisionSection,tbCategorydd,tbUpdateLandingMsgcbx});
+        		enableFields(ifr,new String[]{tbDecisionSection,tbMarketSection,tbCategorydd});
+        		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbCategorydd});
+                disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketTypedd});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup},new String[]{tbCategorySetup,tbCategoryReDiscountRate,tbCategoryCutOff,tbCategoryReport});
+        	}
+        	/*else if (getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)) {//landing msg is approved
+        		clearDropDown(ifr,tbCategorydd);
+        		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+                enableFields(ifr,new String[] {tbDecisionSection,tbMarketSection,tbCategorydd});
+                setMandatory(ifr,new String [] {tbDecisiondd,tbRemarkstbx,tbLandMsgtbx});
+                disableFields(ifr, new String[]{tbMarketTypedd});
+        	}
+        	if(!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))){ //(getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)
+        		// ready to set Market;
+        		setVisible(ifr,new String [] {tbMarketSection,tbLandingMsgSection,tbDecisionSection,tbTreasurySecSection,tbCategorydd,tbUpdateLandingMsgcbx});
+        		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
+        		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate,tbCategorydd});
+                disableFields(ifr, new String[]{tbLandingMsgSection,tbUniqueReftbx,tbMarketTypedd,tbAssigndd});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup,tbPoolManagerLabel},new String[]{tbCategorySetup,tbPoolManagerLabel});
+        	}*/
         }
     }
     /*
@@ -675,9 +730,78 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         }
         
         //secondary MArket
-        else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){}
+        else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+        	hideField(ifr,tbSmUploadTbills);
+        	//if(!isTbWindowClosed(ifr,getFieldValue(ifr,tbSecUniqueReftbx))){//window is not closed
+        		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){
+        			//check if market is set
+        			setDropDown(ifr,tbSmSetupdd,new String[]{smSetupUpdate,smSetupNew});
+        			if(getTbActiveWindowwithRefid(ifr).equalsIgnoreCase(getFieldValue(ifr,tbSecUniqueReftbx))) {//market is set user can only update
+                    	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
+                    	setFields(ifr,new String[] {tbSmSetupdd,tbDecisiondd}, new String[] {smSetupUpdate,decSubmit});
+                		setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+                		enableFields(ifr,new String[]{tbVerificationAmtttbx,tbUpdteSmMatDte,tbUpdteSmRate,tbUpdteSmTBillsAmt,tbUpdateSmIssuedBidsbtn});
+                		setMandatory(ifr,new String [] {tbVerificationAmtttbx});
+                        disableFields(ifr, new String[]{tbSmIssuedTBillTbl,tbLandingMsgSection,tbSecUniqueReftbx,tbDecisionSection});
+                        //make invisible grids visible.
+        			}
+        			else {//new bid setup
+        				setTbSecUniqueReftbx(ifr,generateTbUniqueReference(ifr)); //set the unique reference
+                    	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
+                    	setFields(ifr,tbSmSetupdd,smSetupNew);
+                    	hideField(ifr,tbDecisionSection);
+                		setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+                		enableFields(ifr,new String[]{tbSmIssuedTBillTbl,tbDecisionSection});
+                        setFields(ifr, new String[]{tbSecCuttOfftime, tbVerificationAmtttbx}, new String[]{tbGetSmDefaultCutoffDteTime(),String.valueOf(tbSmMinVerificationAmt)});
+                		setMandatory(ifr,new String [] {tbVerificationAmtttbx});
+                        disableFields(ifr, new String[]{tbAssigndd,tbLandingMsgSection,tbSecUniqueReftbx,tbUpdteSmMatDte,tbUpdteSmRate,tbUpdteSmTBillsAmt,tbUpdateSmIssuedBidsbtn});
+        			}
+        		}
+        		else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){
+        			setDropDown(ifr,tbDecisiondd,new String[]{decSubmit});
+        			//setFields(ifr,decSubmit,decSubmit);
+        			setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbSecRediscountRate});
+                    disableFields(ifr, new String[]{tbDecisionSection,tbLandingMsgSection,tbSecUniqueReftbx,tbTreasurySecSection});
+                    enableFields(ifr,new String[]{tbSecRediscountRate,tbDecisionSection});
+                    setMandatory(ifr,new String [] {tbRdrlessEqualto90tbx,tbRdr91to180,tbRdr181to270,tbRdr271to364days,tbDecisiondd});
+        		}
+        		
+        		else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryCutOff)) {//market is set user can only update
+                	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit});
+                	setFields(ifr,new String[] {tbSmSetupdd,tbDecisiondd}, new String[] {smSetupUpdate,decSubmit});
+            		setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+            		enableFields(ifr,new String[]{tbSecCuttOfftime});
+            		hideFields(ifr,new String[]{tbUpdteSmMatDte,tbUpdteSmRate,tbUpdteSmTBillsAmt,tbUpdateSmIssuedBidsbtn});
+            		setMandatory(ifr,new String [] {tbDecisiondd,tbSecCuttOfftime});
+                    disableFields(ifr, new String[]{tbVerificationAmtttbx,tbSmIssuedTBillTbl,tbLandingMsgSection,tbSecUniqueReftbx,tbDecisionSection});
+                    //make invisible grids visible.
+    			}
+        		
+        	/*}
+        	else { //window is closed
+        		setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+                disableFields(ifr, new String[]{tbDecisionSection,tbLandingMsgSection,tbSecUniqueReftbx,tbTreasurySecSection});
+        	}*/
+        }
+        		
         return retMsg;
-    }
+   }
+    //@not used
+	private void tbSmSetupChanged(IFormReference ifr) {
+		//is window active
+		if(isTbWindowActive(ifr)){  //window is active its not new
+			//setTbSecUniqueReftbx(ifr,generateTbUniqueReference(ifr)); //set the unique reference
+	    	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
+	    	//hideField(ifr,tbDecisionSection);
+			setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+			enableFields(ifr,new String[]{tbSmIssuedTBillTbl,tbDecisionSection});
+	        setFields(ifr, new String[]{tbSecCuttOfftime, tbVerificationAmtttbx}, new String[]{tbGetSmDefaultCutoffDteTime(),String.valueOf(tbSmMinVerificationAmt)});
+			setMandatory(ifr,new String [] {});
+	        disableFields(ifr, new String[]{tbSmIssuedTBillTbl,tbLandingMsgSection,tbSecUniqueReftbx});
+		}
+		//else {// new setup
+	}
+		
     private void tbUpdateLandingMsg(IFormReference ifr){
         if (getTbUpdateLandingMsg(ifr)){ //true
         	clearDropDown(ifr,tbCategorydd);
@@ -723,7 +847,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
      * if market is already setup... fetch details from db and populate
      * check if market is set up -- save details in db
      */
-    private String tbSetupMarket(IFormReference ifr) {
+   private String tbSetupMarket(IFormReference ifr) {
     	logger.info("tbSetupMarket>>");
     	String retMsg="";
     	if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){
@@ -745,23 +869,61 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         logger.info("getTbPmNoBidAllocationQuery>>"+dbr);
         return dbr.size()>0 ? "All Approved Bids have not been allocated.Do you want to set all as failed bids?" : "";
     }
-    private String tbOnDone(IFormReference ifr) {
+    /*
+     * save market setup details into db if flag N
+     * if market is already setup... fetch details from db and populate
+     * check if market is set up -- save details in db
+     */
+    private String tbOnDone(IFormReference ifr,String data) {
     	logger.info("tbOnDone>>");
     	String retMsg="";
-    	//if(getTbDecision(ifr).equalsIgnoreCase(decSubmit)) {
+    	 if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
     		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){
     		//	retMsg = validateDate(ifr);
     			if(!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))) //market not set
-	    				retMsg = setUpTbMarketWindow(ifr);// set market
-	    		
+	    				retMsg = setUpTbMarketWindow(ifr,getTbUniqueRef(ifr),getTbPriOpenDate(ifr),getTbPriCloseDate(ifr),"");// set market
     		}
     		else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
     		//	check if all bids are set --- get bdStatus
     			retMsg =tbCheckUnallocatedBids(ifr);
     		}
-    	//}
-    	logger.info("Validate retMsg>>"+retMsg);
+    	}
+    	 else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){ }
+    	 
+    	logger.info("Ondone Validate retMsg>>"+retMsg);
     	return retMsg;
+    }
+    
+    /*
+     * Setup treasury Bills
+     */
+    private String tbUpdateSmIssuedSmBid(IFormReference ifr, String rowCount){
+    	String retMsg ="";
+    	int rwcnt = 0;
+    	try {
+    		rwcnt = Integer.parseInt(rowCount);
+    		logger.info("rwcnt>>"+rwcnt);
+    	}
+    	catch(Exception ex) {
+    		logger.info("tbSetupSMMarket parse grid count error>>>"+ ex.toString());
+    		retMsg ="tbSetupSMMarket parse grid count error>>>"+ ex.toString();
+    	}
+    	if(isEmpty(retMsg)) {
+	        for (int i= 0; i< rwcnt; i++){
+	            String maturityDate = ifr.getTableCellValue(tbSmIssuedTBillTbl,i,0);
+	            String tBillAmount = ifr.getTableCellValue(tbSmIssuedTBillTbl,i,3);
+	            String veriAmt = getFieldValue(ifr,tbVerificationAmtttbx);
+	            //long dayToMaturity =  getDaysToMaturity(maturityDate);
+	            logger.info("maturityDate-- "+maturityDate);
+	            if (Float.parseFloat(tBillAmount) < Float.parseFloat(veriAmt)) { //check for exception
+	                retMsg = "Treaury Bill Amount cannot be less than the Verification Amount. Correct row No. "+i+".";
+	                break;  //exit loop and report error
+	            }
+	            else //update row
+	            	ifr.setTableCellValue(tbSmIssuedTBillTbl,i,6,String.valueOf(smStatusOpen));
+	        }
+    	}
+        return "";
     }
     private void tbViewPriBidSmryReport(IFormReference ifr){
     	logger.info("tbViewRepor>>>");
@@ -937,7 +1099,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	                int dbr = new DbConnect(ifr, qry).saveQuery();
 	                logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);
 	                if(dbr<0)
-	                	retMsg ="Update bidFailed failed";
+	                	retMsg ="Update bidfailed Status failed for rowno: "+ String.valueOf(rowIndex);
 	            }
 	        	
 	        }
@@ -971,9 +1133,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	            }
 	        }
         }
-        return retMsg;
-    
-            
+        return retMsg;   
     }
     
     //download primary bid report
@@ -992,9 +1152,97 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         logger.info("output from grid: "+output.toString());
         return output.toString().trim();
     }
-        	
-       
     
+    private String tbCheckVerificationAmt(IFormReference ifr) {
+    	String retMsg ="";
+    	if(!isEmpty(getTbVerificationAmttbx(ifr))) {
+        	try {
+        		retMsg = Double.parseDouble(getTbVerificationAmttbx(ifr))<tbSmMinVerificationAmt ? "Amount cannot be less than 100,000":"";
+        		setTbVerificationAmttbx(ifr,String.valueOf(tbSmMinVerificationAmt));
+        	}
+        	catch(Exception ex) {
+        		retMsg = "Invalid Amount entered";
+        		logger.info("tbCheckVerificationAmt Exception>>>" + ex.toString());
+        		setTbVerificationAmttbx(ifr,String.valueOf(tbSmMinVerificationAmt));
+        	}
+    	}
+    	return retMsg;
+    }
+    private String tbUpdateSmIssuedBids(IFormReference ifr, int rowIndex) {
+    	logger.info("tbUpdateSmIssuedBids-- ");
+    	String retMsg="";
+    	//check if fields are empty...
+    	
+    	String maturityDate = getFieldValue(ifr,tbUpdteSmMatDte); 
+    	logger.info("maturityDate-- "+maturityDate);
+    	double tBillAmount = 0;
+    	 try {
+    		 tBillAmount = Double.parseDouble(getFieldValue(ifr,tbUpdteSmTBillsAmt));
+    		 logger.info("tBillAmount>>>"+tBillAmount);
+         }
+         catch(Exception ex) {
+         	logger.info("tBillAmount parse error>>>"+ex.toString());
+         }
+    	 double veriAmt = 0;
+    	 try {
+    		 veriAmt = Double.parseDouble(getFieldValue(ifr,tbVerificationAmtttbx));
+    		 logger.info("veriAmt>>>"+veriAmt);
+         }
+         catch(Exception ex) {
+         	logger.info("veriAmt parse error>>>"+ex.toString());
+         }
+    	String rate =getFieldValue(ifr,tbUpdteSmRate);
+        String staus = ifr.getTableCellValue(tbSmIssuedTBillTbl,rowIndex,6);
+        String totalAmountSold = ifr.getTableCellValue(tbSmIssuedTBillTbl,rowIndex,4);
+        logger.info("totalAmountSold>>>"+totalAmountSold);
+       
+        //long dayToMaturity =  getDaysToMaturity(maturityDate);
+        
+        double amtsold =0;
+        try {
+        	amtsold = Double.parseDouble(totalAmountSold);
+        	logger.info("amtsold>>>"+amtsold);
+        }
+        catch(Exception ex) {
+        	logger.info("amtsold parse error>>>"+ex.toString());
+        }
+        /*double availableAmount = 0;
+        try{
+        	availableAmount= Double.parseDouble(ifr.getTableCellValue(tbSmIssuedTBillTbl,rowIndex,5));
+        }
+        catch(Exception ex) {
+        	logger.info("availableAmount parse error>>>"+ex.toString());
+        }
+        logger.info("availableAmount>>>"+availableAmount);
+        */
+    	
+        if(!staus.equalsIgnoreCase(smStatusOpen)) { //open and can be updated
+        	if (tBillAmount < veriAmt) {
+        		retMsg = "Treaury Bill Amount cannot be less than the Verification Amount. on row No. "+rowIndex+".";
+        	}
+        	else if (tBillAmount < amtsold) { //
+        		retMsg = "Treaury Bill Amount cannot be less than total Amount Sold. on row No. "+rowIndex+".";
+        	}
+        		
+        	else {//update table 
+        		if(!isEmpty(maturityDate))
+        			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,0,maturityDate);
+        		if(!isEmpty(getFieldValue(ifr,tbUpdteSmTBillsAmt)))
+        			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,1,String.valueOf(tBillAmount));
+        		if(!isEmpty(getFieldValue(ifr,tbUpdteSmTBillsAmt)))
+        			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,5,(String.valueOf(tBillAmount-amtsold)));
+        		if(!isEmpty(rate))
+        			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,2,rate);
+                  
+        	}
+        }
+        else //not opened
+        	retMsg = "Sorry this is closed and cannot be updated";
+        	
+
+        return retMsg;
+    	
+    }
     
     /******************  TREASURY BILL CODE ENDS *********************************/
 }

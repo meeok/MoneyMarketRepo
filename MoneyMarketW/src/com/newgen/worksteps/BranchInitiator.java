@@ -49,7 +49,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             backToDashboard(ifr);
                             if (getProcess(ifr).equalsIgnoreCase(commercialProcess))
                                 cpBackToDashboard(ifr);
-                            else  if (getProcess(ifr).equalsIgnoreCase(treasuryProcess))
+                            else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess))
                                 tbBackToDashboard(ifr);
                             clearFields(ifr,new String[] {selectProcessLocal});
                             break;
@@ -260,7 +260,6 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     @Override
     public void cpSetDecision(IFormReference ifr) {
         setDecision(ifr,cpDecisionLocal,new String[]{decSubmit,decDiscard});
-
     }
 
     private String cpSelectCategory(IFormReference ifr) {
@@ -488,7 +487,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	}
     	
     	//logger.info("Validate retMsg>>"+retMsg);
-    	return retMsg;
+    	 return retMsg;
     }
     
     //**********************Treasury Ends here **********************//

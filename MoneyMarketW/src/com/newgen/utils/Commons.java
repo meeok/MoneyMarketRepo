@@ -526,13 +526,40 @@ public class Commons implements Constants {
 			return null;
 		}
 	}
+    
+    public static String tbGetSmDefaultCutoffDteTime() {
+    	SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+    	try {
+    		String dte = formatter.format(new Date());
+    		logger.info("dte>>"+dte +"Ading timg>>>"+dte+ " 15:00:00");
+    		return (formatter.format(new Date()))+" 15:00:00";
+    	}
+    	catch (Exception e) {
+			logger.info("getDateWithoutTime Exception>>>"+e.toString());
+			return null;
+		}
+	}
     public static void clearDropDown(IFormReference ifr, String controlName){
         ifr.clearCombo(controlName);
     } 
-    // tb window setup
+    // tb window Primary setup
+    public static String setUpTbMarketWindow(IFormReference ifr, String unqNo, String opendte, String closedte, String minimumPrincipal){
+    	String qry = new Query().getSetupMarketWindowQuery(unqNo,  getWorkItemNumber(ifr), treasuryProcessName, getTbMarket(ifr), 
+    			getTbLandingMsg(ifr),minimumPrincipal,opendte, closedte);
+        logger.info("setUpTbMarketWindow Query>> "+qry);
+        int insertVal = new DbConnect(ifr,qry).saveQuery();
+        if (insertVal >= 0) {
+        	setTbSetUpFlg(ifr,flag);
+           logger.info("record saved successfully");
+           return "";
+       }
+       else 
+    	   return "Unable to setup window try again later";
+    }
+    
     public static String setUpTbMarketWindow(IFormReference ifr){
-    	String qry = new Query().getSetupMarketWindowQuery(getTbUniqueRef(ifr),  getWorkItemNumber(ifr), treasuryProcessName, getTbMarket(ifr), 
-    			getTbLandingMsg(ifr), getTbPriOpenDate(ifr), getTbPriCloseDate(ifr));
+    	String qry = new Query().getSetupMarketWindowQuery(getTbUniqueRef(ifr) ,getWorkItemNumber(ifr), treasuryProcessName, getTbMarket(ifr), 
+    			getTbLandingMsg(ifr),getTbPriOpenDate(ifr),getTbPriCloseDate(ifr));
         logger.info("setUpTbMarketWindow Query>> "+qry);
         int insertVal = new DbConnect(ifr,qry).saveQuery();
         if (insertVal >= 0) {
@@ -587,7 +614,7 @@ public class Commons implements Constants {
          return dbr.size()>0 ? true:false;
      }
    /*
-    * return true is window is set and open
+    * return true is if window is closed
     * else return false
     */
     public boolean isTbWindowActive(IFormReference ifr){
@@ -692,6 +719,11 @@ public class Commons implements Constants {
 	public static String getTbAssigndd(IFormReference ifr) {return (String) ifr.getValue(tbAssigndd);}
 	public static void setTb_BrnchPri_LienID(IFormReference ifr, String value) {ifr.setValue(tb_BrnchPri_LienID,value);}
 	public static String getTb_BrnchPri_LienID(IFormReference ifr) {return (String) ifr.getValue(tb_BrnchPri_LienID);}
+	public static void setTbVerificationAmttbx(IFormReference ifr, String value) {ifr.setValue(tbVerificationAmtttbx,value);}
+	public static String getTbVerificationAmttbx(IFormReference ifr) {return (String) ifr.getValue(tbVerificationAmtttbx);}
+	public static void setTbSecUniqueReftbx(IFormReference ifr, String value) {ifr.setValue(tbSecUniqueReftbx,value);}
+	public static String getTbSecUniqueReftbx(IFormReference ifr) {return (String) ifr.getValue(tbSecUniqueReftbx);}
+	
 	//public static void setTbPoolManager(IFormReference ifr, String value) {ifr.setValue(tbPoolManager,value);}
 	//public static String getTbPoolManager(IFormReference ifr) {return (String) ifr.getValue(tbPoolManager);}
 	
@@ -783,8 +815,6 @@ public class Commons implements Constants {
         }
         return  closeDte.compareTo(new Date())>=0  ?true:false;
     }
-	 
-    
     /*
      * check if a document has been uploaded
      */
@@ -797,6 +827,23 @@ public class Commons implements Constants {
     	return dbResult.size() == 0 ? false:true;
     }
     
+    public double convertStringToDouble(String s) {
+    	try{
+    		return Double.parseDouble(s);
+    	}
+    	catch(Exception ex) {
+    		///retMsg = "parsing cbnrate error:>>>"+ ex.toString();
+    		logger.info("parseDoubleValue Excepton:>>>"+ ex.toString());
+    		return 0;
+    	}
+    }
+    
+    public String convertDoubleToString(double d) {
+    	logger.info("converting double : "+d+" to String>>");
+    	String strVal =  (d == 0) ? "":String.valueOf(d);
+    	logger.info("converting double : "+d+" to String>: "+strVal);
+    	return strVal;
+    }
     
     
     /******************  TREASURY BILL CODE ENDS ***********************************/
