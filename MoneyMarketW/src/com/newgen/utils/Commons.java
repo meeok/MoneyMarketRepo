@@ -218,6 +218,7 @@ public class Commons implements Constants {
     public static void setInvisible(IFormReference ifr, String [] fields ) { for(String field: fields) ifr.setStyle(field,visible, False); }
     public static void setInvisible(IFormReference ifr, String field ) { ifr.setStyle(field,visible, False); }
     public static void enableFields(IFormReference ifr, String [] fields) {for(String field: fields) ifr.setStyle(field,disable, False);}
+    public static void enableFields(IFormReference ifr, String field) {ifr.setStyle(field,disable, False);}
     public static void setMandatory(IFormReference ifr, String []fields) { for(String field: fields) ifr.setStyle(field,mandatory, True);}
     public static void undoMandatory(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setStyle(field,mandatory, False); }
     public static void clearTables(IFormReference ifr, String [] tables){for (String table: tables) ifr.clearTable(table);}
@@ -386,6 +387,9 @@ public class Commons implements Constants {
     public static boolean isLeapYear (){
         return LocalDate.now().isLeapYear();
     }
+    public static boolean isLeapYear (String date){
+        return LocalDate.parse(date).isLeapYear();
+    }
     public static String getCpSmSetup(IFormReference ifr){return getFieldValue(ifr,cpSmSetupLocal);}
     public static long getDaysToMaturity(String maturityDate){
         return ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.parse(maturityDate));
@@ -453,6 +457,31 @@ public class Commons implements Constants {
     }
     public String getCpMandateToTerminate(IFormReference ifr){
         return getFieldValue(ifr,cpTermMandateLocal);
+    }
+    public static boolean isCpLien(IFormReference ifr, String id){
+        return Integer.parseInt(new DbConnect(ifr,Query.getCpLienStatusQuery(id)).getData().get(0).get(0)) > 0;
+    }
+    public static String getCpTerminationType(IFormReference ifr){
+        return getFieldValue(ifr,cpTerminationTypeLocal);
+    }
+    public static String getCpTermSpecialRateValue(IFormReference ifr){
+        return getFieldValue(ifr,cpTermSpecialRateValueLocal);
+    }
+    public static String getCpTermSpecialRate(IFormReference ifr){
+        return getFieldValue(ifr,cpTermSpecialRateLocal);
+    }
+
+    public static String getCpTermDtm(IFormReference ifr){
+        return getFieldValue(ifr,cpTermDtmLocal);
+    }
+    public static String getCpTermCustId(IFormReference ifr){
+        return getFieldValue(ifr,cpTermCustIdLocal);
+    }
+    public static String getCpTermPartialAmt(IFormReference ifr){
+        return  getFieldValue(ifr,cpTermPartialAmountLocal);
+    }
+    public static boolean getCpTermIsSpecialRate(IFormReference ifr){
+        return  getCpTermSpecialRate(ifr).equalsIgnoreCase(True);
     }
 
 
