@@ -67,12 +67,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             cpSelectTermSpecialRate(ifr);
                             break;
                         }
-                        case cpSelectTermTypeEvent:{
-                            cpSelectTerminationType(ifr);
-                            break;
-                        }
+
                         case  cpCalculateTermEvent:{
                             cpCalculateTermination(ifr);
+                            break;
                         }
                         
                         //****************Treasurry Starts here *********************//
@@ -143,7 +141,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             cpSelectMandateType(ifr);
                             break;
                         }
-                        
+                        case cpSelectTermTypeEvent:{
+                            cpSelectTerminationType(ifr);
+                            break;
+                        }
                       //****************Treasurry Starts here *********************//
     	                case tbMarketTypeddChange:{
     	                	tbMarketTypeddChange(ifr);

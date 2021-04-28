@@ -146,6 +146,13 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
                 setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
             }
+            else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryMandate)){
+                if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+                    setVisible(ifr,new String[]{cpTerminationSection});
+                }
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypePoi)){}
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeSetupLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien)){}
+            }
         }
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
@@ -160,6 +167,11 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                     setMandatory(ifr,new String[]{cpTokenLocal});
                     setVisible(ifr,new String[]{cpPostSection});
                 }
+            }
+            else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryMandate)){
+                if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){}
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypePoi)){}
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeSetupLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien)){}
             }
         }
     }
