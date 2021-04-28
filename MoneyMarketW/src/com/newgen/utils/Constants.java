@@ -347,7 +347,18 @@ public interface Constants {
 	String configPath2 = "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/installedApps/HO-IBPSAPP01Cell01/MoneyMarketW_war.ear/MoneyMarketW.war/config/moneymarket.properties";
 	String mailFromField ="MAILFROM";
 	String processDefIdField = "PROCESSDEFID";
-	
+
+	//API SERVICENAME
+
+	String postServiceName = "postRequestToFinacle";
+	String fetchOdaAcctServiceName ="CURRENTACCOUNT";
+	String fetchCaaAcctServiceName ="SPECIALACCOUNT";
+	String fetchSbaAcctServiceName ="SAVINGACCOUNT";
+	String fetchLienServiceName = "FETCHLIEN";
+	String fetchLimitServiceName = "CIGETUSERLIMIT";
+	String searchTranServiceName = "CISEARCHTRANSACTION";
+	String tokenValidationServiceName = "TOKENVALIDATION";
+
 	
 	/*************TREASURY BILLS STARTS HERE********************/
 	//treasury events
