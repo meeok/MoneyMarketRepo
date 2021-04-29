@@ -147,10 +147,19 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
             }
             else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryMandate)){
+                setVisible(ifr,new String[]{cpDecisionSection});
+                setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                cpSetDecision(ifr);
                 if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
-                    setVisible(ifr,new String[]{cpTerminationSection});
+                    setVisible(ifr,new String[]{cpTerminationSection,cpTermMandateTbl,cpTermSpecialRateLocal, getCpTermIsSpecialRate(ifr) ? cpTermSpecialRateValueLocal : cpTermSpecialRateLocal});
+                    if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypeFull)){
+                        setVisible(ifr,new String[]{cpTermAmountDueLocal});
+                    }
+                    else if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)){
+                        setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermPartialOptionLocal});
+                    }
                 }
-                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypePoi)){}
                 else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeSetupLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien)){}
             }
         }
@@ -169,8 +178,19 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 }
             }
             else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryMandate)){
-                if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){}
-                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypePoi)){}
+                setVisible(ifr,new String[]{cpDecisionSection});
+                setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                cpSetDecision(ifr);
+                if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+                    setVisible(ifr,new String[]{cpTerminationSection,cpTermMandateTbl,cpTermSpecialRateLocal, getCpTermIsSpecialRate(ifr) ? cpTermSpecialRateValueLocal : cpTermSpecialRateLocal});
+                    if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypeFull)){
+                        setVisible(ifr,new String[]{cpTermAmountDueLocal});
+                    }
+                    else if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)){
+                        setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermPartialOptionLocal});
+                    }
+                }
                 else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeSetupLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien)){}
             }
         }

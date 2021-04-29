@@ -388,7 +388,7 @@ public class Commons implements Constants {
         return LocalDate.now().isLeapYear();
     }
     public static boolean isLeapYear (String date){
-        return LocalDate.parse(date).isLeapYear();
+            return LocalDate.parse(date).isLeapYear();
     }
     public static String getCpSmSetup(IFormReference ifr){return getFieldValue(ifr,cpSmSetupLocal);}
     public static long getDaysToMaturity(String maturityDate){
@@ -483,7 +483,15 @@ public class Commons implements Constants {
     public static boolean getCpTermIsSpecialRate(IFormReference ifr){
         return  getCpTermSpecialRate(ifr).equalsIgnoreCase(True);
     }
-
+    public static boolean isEmpty(List<List<String>> resultSet){
+        return  resultSet.size() > 0;
+    }
+    public static double getPercentageValue(String value){
+        return Double.parseDouble(value) / 100;
+    }
+    public static String getCpPartialTermOption(IFormReference ifr){
+        return getFieldValue(ifr,cpTermPartialOptionLocal);
+    }
 
 
 

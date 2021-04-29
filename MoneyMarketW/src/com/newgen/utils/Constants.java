@@ -339,6 +339,7 @@ public interface Constants {
 	String cpSelectTermSpecialRateEvent = "selectSpecialRateTerm";
 	String cpSelectTermTypeEvent = "selectTermType";
 	String cpCalculateTermEvent = "calculateTermination";
+	String cpPartialTermOptionEvent = "partialTermOption";
 
 
 	//config

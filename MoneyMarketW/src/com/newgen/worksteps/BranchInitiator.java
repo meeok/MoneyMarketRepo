@@ -72,6 +72,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             cpCalculateTermination(ifr);
                             break;
                         }
+                        case cpPartialTermOptionEvent:{
+
+                        }
                         
                         //****************Treasurry Starts here *********************//
                         case tbValidateCustomer:{
@@ -477,18 +480,18 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     }
     private void cpSelectTerminationType (IFormReference ifr){
         if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypeFull)){
-            setVisible(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn});
-            setMandatory(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn});
+            setVisible(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn,cpTermAdjustedPrincipalLocal,cpTermAmountDueLocal});
+            setMandatory(ifr, new String[]{cpTermCalculateBtn});
             enableFields(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn});
         }
         else if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)){
-            setVisible(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn,cpTermPartialOptionLocal,cpTermPartialAmountLocal});
-            setMandatory(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn,cpTermPartialOptionLocal,cpTermPartialAmountLocal});
-            enableFields(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn,cpTermPartialOptionLocal,cpTermPartialAmountLocal});
+            setVisible(ifr, new String[]{cpTermSpecialRateLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermCalculateBtn,cpTermAdjustedPrincipalLocal,cpTermAmountDueLocal});
+            setMandatory(ifr, new String[]{cpTermPartialOptionLocal,cpTermPartialAmountLocal});
+            enableFields(ifr, new String[]{cpTermSpecialRateLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermCalculateBtn});
         }
         else {
-            setInvisible(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn,cpTermPartialOptionLocal,cpTermPartialAmountLocal});
-            undoMandatory(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn,cpTermPartialOptionLocal,cpTermPartialAmountLocal});
+            setInvisible(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermAdjustedPrincipalLocal,cpTermAmountDueLocal});
+            undoMandatory(ifr, new String[]{cpTermPartialOptionLocal,cpTermPartialAmountLocal});
             disableFields(ifr, new String[]{cpTermSpecialRateLocal,cpTermCalculateBtn,cpTermPartialOptionLocal,cpTermPartialAmountLocal});
             clearFields(ifr, new String[]{cpTermSpecialRateLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal});
         }
@@ -507,53 +510,74 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         }
     }
     private void cpCalculateTermination(IFormReference ifr){
-        resultSet = new DbConnect(ifr, Query.getCpBidDtlForTerminationQuery(getCpTermCustId(ifr),getCpMarket(ifr))).getData();
-        String maturityDate = resultSet.get(0).get(1);
-        String reDiscountRate = empty;
-        int dtm = Integer.parseInt(getCpTermDtm(ifr));
-        if (getCpTermIsSpecialRate(ifr))
-            reDiscountRate = getFieldValue(ifr,cpTermSpecialRateValueLocal);
-        else if (dtm <= 90)
-            reDiscountRate = getFieldValue(ifr,cpReDiscountRateLess90Local);
-        else if (dtm <= 180)
-            reDiscountRate = getFieldValue(ifr,cpReDiscountRate91To180Local);
-        else if (dtm <= 270)
-            reDiscountRate = getFieldValue(ifr,cpReDiscountRate181To270Local);
-        else if (dtm <= 364)
-            reDiscountRate = getFieldValue(ifr,cpReDiscountRate271To364Local);
+        try {
+            resultSet = new DbConnect(ifr, Query.getCpBidDtlForTerminationQuery(getCpTermCustId(ifr), getCpMarket(ifr))).getData();
+            logger.info("details to calc termination-- " + resultSet);
+            String maturityDate = resultSet.get(0).get(1).trim();
+            logger.info("maturityDate -- " + maturityDate);
+            boolean isLeapYear = isLeapYear(maturityDate);
+            logger.info("isLeapYear-- " + isLeapYear);
+            String reDiscountRate = empty;
+            double dtm = Integer.parseInt(getCpTermDtm(ifr));
+            logger.info("dtm -- "+ dtm);
+            if (getCpTermIsSpecialRate(ifr))
+                reDiscountRate = getFieldValue(ifr, cpTermSpecialRateValueLocal);
+            else if (dtm <= 90)
+                reDiscountRate = getFieldValue(ifr, cpReDiscountRateLess90Local);
+            else if (dtm <= 180)
+                reDiscountRate = getFieldValue(ifr, cpReDiscountRate91To180Local);
+            else if (dtm <= 270)
+                reDiscountRate = getFieldValue(ifr, cpReDiscountRate181To270Local);
+            else if (dtm <= 364)
+                reDiscountRate = getFieldValue(ifr, cpReDiscountRate271To364Local);
 
-
-            if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypeFull)){
-                String principal = resultSet.get(0).get(1);
+            logger.info("reDiscountRate -- "+ reDiscountRate);
+            if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypeFull)) {
+                String principal = resultSet.get(0).get(0);
+                logger.info("principal -- "+ principal);
                 double principalValue = Double.parseDouble(principal);
-                float reDiscountRateValue = Float.parseFloat(reDiscountRate);
-                double amountDue = principalValue - (principalValue * reDiscountRateValue * dtm / 365);
-                if (isLeapYear(maturityDate)){
-                     amountDue = amountDue + (principalValue * reDiscountRateValue * dtm / 366);
+                double reDiscountRateValue = getPercentageValue(reDiscountRate);
+                logger.info("reDiscountRateValue-- "+reDiscountRateValue);
+                double amountDue = principalValue - (principalValue * reDiscountRateValue * (dtm / 365));
+                logger.info("amountDue-- "+amountDue);
+                if (isLeapYear) {
+                    amountDue = amountDue + (principalValue * reDiscountRateValue * (dtm / 366));
+                    logger.info("LeapYear amountDue-- "+amountDue);
                 }
-                setFields(ifr,new String[]{cpTermAmountDueLocal}, new String[]{String.valueOf(amountDue)});
-                setVisible(ifr,new String[]{cpTermAmountDueLocal});
+                setFields(ifr, new String[]{cpTermAmountDueLocal}, new String[]{String.valueOf(amountDue)});
 
-            }
-            else if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)){
+            } else if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)) {
                 String principal = getCpTermPartialAmt(ifr);
+                logger.info("partial principal-- "+principal);
                 double principalValue = Double.parseDouble(principal);
-                float reDiscountRateValue = Float.parseFloat(reDiscountRate);
+                logger.info("partial principalValue-- "+principalValue);
+                double reDiscountRateValue = getPercentageValue(reDiscountRate);
+                logger.info("reDiscountRateValue-- "+reDiscountRateValue);
 
-                if (isLeapYear(maturityDate)){
-                    double adjustedPrincipal = (principalValue * 366 * 365 * 100 * 100) / ((365 * 366 * 100 * 100)-
+                if (isLeapYear) {
+                    double adjustedPrincipal = (principalValue * 366 * 365 * 100 * 100) / ((365 * 366 * 100 * 100) -
                             (reDiscountRateValue * 100 * dtm * 366) + (reDiscountRateValue * 100 * dtm * 365));
-                    double amountDue = adjustedPrincipal - (adjustedPrincipal * reDiscountRateValue * dtm /365) + (adjustedPrincipal * reDiscountRateValue * dtm / 366);
-                    setFields(ifr,new String[]{cpTermAmountDueLocal, cpTermAdjustedPrincipalLocal}, new String[]{String.valueOf(amountDue), String.valueOf(adjustedPrincipal)});
-                    setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal});
-                }
-                else {
-                    double adjustedPrincipal = (principalValue * 366 * 100) / ((366 * 100)-(dtm * reDiscountRateValue));
+                    logger.info("adjustedPrincipal-- "+adjustedPrincipal);
+                    double amountDue = adjustedPrincipal - (adjustedPrincipal * reDiscountRateValue * dtm / 365) + (adjustedPrincipal * reDiscountRateValue * dtm / 366);
+                    logger.info("amountDue-- "+amountDue);
+                    setFields(ifr, new String[]{cpTermAmountDueLocal, cpTermAdjustedPrincipalLocal}, new String[]{String.valueOf(amountDue), String.valueOf(adjustedPrincipal)});
+                } else {
+                    double adjustedPrincipal = (principalValue * 366 * 100) / ((366 * 100) - (dtm * reDiscountRateValue));
+                    logger.info("adjustedPrincipal-- "+adjustedPrincipal);
                     double amountDue = adjustedPrincipal - (adjustedPrincipal * reDiscountRateValue * dtm / 365);
-                    setFields(ifr,new String[]{cpTermAmountDueLocal, cpTermAdjustedPrincipalLocal}, new String[]{String.valueOf(amountDue), String.valueOf(adjustedPrincipal)});
-                    setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal});
+                    logger.info("amountDue-- "+amountDue);
+                    setFields(ifr, new String[]{cpTermAmountDueLocal, cpTermAdjustedPrincipalLocal}, new String[]{String.valueOf(amountDue), String.valueOf(adjustedPrincipal)});
                 }
             }
+            disableFields(ifr,cpTermCalculateBtn);
+        }
+        catch (Exception e){
+            logger.info("Exception occurred-- "+ e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    private void cpPartialTermOption(IFormReference ifr){
+
     }
     //**********************Treasury Starts here **********************//
   
