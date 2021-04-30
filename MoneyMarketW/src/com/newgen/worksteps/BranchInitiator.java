@@ -403,6 +403,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         }
         else if ( getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
             setVisible(ifr,new String[]{cpLienSection});
+            enableFields(ifr, new String[]{cpLienTypeLocal, cpLienMandateIdLocal});
+            setMandatory(ifr, new String[]{cpLienTypeLocal, cpLienMandateIdLocal});
             setInvisible(ifr,new String[]{cpTerminationSection,cpProofOfInvestSection});
         }
         else { setInvisible(ifr,new String[]{cpTerminationSection,cpProofOfInvestSection,cpLienSection});}
@@ -585,7 +587,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 
     private String cpValidateLienMandate(IFormReference ifr){
         if (!doesCpIdExist(ifr,getCpLienMandateId(ifr),getCpMarket(ifr))) {
-            clearFields(ifr,cpLienMandateId);
+            clearFields(ifr, cpLienMandateIdLocal);
             return "CP ID does not exist. Check and enter the correct ID.";
         }
         return null;

@@ -222,7 +222,7 @@ public interface Constants {
 	String cpLienTypeLocal = "CPLIENTYPE";
 	String cpLienTypeSet = "SET";
 	String cpLienTypeRemove = "REMOVE";
-	String cpLienMandateId = "CPLIENMANDATEID";
+	String cpLienMandateIdLocal = "CPLIENMANDATEID";
 
 	//common variables
 	String omoProcess = "omo_market";

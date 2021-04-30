@@ -496,7 +496,7 @@ public class Commons implements Constants {
         return getFieldValue(ifr,cpLienTypeLocal);
     }
     public static String getCpLienMandateId(IFormReference ifr){
-        return getFieldValue(ifr,cpLienMandateId);
+        return getFieldValue(ifr, cpLienMandateIdLocal);
     }
     public static boolean doesCpIdExist(IFormReference ifr, String id, String marketType){
         return Integer.parseInt(new DbConnect(ifr,Query.getCpCustIdExistQuery(id,marketType)).getData().get(0).get(0)) > 1;
