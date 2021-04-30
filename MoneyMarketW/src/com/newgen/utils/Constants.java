@@ -192,7 +192,7 @@ public interface Constants {
 	String cpMandateTypeLocal = "cp_mandatetype";
 	String cpMandateTypeTerminate = "Termination";
 	String cpMandateTypePoi = "POI";
-	String cpMandateTypeSetupLien = "Setup Lien";
+	String cpMandateTypeLien = "Lien";
 	String cpMandateTypeRemoveLien = "Remove Lien";
 	String cpTermMandateLocal = "CP_TERMMANDATE";
 	String cpTermMandateDateCol = "Date";
@@ -218,6 +218,11 @@ public interface Constants {
 	String cpTermAdjustedPrincipalLocal = "CP_TERMADPRINCIPAL";
 	String cpTermCalculateBtn = "calculateTermBtn";
 	String cpTermDtmLocal = "CPTERMDTM";
+	String cpTerminateBtn = "cpTerminateBtn";
+	String cpLienTypeLocal = "CPLIENTYPE";
+	String cpLienTypeSet = "SET";
+	String cpLienTypeRemove = "REMOVE";
+	String cpLienMandateId = "CPLIENMANDATEID";
 
 	//common variables
 	String omoProcess = "omo_market";
@@ -295,6 +300,8 @@ public interface Constants {
 	String no = "NO";
 	String cpSmMaturityDateErrMsg = "Maturity date differs from selected bid maturity date, please amend.";
 	String cpLienErrMsg ="Commercial paper is Lien, kindly remove Lien on Commercial paper and try again.";
+	String cpLienSetFlag = "Y";
+	String cpLienRemoveFlag = "N";
 
 
 	//eventName/controlName
@@ -340,6 +347,7 @@ public interface Constants {
 	String cpSelectTermTypeEvent = "selectTermType";
 	String cpCalculateTermEvent = "calculateTermination";
 	String cpPartialTermOptionEvent = "partialTermOption";
+	String cpLienEvent = "lienEvent";
 
 
 	//config

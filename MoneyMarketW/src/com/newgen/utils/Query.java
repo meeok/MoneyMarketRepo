@@ -145,4 +145,11 @@ public class Query {
     public static String getCpLienStatusQuery(String id){
         return "select count (lienflag) from mm_bid_tbl where custrefid = '"+id+"' and lienflag = 'Y'";
     }
+    public static String getCpCustIdExistQuery(String id, String marketType){
+        return "select count(custRefId) from mm_bid_tbl where custrefid = '"+id+"' and process = 'Commercial Paper' and marketType = '"+marketType+"'";
+    }
+
+    public static String getCpLienProcessQuery(String id, String marketType, String flag){
+        return "update mm_bid_tbl set lienFlag = '"+flag+"' where custrefid = '"+id+"' and process = 'Commercial Paper' and markettype = '"+marketType+"'";
+    }
 }

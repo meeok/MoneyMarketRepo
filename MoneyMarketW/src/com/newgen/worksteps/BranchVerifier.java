@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class BranchVerifier extends Commons implements IFormServerEventHandler , CommonsI {
-    private static Logger logger = LogGen.getLoggerInstance(BranchVerifier.class);
+    private static final Logger logger = LogGen.getLoggerInstance(BranchVerifier.class);
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
         clearDecHisFlag(ifr);
@@ -160,7 +160,9 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermPartialOptionLocal});
                     }
                 }
-                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeSetupLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien)){}
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
+                    setVisible(ifr,new String[]{cpLienSection});
+                }
             }
         }
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
@@ -191,7 +193,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermPartialOptionLocal});
                     }
                 }
-                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeSetupLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien)){}
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien)){}
             }
         }
     }

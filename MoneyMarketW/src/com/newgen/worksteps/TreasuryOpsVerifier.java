@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class TreasuryOpsVerifier extends Commons implements IFormServerEventHandler, Constants, CommonsI {
-    private static Logger logger = LogGen.getLoggerInstance(TreasuryOpsVerifier.class);
+    private static final Logger logger = LogGen.getLoggerInstance(TreasuryOpsVerifier.class);
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
         clearDecHisFlag(ifr);
@@ -128,7 +128,7 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
           if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
               setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
               enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
-              setVisible(ifr,new String[]{cpDecisionSection,cpTerminationSection,cpTermMandateTbl,cpTermSpecialRateLocal, getCpTermIsSpecialRate(ifr) ? cpTermSpecialRateValueLocal : cpTermSpecialRateLocal});
+              setVisible(ifr,new String[]{cpMandateTypeSection,cpSetupSection,cpTerminateBtn,cpPostSection,cpDecisionSection,cpTerminationSection,cpTermMandateTbl,cpTermSpecialRateLocal, getCpTermIsSpecialRate(ifr) ? cpTermSpecialRateValueLocal : cpTermSpecialRateLocal});
               if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypeFull)){
                   setVisible(ifr,new String[]{cpTermAmountDueLocal});
               }
@@ -136,9 +136,9 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
                   setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermPartialOptionLocal});
               }
           }
-
         }
 
+        cpSetDecision(ifr);
     }
 
     @Override

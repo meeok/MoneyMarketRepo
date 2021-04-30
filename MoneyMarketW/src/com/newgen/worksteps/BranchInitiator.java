@@ -148,6 +148,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             cpSelectTerminationType(ifr);
                             break;
                         }
+                        case cpLienEvent:{
+                          return  cpValidateLienMandate(ifr);
+                        }
                       //****************Treasurry Starts here *********************//
     	                case tbMarketTypeddChange:{
     	                	tbMarketTypeddChange(ifr);
@@ -398,7 +401,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
             setVisible(ifr,new String[]{cpProofOfInvestSection});
             setInvisible(ifr,new String[]{cpTerminationSection,cpLienSection});
         }
-        else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeSetupLien)){
+        else if ( getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
             setVisible(ifr,new String[]{cpLienSection});
             setInvisible(ifr,new String[]{cpTerminationSection,cpProofOfInvestSection});
         }
@@ -579,6 +582,16 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     private void cpPartialTermOption(IFormReference ifr){
 
     }
+
+    private String cpValidateLienMandate(IFormReference ifr){
+        if (!doesCpIdExist(ifr,getCpLienMandateId(ifr),getCpMarket(ifr))) {
+            clearFields(ifr,cpLienMandateId);
+            return "CP ID does not exist. Check and enter the correct ID.";
+        }
+        return null;
+    }
+
+
     //**********************Treasury Starts here **********************//
   
     private void tbBackToDashboard(IFormReference ifr) {
