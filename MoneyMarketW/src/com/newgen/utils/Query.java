@@ -152,4 +152,10 @@ public class Query {
     public static String getCpLienProcessQuery(String id, String marketType, String flag){
         return "update mm_bid_tbl set lienFlag = '"+flag+"' where custrefid = '"+id+"' and process = 'Commercial Paper' and markettype = '"+marketType+"'";
     }
+    public static String getCpPoiMandateSearchQuery(String marketType, String data){
+        return "select reqdate, custrefid,custprincipal,custacctno,custname,status from mm_bid_tbl where process = 'Commercial Paper' and marketType = '"+marketType+"' and (custacctno = '"+data+"' or custrefid = '"+data+"')";
+    }
+    public static String getCpPoiDtlQuery(String id){
+        return "select reqdate,custrefid,custprincipal,custacctno,custname,principalatmaturity,interest,maturitydate,tenor,rate from mm_bid_tbl where custrefid = '"+id+"'";
+    }
 }

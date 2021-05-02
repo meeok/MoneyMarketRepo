@@ -9,6 +9,9 @@ public class LoadProp implements  Constants {
     private static final Logger logger = LogGen.getLoggerInstance(LoadProp.class);
     public static String processDefId;
     public static String mailFrom;
+    public static String serverPort;
+    public static String serverIp;
+    public static String templatePort;
     static {
         try {
             logger.info("Start loading properties file");
@@ -18,6 +21,9 @@ public class LoadProp implements  Constants {
 
             processDefId = properties.getProperty(processDefIdField);
             mailFrom = properties.getProperty(mailFromField);
+            serverPort = properties.getProperty(serverPortField);
+            serverIp = properties.getProperty(serverIpField);
+            templatePort = properties.getProperty(templatePortField);
         }
         catch  (UnsupportedEncodingException ex){
             ex.printStackTrace();

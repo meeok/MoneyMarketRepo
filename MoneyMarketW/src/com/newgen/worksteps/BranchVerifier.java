@@ -7,6 +7,7 @@ import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.controller.CpController;
 import com.newgen.utils.Commons;
 import com.newgen.utils.CommonsI;
+import com.newgen.utils.GenerateDocument;
 import com.newgen.utils.LogGen;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -60,6 +61,9 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         case cpSmInvestEvent:{
                             if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return setupCpSmBid(ifr);
                             else return cpValidateWindowErrorMsg;
+                        }
+                        case generateTemplateEvent:{
+                            return GenerateDocument.generateDoc(ifr,data);
                         }
                     }
                 }

@@ -223,6 +223,27 @@ public interface Constants {
 	String cpLienTypeSet = "SET";
 	String cpLienTypeRemove = "REMOVE";
 	String cpLienMandateIdLocal = "CPLIENMANDATEID";
+	String cpPoiTbl = "table56";
+	String cpPoiSearchBtn = "cpPoiSearchBtn";
+	String cpPoiGenerateBtn = "cpPoiGenerateBtn";
+	String cpPoiCustNameLocal = "cp_poi_acctName";
+	String cpPoiCustAcctNoLocal = "cp_poi_acctNumb";
+	String cpPoiCustEffectiveDateLocal = "cp_poi_effectiveDate";
+	String cpPoiCustInterestLocal = "cp_poi_interest";
+	String cpPoiCustMaturityDateLocal = "cp_poi_maturityDate";
+	String cpPoiCustPrincipalAtMaturityLocal = "cp_poi_principalMaturity";
+	String cpPoiCustTenorLocal = "cp_poi_tenor";
+	String cpPoiCustIdLocal = "cp_poi_refCode";
+	String cpPoiCustRateLocal = "cp_poi_rate";
+	String cpPoiDateLocal = "POI_DATE";
+	String cpPoiCustAmountInvestedLocal = "cp_poi_amtInvested";
+	String cpPoiMandateLocal = "CPPOIMANDATE";
+	String cpPoiDateCol = "Date";
+	String cpPoiIdCol = "Reference Number";
+	String cpPoiAmountCol = "Amount";
+	String cpPoiAcctNoCol = "Account Number";
+	String cpPoiAcctNameCol = "Customer Name";
+	String cpPoiStatusCol = "Status";
 
 	//common variables
 	String omoProcess = "omo_market";
@@ -348,6 +369,7 @@ public interface Constants {
 	String cpCalculateTermEvent = "calculateTermination";
 	String cpPartialTermOptionEvent = "partialTermOption";
 	String cpLienEvent = "lienEvent";
+	String generateTemplateEvent = "TemplateGeneration";
 
 
 	//config
@@ -356,6 +378,9 @@ public interface Constants {
 	String configPath2 = "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/installedApps/HO-IBPSAPP01Cell01/MoneyMarketW_war.ear/MoneyMarketW.war/config/moneymarket.properties";
 	String mailFromField ="MAILFROM";
 	String processDefIdField = "PROCESSDEFID";
+	String serverPortField = "SERVERPORT";
+	String serverIpField = "SERVERIP";
+	String templatePortField = "TEMPLATEPORT ";
 
 	//API SERVICENAME
 

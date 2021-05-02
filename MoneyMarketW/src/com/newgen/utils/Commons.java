@@ -89,6 +89,9 @@ public class Commons implements Constants {
     public String getCurrentDateTime (){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(dbDateTimeFormat));
     }
+    public String getCurrentDate (){
+        return LocalDate.now().toString();
+    }
     public static String getCpDecision (IFormReference ifr){ return getFieldValue(ifr,cpDecisionLocal);}
     public static String getWorkItemNumber (IFormReference ifr){
         return (String)ifr.getControlValue(wiNameLocal);
@@ -123,7 +126,7 @@ public class Commons implements Constants {
             ifr.setTabStyle(processTabName, omoTab, visible, False);
         }
         else if (getProcess(ifr).equalsIgnoreCase(omoProcess)){
-            ifr.setTabStyle(processTabName,omoTab,visible,True);
+            ifr.setTabStyle(processTabName,omoTab,visible,False);
             ifr.setTabStyle(processTabName,commercialTab,visible,False);
             ifr.setTabStyle(processTabName,treasuryTab,visible,False);
         }
@@ -500,6 +503,12 @@ public class Commons implements Constants {
     }
     public static boolean doesCpIdExist(IFormReference ifr, String id, String marketType){
         return Integer.parseInt(new DbConnect(ifr,Query.getCpCustIdExistQuery(id,marketType)).getData().get(0).get(0)) > 1;
+    }
+    public  static String getCpPoiMandate(IFormReference ifr){
+        return getFieldValue(ifr,cpPoiMandateLocal);
+    }
+    public static String getCpPoiCustId(IFormReference ifr){
+        return getFieldValue(ifr,cpPoiCustIdLocal);
     }
 
 

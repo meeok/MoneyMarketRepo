@@ -72,8 +72,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                             cpCalculateTermination(ifr);
                             break;
                         }
-                        case cpPartialTermOptionEvent:{
-
+                        case generateTemplateEvent:{
+                            return GenerateDocument.generateDoc(ifr,data);
                         }
                         
                         //****************Treasurry Starts here *********************//
@@ -593,6 +593,49 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         return null;
     }
 
+    private String cpSearchPoi(IFormReference ifr){
+        resultSet = new DbConnect(ifr,Query.getCpPoiMandateSearchQuery(getCpMarket(ifr),getCpPoiMandate(ifr))).getData();
+        if (isEmpty(resultSet)) {
+            clearFields(ifr,cpPoiMandateLocal);
+            return "No Details found for this Mandate Detail";
+        }
+        for (List<String> result : resultSet){
+            String date = result.get(0);
+            String id = result.get(1);
+            String amount = result.get(2);
+            String accountNo = result.get(3);
+            String accountName = result.get(4);
+            String status = result.get(5);
+
+            setTableGridData(ifr,cpPoiTbl,new String[]{cpPoiDateCol,cpPoiIdCol,cpPoiAmountCol,cpPoiAcctNoCol,cpPoiAcctNameCol,cpPoiStatusCol},
+                    new String[]{date,id,amount,accountNo,accountName,status});
+        }
+
+        return null;
+    }
+
+    private String cpPoiProcess (IFormReference ifr, int rowIndex){
+        String id = ifr.getTableCellValue(cpPoiTbl,rowIndex,1);
+        resultSet = new DbConnect(ifr,Query.getCpPoiDtlQuery(id)).getData();
+
+        if (!isEmpty(resultSet)) {
+            String reqDate = resultSet.get(0).get(0);
+            String custId = resultSet.get(0).get(1);
+            String principal = resultSet.get(0).get(2);
+            String accountNo = resultSet.get(0).get(3);
+            String accountName = resultSet.get(0).get(4);
+            String principalMaturity = resultSet.get(0).get(5);
+            String interest = resultSet.get(0).get(6);
+            String maturityDate = resultSet.get(0).get(7);
+            String tenor = resultSet.get(0).get(8);
+            String rate = resultSet.get(0).get(9);
+
+            setFields(ifr, new String[]{cpPoiCustEffectiveDateLocal,cpPoiCustIdLocal,cpPoiCustAmountInvestedLocal,cpPoiCustAcctNoLocal,cpPoiCustNameLocal,cpPoiCustPrincipalAtMaturityLocal,cpPoiCustInterestLocal,cpPoiCustMaturityDateLocal,cpPoiCustTenorLocal,cpPoiCustRateLocal,cpPoiDateLocal},
+                    new String[]{reqDate,custId,principal,accountNo,accountName,principalMaturity,interest,maturityDate,tenor,rate,getCurrentDate()});
+            return apiSuccess;
+        }
+        return "Error in processing proof of investment. Contact iBPS support.";
+    }
 
     //**********************Treasury Starts here **********************//
   
