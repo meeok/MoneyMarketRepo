@@ -518,10 +518,7 @@ public interface Constants {
 	String tbUpdteSmTBillsAmt ="tb_amtUpdate";
 	String tbUpdteSmRate = "tb_rateUpdate";
 	String tbUpdateSmIssuedBidsbtn ="tb_UpdateSmIssuedBids_btn";
-	
-	
-	
-	
+
 	
 	//Secondary branch initiating bids
 	String tbSmCustid = "tb_sec_custId";
