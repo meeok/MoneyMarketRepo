@@ -70,6 +70,7 @@ public class Query {
         return "select REFID from mm_setup_tbl where process = '"+process+"' "
         		+ "and upper(markettype) = upper('"+marketType+"') and upper(refid) = upper('"+refid+"') and upper(closeflag) = ('Y') and  upper(winame) =upper('"+winame+"')";
     }
+    
     //get window close date of a refid
     public String getWinCloseDateByIdQuery(String winRefId){
         return "select CLOSEDATE from mm_setup_tbl where refid = '"+winRefId+"";
@@ -217,5 +218,21 @@ public class Query {
     //update minimum principal
     public String getUpdateminPrincipalQuery(String refid, String minPrincipal){
         return "update mm_setup_tbl set MINPRINCIPALAMOUNT = '"+minPrincipal+"' where refid = '"+refid+"'";
+    }
+    //get minimum principal
+    public String getSmMinPrincipalQuery(String refid){
+        return "select MINPRINCIPALAMOUNT from moneymarket_ext where refid = '"+refid+"'";
+    }
+    //get tb Secondary Available amt and status
+    public String getSmAvailableAmtQuery(String invesmentid){
+        return "(select tbillAmt - totalamountsold ), Status, from tb_SmIssuedBills where insertionorderid = '"+invesmentid+"'";
+    }
+    //get all colums in issued treasurybids workstep
+    public String tbGetSmIssuedBidsQuery(String refid){
+        return "select MaturityDate,Tenor,Status,TBillAmount,tbRate,Mandates,TOTALAMOUNTSOLD,insertionorderid from tb_SmIssuedBills where upper(status) = upper('Open')  and winame in (select winame from  mm_setup_tbl where refid ='"+refid+"')";
+    }
+    //update mandates
+    public String updateTbIBMandateAndTAmt(String invesmentid,double bidAmt){
+        return "update tb_SmIssuedBills set totalamountsold = totalamountsold + "+bidAmt+", mandate =mandate+1 where insertionorderid = '"+invesmentid+"'";
     }
 }

@@ -227,6 +227,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 
     /******************  TREASURY BILL CODE BEGINS *********************************/
     /*
+     * if this workitem was created by Treasury utility workstep, update table with all failed debits
+     * After approval of such workitems complete the workitem
      * set controls for task to be performed before the formloads
      */
     private void tbFormLoadActivity(IFormReference ifr){
@@ -248,7 +250,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	        }
 	      
 	        else if(getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){  //bid has been approved by branch verifier and customer's account has been liened.assign to utility or verifier
-	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchPriCusotmerDetails,tbBranchPriSection,
+	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchPriSection,
 	        	tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID});
 	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection});
 	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});

@@ -337,6 +337,9 @@ public interface Constants {
 	String tbCheckUnallocatedBids ="tbCheckUnallocatedBids";
 	String tbVerificationAmtChanged = "tbVerificationAmtChanged";
 	String tbUpdateSmIssuedBids ="tbUpdateSmIssuedBids";
+	String tbSmApplyBid ="tbSmApplyBid";
+	String tbValidateSmBidAmount ="tbValidateSmBidAmount";
+	String tbConcesionaryRateClicked ="tbConcesionaryRateClicked";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -345,7 +348,7 @@ public interface Constants {
 	String tbUpdateCutoffTimeBtn = "tb_updateCutoff_btn";
 	String tbSetReDiscountRateBtn = "tb_rediscRate_btn";
 	String tbLandingMsgSubmitBtn="tb_landMsgSubmit_btn";
-	String tbPmMinPriAmtLocal = "tb_mp_amount";
+	//String tbPmMinPriAmtLocal = "tb_mp_amount";
 	String tbMaturityDte ="tb_maturity_date";
 	//tbMarketSection - Market
 	String tbMarketTypedd = "tb_select_market";
@@ -372,6 +375,7 @@ public interface Constants {
 	String tbFetchMandatebtn ="tb_fetchmandate_btn";
 	String tbLienPrincipalbtn ="tb_LienPrincipal";
 	String tb_BrnchPri_LienID ="tb_BrnchPri_LienID";
+	String tb_SmCustBidRemark = "tb_custBidRemark";
 	//branch Primary
 	String tbBrnchPriTenordd ="tb_pm_tenor";
 	String tbBrnchPriRollovrdd="tb_rollover_type";
@@ -414,7 +418,7 @@ public interface Constants {
 	String tbLandingMsgSection = "tb_setupmsg_section";
 	String tbPriSetupSection = "tb_treasuryPm_section";
 	String tbBranchPriSection = "tb_pm_br_section";
-	String tbBrnchPriCusotmerDetails ="tb_custdetails_section";
+	String tbBrnchCusotmerDetails ="tb_custdetails_section";
 	String tbBranchSecSection = "tb_sec_br_section";
 	String tbTreasurySecSection = "tb_treasurySec_section";
 	String tbPrimaryBidSection = "tb_pmBid_section";
@@ -428,6 +432,7 @@ public interface Constants {
 	//String tbSetupSection="tb_setup_section";
 	String tbCutOffTimeSection = "tb_cutoff_section";
 	String tbSecRediscountRate ="tb_rediscount_section";
+	String tbCustBidSection ="tb_cust_bid_section";
 	
 	//String tbBranchPriSection = "tb_pm_br_section";
 	//String tbBranchSecSection = "tb_BranchSec_section";
@@ -458,6 +463,7 @@ public interface Constants {
 	String SA310 ="SA310";
 	String SA340 ="SA340";
 	String SA327 ="SA327";
+	String PB2010 ="PB2010";
 	
 	//other constants
 	double tbBnkMinPrincipalAmt = 100000;
@@ -499,7 +505,7 @@ public interface Constants {
 	String tbBidWorkItemNoCol ="WorkItemNo";
 	
 	
-	//Secondary Setup
+	//Secondary bid Setup
 	String tbSecUniqueReftbx = "tb_secwu_ref";
 	String tbVerificationAmtttbx ="tb_veriAmt";
 	String tbSecCuttOfftime = "tb_sec_cuttoff";
@@ -512,6 +518,48 @@ public interface Constants {
 	String tbUpdteSmTBillsAmt ="tb_amtUpdate";
 	String tbUpdteSmRate = "tb_rateUpdate";
 	String tbUpdateSmIssuedBidsbtn ="tb_UpdateSmIssuedBids_btn";
+	
+	
+	
+	
+	
+	//Secondary branch initiating bids
+	String tbSmCustid = "tb_sec_custId";
+	String tbSmUniqueRefNo = "tb_sec_id";
+	String tbSmMinimumPrincipal = "tb_mp_amount";
+	String tbSmOpenBidsTbl = "table95";
+	String tbSmBidAmount = "tb_sec_pa";
+	String tbBrnchSmWindownUnqNo="tb_sec_id";
+	String tbSmInvestmentId = "tb_SmInvestmentId";
+	String tbSmMinPriAmt = "tb_mp_amount";
+	String tbSmtenor = "tb_sec_tenor";
+	String tbSmRate = "tb_sec_rate";
+	String tbSmMaturityDte = "tb_sec_maturityDate";
+	String tbSmConcessionValue ="tb_sec_concessionValue";
+	String tbSmConcessionRate="tb_sec_concessionRate";
+	String tbSmInstructionType ="tb_sec_instrtype";
+	
+	String tbSmPrincipalAtMaturity ="tb_sec_pm";
+	String tbSmIntstMaturityNonLpYr ="tb_sec_intMaturityNonLpYr"; //del
+	String tbSmIntrsyMaturityLpYr ="tb_sec_intMaturityLpYr";  //del
+	String tbSmIntrestAtMaturity ="tb_sec_intAtMaturity";
+	String tbSmResidualIntrst ="tb_sec_residual_int";
+	
+	
+	
+	
+	
+	//table85 ( Customer Request ) column names
+	//tbBidMaturityDteCol, tbBidRateCol,tbBidTenorCol,tbStausCol from table 67
+	String tbTBillAmountCol ="TBillAmount";
+	String tbTotalAmountSoldCol ="TotalAmountSold";
+	String tbAvailableAmountCol="AvailableAmount";
+	String tbMandatesCol = "tbBidStausCol";
+	String tbBidSmInvestmentIDCol ="SmInvestmentId";
+	String tbDaysToMaturityCol = "DaysToMaturity";
+	String tbSmInvestmentIdCol = "SmInvestmentId";
+	
+	
 	
 	//Primary re discount rate
 	String tbRdrlessEqualto90tbx = "tb_less90";
@@ -558,7 +606,7 @@ public interface Constants {
 	String tbBidRllovrMndtelbl ="Roll Over Mandate";
 	String tbBidRllovrMndte ="RollOverMandate";
 	
-	String[] allTbSections = {tbBrnchPriCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
+	String[] allTbSections = {tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
 			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbSecRediscountRate };
 	

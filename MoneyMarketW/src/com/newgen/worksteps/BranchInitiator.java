@@ -15,6 +15,7 @@ import java.util.List;
 
 public class BranchInitiator extends Commons implements IFormServerEventHandler, CommonsI {
      private static final Logger logger = LogGen.getLoggerInstance(BranchInitiator.class);
+     Query query = new Query();
 
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
@@ -61,6 +62,23 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         case tbValidateCustomer:{
                         	return tbValidateCustomer(ifr);
                         }
+                        case tbSmApplyBid:{
+                        	try {
+                        		int selectedrow = Integer.parseInt(data);
+                        		logger.info("selectedrow>>"+selectedrow);
+                        		tbSmApplyBid(ifr,selectedrow);
+                        		return"";
+                        	}
+                        	catch(Exception ex) {
+                        		logger.info("tbSmApplyBid Exception>>"+ex.toString());
+                        		return "Updates failed for row Number :"+data;
+                        	}
+                        
+                        }
+                        case tbConcesionaryRateClicked:{
+                        	tbConcesionaryRateClicked(ifr);
+                        }
+                        
                         
                         //****************Treasurry Ends here *********************//
                     }
@@ -141,9 +159,12 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	                	return tbValidatePrincipalAmt(ifr);
     	                }
     	                case tbCategoryddChange:{
-    	                	tbCategoryddChange(ifr);
+    	                	return tbCategoryddChange(ifr);
     	                }
-    	                break;
+    	                case tbValidateSmBidAmount:{
+    	                	return tbValidateSmBidAmount(ifr);
+    	                }
+    	              
                         //****************Treasurry Ends here *********************//
                     }
                     
@@ -199,7 +220,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         return null;
     }
 
-    @Override
+	@Override
     public JSONArray validateSubmittedForm(FormDef formDef, IFormReference iFormReference, String s) {
         return null;
     }
@@ -377,14 +398,27 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         
     }
     /*
-     * if setup has been done for selected market display corresponding fields
+     * if bid setup has been done for selected market display corresponding fields
+     * hide/clear category dropdown
      */
-    
     private String tbMarketTypeddChange(IFormReference ifr){
     	String retMsg ="";
-    	setTbPriWindownUnqNo(ifr,getTbActiveWindowwithRefid(ifr));
+    	
     	if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+    		setTbPriWindownUnqNo(ifr,getTbActiveWindowwithRefid(ifr));
     		if(!isEmpty(getTbPriWindownUnqNo(ifr))){
+    			setVisible(ifr, new String[]{tbCategorydd});
+    			//disableFields(ifr, new String[]{tbMarketSection});
+    		}
+    		else {
+    			clearFields(ifr,tbMarketTypedd);
+    			retMsg = getTbMarket(ifr)+tbWindowInactiveMessage;
+    			//hide or disable all fields
+    		}
+    	}
+    	if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+    		setTbBrnchSmWindownUnqNo(ifr,getTbActiveWindowwithRefid(ifr));
+    		if(!isEmpty(getTbBrnchSmWindownUnqNo(ifr))){
     			setVisible(ifr, new String[]{tbCategorydd});
     			//disableFields(ifr, new String[]{tbMarketSection});
     		}
@@ -417,25 +451,86 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	logger.info("tbretmsg>>>>"+retMsg);
     	return retMsg;
     }
-    private void tbCategoryddChange(IFormReference ifr){
-    	if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
-    		//check if market is setup
-    		setVisible(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection});
-    		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
-    		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
-    		//tbGenerateCustRefNo(ifr, getTbMarket(ifr));)
+    /*
+     * Secondary - processes treasury bills requested by a customer
+     * Bid - displays ALL open BIDs setup by treasury in order of maturity date(ascending order of date) 
+     */
+    private String tbCategoryddChange(IFormReference ifr){
+    	String retMsg = "";
+    	if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+	    	if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){		
+	    		 if(isTbWindowOpen(ifr,getTbPriWindownUnqNo(ifr))){//check if market is is open
+		    		setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection});
+		    		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+		    		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
+		    		//tbGenerateCustRefNo(ifr, getTbMarket(ifr));)
+		    	}
+		    	else {
+		    		setTbBrnchPriRqsttype(ifr,"");
+		    		hideFields(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection});
+		    		undoMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+		    		retMsg ="No window is opened";
+		    	}
+	    	}
     	}
-    	else {
-    		setTbBrnchPriRqsttype(ifr,"");
-    		hideFields(ifr, new String[] {tbBrnchPriCusotmerDetails,tbBranchPriSection,tbDecisionSection});
-    		undoMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
-
+    	
+    	//secondary market
+    	else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+    		if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
+    			 if(isTbWindowOpen(ifr,getTbBrnchSmWindownUnqNo(ifr))){//check if market is open for bidding
+		    		setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchSecSection,tbDecisionSection});
+		    		disableFields(ifr,new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+		    		setMandatory(ifr, new String[] {tbSmBidAmount,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+		    		hideFields(ifr, new String[] {tbSmPrincipalAtMaturity,tbSmIntstMaturityNonLpYr,tbSmIntrsyMaturityLpYr,tbSmResidualIntrst});
+		    		//get issued bids and insert into the openbid table
+		    		retMsg =tbPorpulateSmOpenBidTbl(ifr);
+    			 }
+		    	else { //window is not open
+		    		setTbBrnchPriRqsttype(ifr,"");
+		    		hideFields(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchSecSection,tbDecisionSection});
+		    		undoMandatory(ifr, new String[] {tbSmBidAmount,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+		
+		    	}
     	}
+    }
+    	return retMsg;
     	//logger.info("tbOnDone1>>>");
     	//tbOnDone(ifr);
     	//logger.info("tbOnDone2>>>");
     }
     
+    /*
+     * get issued bids and insert into the openbid table
+     */
+    private String tbPorpulateSmOpenBidTbl(IFormReference ifr){
+    	String retMsg ="";
+		String qry = new Query().tbGetSmIssuedBidsQuery(getTbBrnchSmWindownUnqNo(ifr));
+    	logger.info("tbGetSmIssuedBidsQuery>>"+ qry);
+        List<List<String>> dbr = new DbConnect(ifr, qry).getData();
+        logger.info("getTbPmBidUpdateBankQuery save db result>>>"+dbr);
+        int dbrSize = dbr.size();
+        if(dbrSize>0) {
+        	for(List<String> ls : dbr)
+        	{
+        		String MaturityDate = ls.get(0);
+        		String Tenor = ls.get(1);
+        		String Status = ls.get(2);
+        		String TBillAmount = ls.get(3);
+        		String tbRate = ls.get(4);
+        		String Mandates = ls.get(5);
+        		String totalAmountSold = ls.get(6);
+        		String insertionorderid = ls.get(7);
+        		String DaysToMaturity = String.valueOf(getDaysToMaturity(MaturityDate)); 
+        		String AvailableAmount = convertDoubleToString(convertStringToDouble(TBillAmount) - convertStringToDouble(totalAmountSold));
+        		
+                setTableGridData(ifr,tbSmOpenBidsTbl,new String[]{tbBidMaturityDteCol,tbBidTenorCol,tbStausCol,tbTBillAmountCol,tbBidRateCol,tbMandatesCol,tbAvailableAmountCol,tbSmInvestmentIdCol,tbDaysToMaturityCol},
+                        new String[]{MaturityDate,Tenor,Status,TBillAmount,tbRate,Mandates,AvailableAmount,insertionorderid,DaysToMaturity});
+        	}
+        }
+        else
+        	retMsg ="There are no open bids";
+        return retMsg;
+    }
     /*
      * Minimum of N100,000 for bank Rate and Minimum of N50,000,000 for personal Rate
      * Validation for amount should be in thousands and comma used for separation)
@@ -485,10 +580,93 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     			setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
 	    	}
     	}
-    	
+    	 if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+     		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid) ){//generate customer unique ref
+     			setFields(ifr,tbSmCustid,tbGenerateCustRefNo(ifr));
+     
+     			String avlamtqry = query.getSmAvailableAmtQuery(getFieldValue(ifr,tbSmInvestmentId));
+     			logger.info("getSmAvailableAmtQuery>>>"+avlamtqry);
+     			List<List<String>> avlamtdbr = new DbConnect(ifr,avlamtqry).getData();
+     			logger.info("getSmAvailableAmtQuery dbesult>>>"+avlamtdbr);
+     			if(avlamtdbr.size()>0) {
+     				if(!avlamtdbr.get(0).get(0).equalsIgnoreCase(tbSecBidStatusOpen)) {
+	     				if(convertStringToDouble(getTbSmBidAmount(ifr)) > convertStringToDouble(avlamtdbr.get(0).get(0))){
+	         				clearFields(ifr,tbSmBidAmount);
+	         				retMsg = "value cannot be greater than the available amount";
+	         			}
+	     				else { //update the table with bidamt and mandate
+	     					String updateqry = query.updateTbIBMandateAndTAmt(getTbSmInvestmentId(ifr),convertStringToDouble(getTbSmBidAmount(ifr)));
+	     	     			logger.info("updateTbIBMandateAndTAmt>>>"+updateqry);
+	     	     			List<List<String>> aupdatedbr = new DbConnect(ifr,updateqry).getData();
+	     	     			logger.info("updateTbIBMandateAndTAmt dbesult>>>"+aupdatedbr);
+	     				}
+     				}
+     				else
+     					retMsg = "Bid Status is close"; //update table----
+     			}
+     			else 
+     				retMsg = "No record exists for this investment id. Contact Admin";
+     		}
+     	}
     	//logger.info("Validate retMsg>>"+retMsg);
     	 return retMsg;
     }
+    
+    /*
+     * secondary market - update bid details for customer with issued bids details.
+     */
+    private void tbSmApplyBid(IFormReference ifr, int rowIndex) {
+    	
+    	// get minimum principal amount
+    	String minPqry = new Query().getSmMinPrincipalQuery(getTbBrnchSmWindownUnqNo(ifr));
+    	logger.info("getSmMinPrincipalQuery>>"+ minPqry);
+        List<List<String>> minPdbr = new DbConnect(ifr, minPqry).getData();
+        logger.info("getSmMinPrincipalQuery get db result>>>"+minPdbr);
+        if(minPdbr.size()>0) 
+        	setFields(ifr,tbSmMinPriAmt,minPdbr.get(0).get(0));
+        
+    	String retMsg ="";
+    	String maturityDte = ifr.getTableCellValue(tbSmOpenBidsTbl,rowIndex,0);
+    	logger.info("maturityDte>>>" + maturityDte);
+    	String tenor = ifr.getTableCellValue(tbSmOpenBidsTbl,rowIndex,1);
+    	logger.info("tenor>>>" + tenor);
+    	String status = ifr.getTableCellValue(tbSmOpenBidsTbl,rowIndex,3);
+    	logger.info("status>>>" + status);
+    	String tBillAmt = ifr.getTableCellValue(tbSmOpenBidsTbl,rowIndex,2);
+    	logger.info("TBillAmt>>>" + tBillAmt);
+    	String rate = ifr.getTableCellValue(tbSmOpenBidsTbl,rowIndex,4);
+    	logger.info("rate>>>" + rate);
+    	String availableAmount = ifr.getTableCellValue(tbSmOpenBidsTbl,rowIndex,6);
+    	logger.info("availableAmount>>>" + availableAmount);
+    	String SmInvestmentId = ifr.getTableCellValue(tbSmOpenBidsTbl,rowIndex,7);
+    	logger.info("SmInvestmentId>>>" + SmInvestmentId);
+    	
+    	setFields(ifr,tbSmtenor,tenor);
+    	setFields(ifr,tbSmRate,rate);
+    	setFields(ifr,tbSmMaturityDte,maturityDte);
+    	setFields(ifr,tbSmInvestmentId,SmInvestmentId);
+	}
+    
+    /*
+     * 
+     */
+	private String tbValidateSmBidAmount(IFormReference ifr) {
+		return convertStringToDouble(tbSmBidAmount) < convertStringToDouble(tbSmMinimumPrincipal) ? "BID amount cannot be less than "+tbSmMinimumPrincipal:"";
+	
+		
+	}
+	private void tbConcesionaryRateClicked(IFormReference ifr) {
+		if(getTbSmConcessionRate(ifr).equalsIgnoreCase(yes)) {
+			setVisible(ifr,tbSmConcessionValue);
+			enableField(ifr,tbSmConcessionValue);
+		}
+		else {
+			clearFields(ifr,tbSmConcessionValue);
+			hideField(ifr,tbSmConcessionValue);
+		
+		}
+	}
+
     
     //**********************Treasury Ends here **********************//
 

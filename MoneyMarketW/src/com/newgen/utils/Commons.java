@@ -613,6 +613,19 @@ public class Commons implements Constants {
          logger.info("isTbWindowClosed db output>>"+dbr);
          return dbr.size()>0 ? true:false;
      }
+     /*
+      * return true is window is open
+      * else return false
+      */
+      public boolean isTbWindowOpen(IFormReference ifr,String refid){
+      	String qry = new Query().getWinCloseFlagById(refid);
+         logger.info("getWinCloseFlagById query --"+ qry);
+          List<List<String>> dbr = new DbConnect(ifr,qry).getData();
+          logger.info("getWinCloseFlagById db output>>"+dbr);
+          if(dbr.size()>0)
+        	  return (dbr.get(0).get(0)).equalsIgnoreCase("N") ? true:false;
+          return false;
+      }
    /*
     * return true is if window is closed
     * else return false
@@ -637,7 +650,7 @@ public class Commons implements Constants {
     //primary branch validations
     /*
      * validate Account Schemecode
-     * 
+     * Secondary Market where private banking investment account with scheme code PB2010), system must bring out an additional field for ‘Remark’. This field must be a compulsory field.
      */
     public static String tbValidateCustomer(IFormReference ifr) {
     	tbFetchAccountDetails(ifr);
@@ -648,6 +661,20 @@ public class Commons implements Constants {
     	if (isEmpty(retMsg))
     		retMsg = isEmpty(getTbCustAcctEmail(ifr)) ? "Update email of customer on account maintenance workflow":"";
     	logger.info("retMsg1>>"+ retMsg);
+    	
+    	//scheme code PB2010
+    	if(getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+    		if(getTbCustSchemeCode(ifr).equalsIgnoreCase(PB2010)) {
+    			setVisible(ifr, tb_SmCustBidRemark);
+    			setMandatory(ifr, tb_SmCustBidRemark);
+    		}
+    		else {
+    			clearFields(ifr, tb_SmCustBidRemark);
+    			hideField(ifr,tb_SmCustBidRemark);
+    			undoMandatory(ifr, tb_SmCustBidRemark);
+    		}	
+    		
+    	}
     	return retMsg;
     }
     
@@ -723,6 +750,43 @@ public class Commons implements Constants {
 	public static String getTbVerificationAmttbx(IFormReference ifr) {return (String) ifr.getValue(tbVerificationAmtttbx);}
 	public static void setTbSecUniqueReftbx(IFormReference ifr, String value) {ifr.setValue(tbSecUniqueReftbx,value);}
 	public static String getTbSecUniqueReftbx(IFormReference ifr) {return (String) ifr.getValue(tbSecUniqueReftbx);}
+	
+	public static void setTbBrnchSmWindownUnqNo(IFormReference ifr, String value) {ifr.setValue(tbBrnchSmWindownUnqNo,value);}
+	public static String getTbBrnchSmWindownUnqNo(IFormReference ifr) {return (String) ifr.getValue(tbBrnchSmWindownUnqNo);}
+	public static void setTbSmBidAmount(IFormReference ifr, String value) {ifr.setValue(tbSmBidAmount,value);}
+	public static String getTbSmBidAmount(IFormReference ifr) {return (String) ifr.getValue(tbSmBidAmount);}
+	public static void setTbSmMinPriAmt(IFormReference ifr, String value) {ifr.setValue(tbSmMinPriAmt,value);}
+	public static String getTSmMinPriAmt(IFormReference ifr) {return (String) ifr.getValue(tbSmMinPriAmt);}
+	
+	public static void setTbSmInvestmentId(IFormReference ifr, String value) {ifr.setValue(tbSmInvestmentId,value);}
+	public static String getTbSmInvestmentId(IFormReference ifr) {return (String) ifr.getValue(tbSmInvestmentId);}
+	
+	public static void setTbSmtenor(IFormReference ifr, String value) {ifr.setValue(tbSmtenor,value);}
+	public static String getTbSmtenor(IFormReference ifr) {return (String) ifr.getValue(tbSmtenor);}
+	public static void setTbSmRate(IFormReference ifr, String value) {ifr.setValue(tbSmRate,value);}
+	public static String getTbSmRate(IFormReference ifr) {return (String) ifr.getValue(tbSmRate);}
+	
+	public static void setTbSmMaturityDte(IFormReference ifr, String value) {ifr.setValue(tbSmMaturityDte,value);}
+	public static String getTbSmMaturityDte(IFormReference ifr) {return (String) ifr.getValue(tbSmMaturityDte);}
+	public static void setTbSmConcessionValue(IFormReference ifr, String value) {ifr.setValue(tbSmConcessionValue,value);}
+	public static String getTbSmConcessionValue(IFormReference ifr) {return (String) ifr.getValue(tbSmConcessionValue);}
+	public static void setTbSmConcessionRate(IFormReference ifr, String value) {ifr.setValue(tbSmConcessionRate,value);}
+	public static String getTbSmConcessionRate(IFormReference ifr) {return (String) ifr.getValue(tbSmConcessionRate);}
+	public static void setTbSmInstructionType(IFormReference ifr, String value) {ifr.setValue(tbSmInstructionType,value);}
+	public static String getTbSmInstructionType(IFormReference ifr) {return (String) ifr.getValue(tbSmInstructionType);}
+	public static void setTbSmPrincipalAtMaturity(IFormReference ifr, String value) {ifr.setValue(tbSmPrincipalAtMaturity,value);}
+	public static String getTbSmPrincipalAtMaturity(IFormReference ifr) {return (String) ifr.getValue(tbSmPrincipalAtMaturity);}
+	
+	
+	public static void setTbSmIntstMaturityNonLpYr(IFormReference ifr, String value) {ifr.setValue(tbSmIntstMaturityNonLpYr,value);}
+	public static String getTbSmIntstMaturityNonLpYr(IFormReference ifr) {return (String) ifr.getValue(tbSmIntstMaturityNonLpYr);}
+	
+	public static void setTbSmIntrsyMaturityLpYr(IFormReference ifr, String value) {ifr.setValue(tbSmIntrsyMaturityLpYr,value);}
+	public static String getTbSmIntrsyMaturityLpYr(IFormReference ifr) {return (String) ifr.getValue(tbSmIntrsyMaturityLpYr);}
+	public static void setTbSmResidualIntrst(IFormReference ifr, String value) {ifr.setValue(tbSmResidualIntrst,value);}
+	public static String getTbSmResidualIntrst(IFormReference ifr) {return (String) ifr.getValue(tbSmResidualIntrst);}
+	public static void setTbSmIntrestAtMaturity(IFormReference ifr, String value) {ifr.setValue(tbSmIntrestAtMaturity,value);}
+	public static String getTbSmIntrestAtMaturity(IFormReference ifr) {return (String) ifr.getValue(tbSmIntrestAtMaturity);}
 	
 	//public static void setTbPoolManager(IFormReference ifr, String value) {ifr.setValue(tbPoolManager,value);}
 	//public static String getTbPoolManager(IFormReference ifr) {return (String) ifr.getValue(tbPoolManager);}
@@ -844,6 +908,60 @@ public class Commons implements Constants {
     	logger.info("converting double : "+d+" to String>: "+strVal);
     	return strVal;
     }
+    
+    public String getSmMinPrincipal(IFormReference ifr,String refid) {
+    	String qry = new Query().getSmMinPrincipalQuery(refid);
+    	logger.info("getSmMinPrincipalQuery>>"+ qry);
+        List<List<String>> dbr = new DbConnect(ifr, qry).getData();
+        logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);
+        if(dbr.size()>0)
+        	return dbr.get(0).get(0);
+        return "";
+    }
+    //update available amount of seconday issued bills(IB)
+    public void updateSmIBAvailableAmt(double bidamt) {
+    	//double newAvailAmt = ()
+    }
+    
+    //leap year calculator
+    private boolean isLeapyear(String maturityDte) {
+		try {
+			int year = Integer.parseInt(new SimpleDateFormat("yyyy").format(
+					new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").parse(maturityDte)));
+			logger.info("year >>."+year);
+	    	return ((year%4 ==0) && (year % 100!=0)) || (year%400 ==0) ? true:false;
+		} catch (NumberFormatException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+    }
+    
+    /*
+     * Interest for maturity date  in Non Leap year ={(Principal * Tenor *concessionary rate)/365 *100)
+     */
+    public double tbCalcSmInterestAtMaturity(IFormReference ifr,String maturityDte,double bidamt, double tenor, double csrate) {
+    	//check for leap year
+    	if(isLeapyear(maturityDte)) {
+    		return isEmpty(getTbSmConcessionValue(ifr)) ? ( bidamt* tenor)/(365*100):
+    			(( bidamt* tenor*csrate)/(365*100))+(tenor/366);
+    	}
+    	else { //not leap year
+    		return isEmpty(getTbSmConcessionValue(ifr)) ? ( bidamt* tenor)/(365*100):
+    			( bidamt* tenor*csrate)/(365*100);
+    	}
+    }
+    /*
+     * Interest for maturity date  in Non Leap year ={(Principal * Tenor *concessionary rate)/365 *100)
+     * Interest for maturity date in Leap year ={(Principal *concessionary rate* Tenor )/365*100 ) + Tenor/366
+     */
+    public double tbCalcSmPrincipalAtMaturity(IFormReference ifr, String maturityDte, double bidamt, double tenor, double csrate,double rate) {
+   
+    	double interest =  tbCalcSmInterestAtMaturity(ifr, maturityDte, bidamt,  tenor,  csrate);
+    	return bidamt*(interest+(rate*tenor));
+    }
+    	
+
     
     
     /******************  TREASURY BILL CODE ENDS ***********************************/

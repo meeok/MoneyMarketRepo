@@ -199,7 +199,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         clearFields(ifr,new String[]{tbRemarkstbx,tbDecisiondd}); 
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
             if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
-            	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchPriCusotmerDetails,tbBranchPriSection,
+            	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchPriSection,
             			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID});
             	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection});
             	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
@@ -208,10 +208,55 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
                
             }
-        } else {}
+        } 
+        else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) {
+        	if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
+	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchSecSection,
+	        			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbPostSection});
+	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchSecSection});
+	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
+	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
+	          //  disableFields(ifr, new String[] {});
+	            enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
+	        	
+	        	setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchSecSection,tbDecisionSection});
+	    		disableFields(ifr,new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+	    		setMandatory(ifr, new String[] {tbSmBidAmount,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});	
+	    		setFields(ifr,new String[] {tbSmIntrestAtMaturity,tbSmPrincipalAtMaturity}, new String[] {getSmInterestAtMat(ifr),tbGetSmPrincipalAtMat(ifr)});
+        	 }
+        }
        
         
     }
+    
+    /*
+     * calculate Interest for maturity drate  in Non Leap year 
+     * {(Principal * Tenor *concessionary rate)/365 *100)
+     */
+    private String getSmInterestAtMat(IFormReference ifr){
+    	double bidamt =convertStringToDouble(getTbSmBidAmount(ifr));
+    	double tenor = convertStringToDouble(getTbSmtenor(ifr));
+    	double csrate = convertStringToDouble(getTbSmConcessionValue(ifr));
+    	double rate = convertStringToDouble(getTbSmConcessionValue(ifr));
+    	String maturityDte = getTbSmMaturityDte(ifr);
+    	
+    	double interest = tbCalcSmInterestAtMaturity( ifr, maturityDte, bidamt,  tenor,  csrate);
+    	logger.info("interest at maturity >>>"+interest);
+    	return String.valueOf(interest);
+    }
+    private String tbGetSmPrincipalAtMat(IFormReference ifr){
+    	double bidamt =convertStringToDouble(getTbSmBidAmount(ifr));
+    	double tenor = convertStringToDouble(getTbSmtenor(ifr));
+    	double csrate = convertStringToDouble(getTbSmConcessionValue(ifr));
+    	double rate = convertStringToDouble(getTbSmRate(ifr));
+    	String maturityDte = getTbSmMaturityDte(ifr);
+    	
+    	double smprincipal = tbCalcSmPrincipalAtMaturity( ifr,  maturityDte,  bidamt,  tenor,  csrate, rate);
+    	logger.info("Principal at maturity >>>"+smprincipal);
+    	return String.valueOf(smprincipal);
+    	
+    }
+    
     private void tbTokenChange(IFormReference ifr){
     	if(!isEmpty(getTbtoken(ifr))) {
     		setVisible(ifr,tbPostSection);

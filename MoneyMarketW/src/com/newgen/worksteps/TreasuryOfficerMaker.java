@@ -913,14 +913,15 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	            String maturityDate = ifr.getTableCellValue(tbSmIssuedTBillTbl,i,0);
 	            String tBillAmount = ifr.getTableCellValue(tbSmIssuedTBillTbl,i,3);
 	            String veriAmt = getFieldValue(ifr,tbVerificationAmtttbx);
-	            //long dayToMaturity =  getDaysToMaturity(maturityDate);
+	            long daysToMaturity =  getDaysToMaturity(maturityDate);
 	            logger.info("maturityDate-- "+maturityDate);
 	            if (Float.parseFloat(tBillAmount) < Float.parseFloat(veriAmt)) { //check for exception
 	                retMsg = "Treaury Bill Amount cannot be less than the Verification Amount. Correct row No. "+i+".";
 	                break;  //exit loop and report error
 	            }
-	            else //update row
+	            else //update row{
 	            	ifr.setTableCellValue(tbSmIssuedTBillTbl,i,6,String.valueOf(smStatusOpen));
+	            	ifr.setTableCellValue(tbSmIssuedTBillTbl,i,9,String.valueOf(daysToMaturity));
 	        }
     	}
         return "";
@@ -1175,8 +1176,12 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     	
     	String maturityDate = getFieldValue(ifr,tbUpdteSmMatDte); 
     	logger.info("maturityDate-- "+maturityDate);
-    	double tBillAmount = 0;
-    	 try {
+    	double tBillAmount = convertStringToDouble(getFieldValue(ifr,tbUpdteSmTBillsAmt));
+    	logger.info("tBillAmount>>>"+tBillAmount);
+    	double veriAmt = convertStringToDouble(getFieldValue(ifr,tbVerificationAmtttbx));
+    	logger.info("veriAmt>>>"+veriAmt);
+    	
+    	/* try {
     		 tBillAmount = Double.parseDouble(getFieldValue(ifr,tbUpdteSmTBillsAmt));
     		 logger.info("tBillAmount>>>"+tBillAmount);
          }
@@ -1190,22 +1195,22 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
          }
          catch(Exception ex) {
          	logger.info("veriAmt parse error>>>"+ex.toString());
-         }
+         }*/
     	String rate =getFieldValue(ifr,tbUpdteSmRate);
         String staus = ifr.getTableCellValue(tbSmIssuedTBillTbl,rowIndex,6);
         String totalAmountSold = ifr.getTableCellValue(tbSmIssuedTBillTbl,rowIndex,4);
         logger.info("totalAmountSold>>>"+totalAmountSold);
        
         //long dayToMaturity =  getDaysToMaturity(maturityDate);
-        
-        double amtsold =0;
+        double amtsold = convertStringToDouble(getFieldValue(ifr,totalAmountSold));
+        /*double amtsold =0;
         try {
         	amtsold = Double.parseDouble(totalAmountSold);
         	logger.info("amtsold>>>"+amtsold);
         }
         catch(Exception ex) {
         	logger.info("amtsold parse error>>>"+ex.toString());
-        }
+        }*/
         /*double availableAmount = 0;
         try{
         	availableAmount= Double.parseDouble(ifr.getTableCellValue(tbSmIssuedTBillTbl,rowIndex,5));
@@ -1228,9 +1233,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		if(!isEmpty(maturityDate))
         			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,0,maturityDate);
         		if(!isEmpty(getFieldValue(ifr,tbUpdteSmTBillsAmt)))
-        			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,1,String.valueOf(tBillAmount));
+        			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,1,convertDoubleToString(tBillAmount));
         		if(!isEmpty(getFieldValue(ifr,tbUpdteSmTBillsAmt)))
-        			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,5,(String.valueOf(tBillAmount-amtsold)));
+        			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,5,(convertDoubleToString(tBillAmount-amtsold)));
         		if(!isEmpty(rate))
         			ifr.setTableCellValue(tbSmIssuedTBillTbl,rowIndex,2,rate);
                   
