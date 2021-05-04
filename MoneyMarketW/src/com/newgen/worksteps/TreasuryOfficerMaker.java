@@ -304,10 +304,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 setVisible(ifr,new String[]{cpCutOffTimeSection});
                 enableFields(ifr,new String[] {cpCloseDateLocal});
                 undoMandatory(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate91To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
-                setInvisible(ifr,new String[]{cpRediscountRateSection,cpLandingMsgSection});
+                setInvisible(ifr,new String[]{cpReDiscountRateSection,cpLandingMsgSection});
             }
             else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryReDiscountRate)){
-                setVisible(ifr,new String[]{cpRediscountRateSection});
+                setVisible(ifr,new String[]{cpReDiscountRateSection});
                 setMandatory(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate91To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
                 enableFields(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate91To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
                 setInvisible(ifr,new String[]{cpCutOffTimeSection,cpLandingMsgSection});
@@ -317,10 +317,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 enableFields(ifr,new String[]{cpLandMsgLocal});
                 setMandatory(ifr,new String[]{cpLandMsgLocal});
                 undoMandatory(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate91To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
-                setInvisible(ifr,new String[]{cpRediscountRateSection,cpCutOffTimeSection});
+                setInvisible(ifr,new String[]{cpReDiscountRateSection,cpCutOffTimeSection});
             }
             else {
-                setInvisible(ifr,new String[]{cpRediscountRateSection,cpCutOffTimeSection,cpLandingMsgSection});
+                setInvisible(ifr,new String[]{cpReDiscountRateSection,cpCutOffTimeSection,cpLandingMsgSection});
             }
         }
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
@@ -335,10 +335,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 setVisible(ifr,new String[]{cpCutOffTimeSection});
                 enableFields(ifr,new String[] {cpCloseDateLocal});
                 undoMandatory(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate91To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
-                setInvisible(ifr,new String[]{cpRediscountRateSection,cpLandingMsgSection});
+                setInvisible(ifr,new String[]{cpReDiscountRateSection,cpLandingMsgSection});
             }
             else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryReDiscountRate)){
-                setVisible(ifr,new String[]{cpRediscountRateSection});
+                setVisible(ifr,new String[]{cpReDiscountRateSection});
                 setMandatory(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate91To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
                 enableFields(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate91To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
                 setInvisible(ifr,new String[]{cpCutOffTimeSection,cpLandingMsgSection});
@@ -348,10 +348,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 enableFields(ifr,new String[]{cpLandMsgLocal});
                 setMandatory(ifr,new String[]{cpLandMsgLocal});
                 undoMandatory(ifr,new String[] {cpReDiscountRateLess90Local, cpReDiscountRate91To180Local,cpReDiscountRate181To270Local,cpReDiscountRate271To364Local});
-                setInvisible(ifr,new String[]{cpRediscountRateSection,cpCutOffTimeSection});
+                setInvisible(ifr,new String[]{cpReDiscountRateSection,cpCutOffTimeSection});
             }
             else {
-                setInvisible(ifr,new String[]{cpRediscountRateSection,cpCutOffTimeSection,cpLandingMsgSection});
+                setInvisible(ifr,new String[]{cpReDiscountRateSection,cpCutOffTimeSection,cpLandingMsgSection});
             }
         }
     }

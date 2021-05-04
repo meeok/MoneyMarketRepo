@@ -151,7 +151,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                         setVisible(ifr,new String[]{cpCutOffTimeSection,cpSetupSection,cpUpdateCutoffTimeBtn});
                     }
                    else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryReDiscountRate)){
-                        setVisible(ifr,new String[]{cpRediscountRateSection,cpSetupSection,cpSetReDiscountRateBtn});
+                        setVisible(ifr,new String[]{cpReDiscountRateSection,cpSetupSection,cpSetReDiscountRateBtn});
                     }
                    else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryUpdateLandingMsg)){
                        setVisible(ifr,new String[]{cpLandingMsgSection});

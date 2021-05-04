@@ -69,13 +69,13 @@ public interface Constants {
 	String cpDecisionSection = "cp_dec_section";
 	String cpTreasuryPriSection = "cp_pmTreasury_section";
 	String cpTreasurySecSection = "cp_secTreasury_section";
-	String cpTreasuryOpsSecSection = "cp_treasuryOpsSec_section";
+	String cpUtilityFailedPostSection = "cp_utilityFailedPost_section";
 	String cpTreasuryOpsPriSection = "cp_treasuryOpsPm_section";
 	String cpPostSection = "cp_post_section";
 	String cpSetupSection="cp_setup_section";
 	String cpCutOffTimeSection = "cp_cutoff_section";
 	String cpCustomerDetailsSection ="cp_custDetails_section";
-	String cpRediscountRateSection = "rediscountratesection";
+	String cpReDiscountRateSection = "rediscountratesection";
 	String cpMandateTypeSection = "cp_mandatetypesection";
 	String cpLienSection = "cpLienSection";
 
@@ -293,8 +293,8 @@ public interface Constants {
 	String cpSmMinPrincipalErrorMsg ="Customer principal cannot be less than window minimum principal or greater than available investment amount";
 	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";
 	String cpValidateWindowErrorMsg ="This CP window has been closed. Kindly wait till the next window to initiate";
-	String tbDocumentName ="Proof of Investment for TB";
-	String cpDocumentName ="Proof of Investment for CP";
+	String tbTemplateName ="TB_POI";
+	String cpTemplateName ="CP_POI";
 	String cpEmailMsg = "Update email of customer on account maintenance workflow";
 	String cpPmInvestmentPrincipal ="Principal";
 	String cpPostSuccessMsg = "Posting Done Successfully";
@@ -370,6 +370,8 @@ public interface Constants {
 	String cpPartialTermOptionEvent = "partialTermOption";
 	String cpLienEvent = "lienEvent";
 	String generateTemplateEvent = "TemplateGeneration";
+	String cpPoiSearchEvent="poiSearch";
+	String cpPoiProcessEvent="poiProcess";
 
 
 	//config
@@ -380,7 +382,7 @@ public interface Constants {
 	String processDefIdField = "PROCESSDEFID";
 	String serverPortField = "SERVERPORT";
 	String serverIpField = "SERVERIP";
-	String templatePortField = "TEMPLATEPORT ";
+	String templatePortField = "TEMPLATEPORT";
 
 	//API SERVICENAME
 

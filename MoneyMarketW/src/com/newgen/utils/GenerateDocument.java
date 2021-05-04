@@ -13,33 +13,34 @@ public class GenerateDocument implements Constants{
     private static final Logger logger = LogGen.getLoggerInstance(GenerateDocument.class);
 
     public static String generateDoc (IFormReference ifr, String sessionId) {
-            String docName = empty;
+            String templateName = empty;
             String responseXML;
             if (Commons.getProcess(ifr).equalsIgnoreCase(treasuryProcess)) {
-                docName = tbDocumentName;
+                templateName = tbTemplateName;
             } else if (Commons.getProcess(ifr).equalsIgnoreCase(commercialProcess)) {
-                docName = cpDocumentName;
+                templateName = cpTemplateName;
             }
-            String sTemplateName = docName;
+            logger.info("templateName-- "+templateName);
+            String sTemplateName = templateName;
+            logger.info("sTemplateName-- "+sTemplateName);
             String sProcessName = ifr.getProcessName();
-            String sActivityName = ifr.getActivityName();
-            String cabinetName = ifr.getCabinetName();
-            int portNo = Integer.parseInt(LoadProp.templatePort);
-            String serverIp = ifr.getServerIp();
-            String serverPort = LoadProp.serverPort;
             logger.info("processName : "+sProcessName);
+            String sActivityName = ifr.getActivityName();
             logger.info("sActivityName : "+sActivityName);
-            logger.info("sessionId : "+sessionId);
-            logger.info("cabinet name : "+cabinetName);
-            logger.info("serverIP : "+serverIp);
-            logger.info("serverPort : "+serverPort);
+            String cabinetName = ifr.getCabinetName();
+             logger.info("cabinetName : "+cabinetName);
+            int portNo = Integer.parseInt(LoadProp.templatePort);
             logger.info("portNo : "+portNo);
+            String serverIp = LoadProp.serverIp;
+            logger.info("serverIp : "+serverIp);
+            String serverPort = LoadProp.serverPort;
+            logger.info("serverPort : "+serverPort);
 
           String requestXml = "WI_NAME=" + Commons.getWorkItemNumber(ifr) + "~~JTS_IP=127.0.0.1~~JTS_PORT=3333~~SESSION_ID=" + sessionId + "~~SERVER_IP=" + serverIp + "~~SERVER_PORT=" + serverPort + "~~SERVER_NAME=WebSphere~~CABINET_NAME=" + cabinetName + "~~PROCESS_NAME=" + sProcessName + "~~TEMPLATE_NAME=" + sTemplateName + "~~ACTIVITY_NAME=" + sActivityName;
           logger.info("requestXml-- " + requestXml);
 
             try {
-                responseXML = callSocketServer(portNo, requestXml,ifr);
+                responseXML = callSocketServer(portNo, requestXml);
                 logger.info("SocketCall : sResponseXML : " + responseXML);
             } catch (Exception e) {
                 responseXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -51,7 +52,7 @@ public class GenerateDocument implements Constants{
             return responseXML;
     }
 
-    private static String callSocketServer(int iPortNo, String requestXml,IFormReference ifr) {
+    private static String callSocketServer(int iPortNo, String requestXml) {
         final String SS_EXEC_ERROR_MSG="Error from Call Client Socket Server while Web-Service execution";
         final String SS_CONN_ERROR_MSG="Could not connect to Call Client Socket Server";
         String responseXml;
@@ -59,7 +60,7 @@ public class GenerateDocument implements Constants{
         try
         {
             logger.info("from call SocketServer try block");
-            String serverIp = ifr.getServerIp();
+            String serverIp = LoadProp.serverIp;
             String tempResponseXml = "";
             Socket client = new Socket(serverIp, iPortNo);
             client.setSoTimeout(300000);
@@ -87,12 +88,12 @@ public class GenerateDocument implements Constants{
 
             if(tempResponseXml.length() == 0)
             {
-                responseXml= """
-                        <?xml version="1.0" encoding="utf-8"?>
-                        <message>
-                        <MainCode>-1</MainCode>
-                        <EDESC>No Response Received from Call Client Socket Server.</EDESC>
-                        </message>""";
+                responseXml= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                        "<message>\n" +
+                        "<MainCode>-1</MainCode>\n" +
+                        "<EDESC>No Response Received from Call Client Socket Server.</EDESC>\n" +
+                        "</message>";
+
             }
             else
             {
@@ -113,12 +114,11 @@ public class GenerateDocument implements Constants{
         catch (Exception e)
         {
             e.printStackTrace();
-            responseXml= """
-                    <?xml version="1.0" encoding="utf-8"?>
-                    <message>
-                    <MainCode>-1</MainCode>
-                    <EDESC>Not able to Connect with Socket Server.</EDESC>
-                    </message>""";
+            responseXml="<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                    "<message>\n" +
+                    "<MainCode>-1</MainCode>\n" +
+                    "<EDESC>Not able to Connect with Socket Server.</EDESC>\n" +
+                    "</message>";
         }
 
         return sTemp+responseXml;

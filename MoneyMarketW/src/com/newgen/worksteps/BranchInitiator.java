@@ -75,11 +75,15 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         case generateTemplateEvent:{
                             return GenerateDocument.generateDoc(ifr,data);
                         }
-                        
+                        case cpPoiSearchEvent:{
+                            return cpSearchPoi(ifr);
+                        }
+                        case cpPoiProcessEvent:{
+                            return cpPoiProcess(ifr,Integer.parseInt(data));
+                        }
                         //****************Treasurry Starts here *********************//
                         case tbValidateCustomer:{
                         	return tbValidateCustomer(ifr);
-                            
                         }
                         
                         //****************Treasurry Ends here *********************//
@@ -151,7 +155,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         case cpLienEvent:{
                           return  cpValidateLienMandate(ifr);
                         }
-                      //****************Treasurry Starts here *********************//
+                      //****************Treasury Starts here *********************//
     	                case tbMarketTypeddChange:{
     	                	tbMarketTypeddChange(ifr);
     	                }
@@ -174,7 +178,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	                	tbCategoryddChange(ifr);
     	                }
     	                break;
-                        //****************Treasurry Ends here *********************//
+                        //****************Treasury Ends here *********************//
                     }
                     
                     
@@ -399,6 +403,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         }
         else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypePoi)){
             setVisible(ifr,new String[]{cpProofOfInvestSection});
+            enableFields(ifr,new String[]{cpPoiSearchBtn,cpPoiMandateLocal});
+            setMandatory(ifr,new String[]{cpPoiSearchBtn,cpPoiMandateLocal});
             setInvisible(ifr,new String[]{cpTerminationSection,cpLienSection});
         }
         else if ( getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
@@ -448,7 +454,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         if (Long.parseLong(dtm) <= 90){
             rate = resultSet.get(0).get(0);
             if (!isEmpty(rate)) {
-                setVisible(ifr, new String[]{cpRediscountRateSection, cpReDiscountRateLess90Local});
+                setVisible(ifr, new String[]{cpReDiscountRateSection, cpReDiscountRateLess90Local});
                 setFields(ifr, cpReDiscountRateLess90Local,rate);
             }
             else  return errMsg;
@@ -456,7 +462,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         else if (Long.parseLong(dtm) >= 91 && Long.parseLong(dtm) <= 180){
             rate   = resultSet.get(0).get(1);
             if (isEmpty(rate)) {
-                setVisible(ifr, new String[]{cpRediscountRateSection, cpReDiscountRate91To180Local});
+                setVisible(ifr, new String[]{cpReDiscountRateSection, cpReDiscountRate91To180Local});
                 setFields(ifr, cpReDiscountRate91To180Local,rate );
             }
             else return errMsg;
@@ -464,7 +470,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         else if (Long.parseLong(dtm) >= 181 && Long.parseLong(dtm) <= 270){
             rate = resultSet.get(0).get(2);
             if (!isEmpty(rate)) {
-                setVisible(ifr, new String[]{cpRediscountRateSection, cpReDiscountRate181To270Local});
+                setVisible(ifr, new String[]{cpReDiscountRateSection, cpReDiscountRate181To270Local});
                 setFields(ifr, cpReDiscountRate181To270Local,rate );
             }
             else return errMsg;
@@ -472,7 +478,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         else if (Long.parseLong(dtm) >= 271 && Long.parseLong(dtm) <= 364){
             rate = resultSet.get(0).get(3);
             if (!isEmpty(rate)) {
-                setVisible(ifr, new String[]{cpRediscountRateSection, cpReDiscountRate271To364Local});
+                setVisible(ifr, new String[]{cpReDiscountRateSection, cpReDiscountRate271To364Local});
                 setFields(ifr, cpReDiscountRate271To364Local, rate);
             }
             else return errMsg;
@@ -594,10 +600,11 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     }
 
     private String cpSearchPoi(IFormReference ifr){
+        clearTable(ifr,cpPoiTbl);
         resultSet = new DbConnect(ifr,Query.getCpPoiMandateSearchQuery(getCpMarket(ifr),getCpPoiMandate(ifr))).getData();
         if (isEmpty(resultSet)) {
             clearFields(ifr,cpPoiMandateLocal);
-            return "No Details found for this Mandate Detail";
+            return "No Details found for this Mandate";
         }
         for (List<String> result : resultSet){
             String date = result.get(0);
@@ -610,6 +617,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
             setTableGridData(ifr,cpPoiTbl,new String[]{cpPoiDateCol,cpPoiIdCol,cpPoiAmountCol,cpPoiAcctNoCol,cpPoiAcctNameCol,cpPoiStatusCol},
                     new String[]{date,id,amount,accountNo,accountName,status});
         }
+        setVisible(ifr,new String[]{cpPoiGenerateBtn,cpPoiTbl});
+        enableFields(ifr,new String[]{cpPoiGenerateBtn});
 
         return null;
     }
