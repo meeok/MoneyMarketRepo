@@ -60,17 +60,17 @@ public class Commons implements Constants {
         ifr.addDataToGrid(decisionHisTable, jsRowArray);
     }
     public String getUsersMailsInGroup(IFormReference ifr, String groupName){
-        String groupMail= "";
+        StringBuilder groupMail= new StringBuilder();
         try {
-            DbConnect dbConnect = new DbConnect(ifr, new Query().getUsersInGroup(groupName));
-            for (int i = 0; i < dbConnect.getData().size(); i++){
-                groupMail = dbConnect.getData().get(i).get(0)+endMail+","+groupMail; }
+            resultSet = new DbConnect(ifr, new Query().getUsersInGroup(groupName)).getData();
+            for (List<String> result : resultSet)
+                groupMail.append(result.get(0)).append(endMail).append(",");
         } catch (Exception e){
             logger.error("Exception occurred in getUsersMailInGroup Method-- "+ e.getMessage());
             return null;
         }
-        logger.info("getUsersMailsGroup method --mail of users-- "+groupMail.trim());
-        return groupMail.trim();
+        logger.info("getUsersMailsGroup method --mail of users-- "+ groupMail.toString().trim());
+        return groupMail.toString().trim();
     }
     public void setCpDecisionHistory (IFormReference ifr){
         String marketType = getCpMarketName(ifr);
@@ -87,8 +87,11 @@ public class Commons implements Constants {
     public String getCurrentDateTime (String format){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(format));
     }
-    public String getCurrentDateTime (){
+    public static String getCurrentDateTime (){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(dbDateTimeFormat));
+    }
+    public static String  getCurrentDate (){
+        return LocalDate.now().toString();
     }
     public static String getCpDecision (IFormReference ifr){ return getFieldValue(ifr,cpDecisionLocal);}
     public static String getWorkItemNumber (IFormReference ifr){
@@ -124,7 +127,7 @@ public class Commons implements Constants {
             ifr.setTabStyle(processTabName, omoTab, visible, False);
         }
         else if (getProcess(ifr).equalsIgnoreCase(omoProcess)){
-            ifr.setTabStyle(processTabName,omoTab,visible,True);
+            ifr.setTabStyle(processTabName,omoTab,visible,False);
             ifr.setTabStyle(processTabName,commercialTab,visible,False);
             ifr.setTabStyle(processTabName,treasuryTab,visible,False);
         }
@@ -174,12 +177,12 @@ public class Commons implements Constants {
         catch (Exception e){ logger.error("Exception occurred in getSol Method-- "+e.getMessage());return  null;}
     }
     public void hideCpSections (IFormReference ifr){
-        setInvisible(ifr,new String []{cpRediscountRateSection,cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
-        cpTerminationSection,cpCutOffTimeSection,cpDecisionSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection,cpSetupSection,cpCustomerDetailsSection});
+        setInvisible(ifr,new String []{cpLienSection,cpMandateTypeSection, cpReDiscountRateSection,cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
+        cpTerminationSection,cpCutOffTimeSection,cpDecisionSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpUtilityFailedPostSection,cpPostSection,cpSetupSection,cpCustomerDetailsSection});
     }
     public void disableCpSections (IFormReference ifr){
         disableFields(ifr,new String []{cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection, cpTerminationSection,
-                cpCutOffTimeSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpTreasuryOpsSecSection,cpPostSection});
+                cpCutOffTimeSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpUtilityFailedPostSection,cpPostSection});
     }
     public void hideShowLandingMessageLabel(IFormReference ifr,String state){ifr.setStyle(landMsgLabelLocal,visible,state);}
     public void hideShow (IFormReference ifr, String[] fields,String state) { for(String field: fields) ifr.setStyle(field,visible,state);}
@@ -198,12 +201,12 @@ public class Commons implements Constants {
         ifr.clearCombo(local);
         for (int i = 0; i < values.length; i++) ifr.addItemInCombo(local,labels[i],values[i]);
     }
-    public void setDecision (IFormReference ifr,String decisionLocal, String [] values){
+    public  void setDecision (IFormReference ifr,String decisionLocal, String [] values){
         ifr.clearCombo(decisionLocal);
         for (String value: values) ifr.addItemInCombo(decisionLocal,value,value);
         clearFields(ifr,new String[]{decisionLocal});
     }
-    public void setDecision (IFormReference ifr,String decisionLocal,String [] labels, String [] values){
+    public  void setDecision (IFormReference ifr,String decisionLocal,String [] labels, String [] values){
         ifr.clearCombo(decisionLocal);
         for (int i = 0; i < values.length; i++) ifr.addItemInCombo(decisionLocal,labels[i],values[i]);
         clearFields(ifr,new String[]{decisionLocal});
@@ -215,10 +218,10 @@ public class Commons implements Constants {
     public static void disableFields(IFormReference ifr, String field) { ifr.setStyle(field,disable, True); }
     public static void clearFields(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setValue(field, empty); }
     public static void setVisible(IFormReference ifr, String[] fields) { for(String field: fields) ifr.setStyle(field,visible, True);}
-    public static void hideShowFields(IFormReference ifr, String[] fields, String [] states) {for (int i = 0; i < fields.length; i++) ifr.setStyle(fields[i],visible,states[i]); }
     public static void setInvisible(IFormReference ifr, String [] fields ) { for(String field: fields) ifr.setStyle(field,visible, False); }
     public static void setInvisible(IFormReference ifr, String field ) { ifr.setStyle(field,visible, False); }
     public static void enableFields(IFormReference ifr, String [] fields) {for(String field: fields) ifr.setStyle(field,disable, False);}
+    public static void enableFields(IFormReference ifr, String field) {ifr.setStyle(field,disable, False);}
     public static void setMandatory(IFormReference ifr, String []fields) { for(String field: fields) ifr.setStyle(field,mandatory, True);}
     public static void undoMandatory(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setStyle(field,mandatory, False); }
     public static void clearTables(IFormReference ifr, String [] tables){for (String table: tables) ifr.clearTable(table);}
@@ -390,6 +393,9 @@ public class Commons implements Constants {
     public static boolean isLeapYear (){
         return LocalDate.now().isLeapYear();
     }
+    public static boolean isLeapYear (String date){
+            return LocalDate.parse(date).isLeapYear();
+    }
     public static String getCpSmSetup(IFormReference ifr){return getFieldValue(ifr,cpSmSetupLocal);}
     public static long getDaysToMaturity(String maturityDate){
         return ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.parse(maturityDate));
@@ -452,8 +458,60 @@ public class Commons implements Constants {
     public boolean isDateEqual (String date1, String date2){
         return LocalDate.parse(date1).isEqual(LocalDate.parse(date2));
     }
-
-
+    public String getCpMandateType (IFormReference ifr){
+        return getFieldValue(ifr,cpMandateTypeLocal);
+    }
+    public String getCpMandateToTerminate(IFormReference ifr){
+        return getFieldValue(ifr,cpTermMandateLocal);
+    }
+    public static boolean isCpLien(IFormReference ifr, String id){
+        return Integer.parseInt(new DbConnect(ifr,Query.getCpLienStatusQuery(id)).getData().get(0).get(0)) > 0;
+    }
+    public static String getCpTerminationType(IFormReference ifr){
+        return getFieldValue(ifr,cpTerminationTypeLocal);
+    }
+    public static String getCpTermSpecialRateValue(IFormReference ifr){
+        return getFieldValue(ifr,cpTermSpecialRateValueLocal);
+    }
+    public static String getCpTermSpecialRate(IFormReference ifr){
+        return getFieldValue(ifr,cpTermSpecialRateLocal);
+    }
+    public static String getCpTermDtm(IFormReference ifr){
+        return getFieldValue(ifr,cpTermDtmLocal);
+    }
+    public static String getCpTermCustId(IFormReference ifr){
+        return getFieldValue(ifr,cpTermCustIdLocal);
+    }
+    public static String getCpTermPartialAmt(IFormReference ifr){
+        return  getFieldValue(ifr,cpTermPartialAmountLocal);
+    }
+    public static boolean getCpTermIsSpecialRate(IFormReference ifr){
+        return  getCpTermSpecialRate(ifr).equalsIgnoreCase(True);
+    }
+    public static boolean isEmpty(List<List<String>> resultSet){
+        return  resultSet.size() == 0;
+    }
+    public static double getPercentageValue(String value){
+        return Double.parseDouble(value) / 100;
+    }
+    public static String getCpPartialTermOption(IFormReference ifr){
+        return getFieldValue(ifr,cpTermPartialOptionLocal);
+    }
+    public static  String getCpLienType (IFormReference ifr){
+        return getFieldValue(ifr,cpLienTypeLocal);
+    }
+    public static String getCpLienMandateId(IFormReference ifr){
+        return getFieldValue(ifr, cpLienMandateIdLocal);
+    }
+    public static boolean doesCpIdExist(IFormReference ifr, String id, String marketType){
+        return Integer.parseInt(new DbConnect(ifr,Query.getCpCustIdExistQuery(id,marketType)).getData().get(0).get(0)) > 1;
+    }
+    public  static String getCpPoiMandate(IFormReference ifr){
+        return getFieldValue(ifr,cpPoiMandateLocal);
+    }
+    public static String getCpPoiCusId(IFormReference ifr){
+        return getFieldValue(ifr,cpPoiCustIdLocal);
+    }
 
 
 

@@ -4,9 +4,10 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.processMethods.CpController;
+import com.newgen.controller.CpController;
 import com.newgen.utils.Commons;
 import com.newgen.utils.CommonsI;
+import com.newgen.utils.GenerateDocument;
 import com.newgen.utils.LogGen;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class BranchVerifier extends Commons implements IFormServerEventHandler , CommonsI {
-    private static Logger logger = LogGen.getLoggerInstance(BranchVerifier.class);
+    private static final Logger logger = LogGen.getLoggerInstance(BranchVerifier.class);
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
     	logger.info("3993");
@@ -50,8 +51,14 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                     switch (control) {
                         case cpTokenEvent: return CpController.tokenController(ifr);
                         case cpPostEvent:{
-                            if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
-                            else return cpValidateWindowErrorMsg;
+                            if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
+                                if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                                else return cpValidateWindowErrorMsg;
+                            }
+                            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
+                                if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                                else return cpValidateWindowErrorMsg;
+                            }
                         }
                     }
                 }
@@ -73,7 +80,11 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         }
                         
                         //****************Treasurry Ends here *********************//
-                	}
+                	
+                        case generateTemplateEvent:{
+                            return GenerateDocument.generateDoc(ifr,data);
+                        }
+                    }
                 }
                 
                 
@@ -166,6 +177,24 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
                 setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
             }
+            else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryMandate)){
+                setVisible(ifr,new String[]{cpDecisionSection});
+                setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                cpSetDecision(ifr);
+                if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+                    setVisible(ifr,new String[]{cpTerminationSection,cpTermMandateTbl,cpTermSpecialRateLocal, getCpTermIsSpecialRate(ifr) ? cpTermSpecialRateValueLocal : cpTermSpecialRateLocal});
+                    if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypeFull)){
+                        setVisible(ifr,new String[]{cpTermAmountDueLocal});
+                    }
+                    else if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)){
+                        setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermPartialOptionLocal});
+                    }
+                }
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
+                    setVisible(ifr,new String[]{cpLienSection});
+                }
+            }
         }
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
@@ -180,6 +209,22 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                     setMandatory(ifr,new String[]{cpTokenLocal});
                     setVisible(ifr,new String[]{cpPostSection});
                 }
+            }
+            else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryMandate)){
+                setVisible(ifr,new String[]{cpDecisionSection});
+                setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                cpSetDecision(ifr);
+                if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+                    setVisible(ifr,new String[]{cpTerminationSection,cpTermMandateTbl,cpTermSpecialRateLocal, getCpTermIsSpecialRate(ifr) ? cpTermSpecialRateValueLocal : cpTermSpecialRateLocal});
+                    if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypeFull)){
+                        setVisible(ifr,new String[]{cpTermAmountDueLocal});
+                    }
+                    else if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)){
+                        setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermPartialOptionLocal});
+                    }
+                }
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien)){}
             }
         }
     }

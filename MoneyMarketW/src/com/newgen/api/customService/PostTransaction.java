@@ -1,4 +1,4 @@
-package com.newgen.api;
+package com.newgen.api.customService;
 
 public class PostTransaction {
 

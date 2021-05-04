@@ -7,7 +7,7 @@ public class Query {
     public String getUsersInGroup(String groupName) {
         return "select username from pdbuser where userindex in (select userindex from pdbgroupmember where groupindex = (select groupindex from PDBGroup where GroupName='" + groupName + "'))";
     }
-    public String getMailQuery(String wiName, String sendMail, String copyMail, String mailSubject, String mailMessage) {
+    public static String getMailQuery(String wiName, String sendMail, String copyMail, String mailSubject, String mailMessage) {
         return "insert into wfmailqueuetable (" +
                 "mailfrom," +
                 "mailto," +
@@ -154,7 +154,7 @@ public class Query {
     public String getCpSmInvestmentsSelectQuery(String id){
         return "select tenor, rate,availableamount,totalamountsold,mandates  from mm_sminvestments_tbl where investmentid = '"+id+"'";
     }
-    public String getUpdateCutoffTimeQuery(String id, String closeDate){
+    public static String getUpdateCutoffTimeQuery(String id, String closeDate){
         return "update mm_setup_tbl set closedate = '"+closeDate+"' where refid = '"+id+"'";
     }
     public String getTbPmBidSummaryQuery(String refid){
@@ -234,5 +234,33 @@ public class Query {
     //update mandates
     public String updateTbIBMandateAndTAmt(String invesmentid,double bidAmt){
         return "update tb_SmIssuedBills set totalamountsold = totalamountsold + "+bidAmt+", mandate =mandate+1 where insertionorderid = '"+invesmentid+"'";
+    }
+    public static String getUpdateReDiscountRateQuery(String id,String redicsountless90, String rediscount91180, String rediscount181270, String rediscount271364){
+        return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+redicsountless90+"', REDISCOUNTRATELESS180 = '"+rediscount91180+"', REDISCOUNTRATELESS270 = '"+rediscount181270+"', REDISCOUNTRATELESS364 = '"+rediscount271364+"' where  refid = '"+id+"'";
+    }
+    public static String getBidForTerminationQuery(String process, String marketType, String data){
+        return "SELECT reqdate,custrefid,custprincipal,custacctno,custname,maturitydate,status,winrefid FROM MM_BID_TBL where process = '"+process+"' and markettype = '"+marketType+"' and  awaitingmaturityflag = 'Y' and (custrefid = '"+data+"' or custacctno = '"+data+"' )";
+    }
+    public static String getCpBidDtlForTerminationQuery(String id, String marketType){
+        return "SELECT custprincipal,maturitydate FROM MM_BID_TBL where process = 'Commercial Paper' and markettype = '"+marketType+"' and custrefid = '"+id+"'";
+    }
+    public static String getCpReDiscountedRateForTermQuery(String id){
+        return "select rediscountrateless90, rediscountrateless180, rediscountrateless270, rediscountrateless364 from mm_setup_tbl where refid = '"+id+"'";
+    }
+    public static String getCpLienStatusQuery(String id){
+        return "select count (lienflag) from mm_bid_tbl where custrefid = '"+id+"' and lienflag = 'Y'";
+    }
+    public static String getCpCustIdExistQuery(String id, String marketType){
+        return "select count(custRefId) from mm_bid_tbl where custrefid = '"+id+"' and process = 'Commercial Paper' and marketType = '"+marketType+"'";
+    }
+
+    public static String getCpLienProcessQuery(String id, String marketType, String flag){
+        return "update mm_bid_tbl set lienFlag = '"+flag+"' where custrefid = '"+id+"' and process = 'Commercial Paper' and markettype = '"+marketType+"'";
+    }
+    public static String getCpPoiMandateSearchQuery(String marketType, String data){
+        return "select reqdate, custrefid,custprincipal,custacctno,custname,status from mm_bid_tbl where process = 'Commercial Paper' and marketType = '"+marketType+"' and (custacctno = '"+data+"' or custrefid = '"+data+"')";
+    }
+    public static String getCpPoiDtlQuery(String id){
+        return "select reqdate,custrefid,custprincipal,custacctno,custname,principalatmaturity,interest,maturitydate,tenor,rate from mm_bid_tbl where custrefid = '"+id+"'";
     }
 }

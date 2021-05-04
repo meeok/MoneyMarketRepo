@@ -4,7 +4,7 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.processMethods.CpController;
+import com.newgen.controller.CpController;
 import com.newgen.utils.*;
 
 import org.apache.log4j.Logger;
@@ -153,7 +153,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                         setVisible(ifr,new String[]{cpCutOffTimeSection,cpSetupSection,cpUpdateCutoffTimeBtn});
                     }
                    else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryReDiscountRate)){
-                        setVisible(ifr,new String[]{cpRediscountRateSection,cpSetupSection,cpSetReDiscountRateBtn});
+                        setVisible(ifr,new String[]{cpReDiscountRateSection,cpSetupSection,cpSetReDiscountRateBtn});
                     }
                    else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryUpdateLandingMsg)){
                        setVisible(ifr,new String[]{cpLandingMsgSection});
@@ -200,7 +200,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
             id = getCpSmWinRefNo(ifr);
 
-      int validate = new DbConnect(ifr, new Query().getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
+      int validate = new DbConnect(ifr,Query.getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
         if (validate >=0 ) {
             setFields(ifr,cpDecisionLocal,decApprove);
             disableFields(ifr,new String[]{cpDecisionLocal,cpUpdateCutoffTimeBtn});
@@ -211,12 +211,17 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     private String cpUpdateReDiscountRate(IFormReference ifr){
         String id = null;
 
+        String rediscount90 = getFieldValue(ifr,cpReDiscountRateLess90Local);
+        String rediscount91180 = getFieldValue(ifr, cpReDiscountRate91To180Local);
+        String rediscount181270 = getFieldValue(ifr,cpReDiscountRate181To270Local);
+        String rediscount271364 = getFieldValue(ifr,cpReDiscountRate271To364Local);
+
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
             id = getCpPmWinRefNo(ifr);
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
             id = getCpSmWinRefNo(ifr);
 
-        int validate = new DbConnect(ifr, new Query().getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
+        int validate = new DbConnect(ifr,Query.getUpdateReDiscountRateQuery(id,rediscount90,rediscount91180,rediscount181270,rediscount271364)).saveQuery();
         if (validate >=0 ) {
             setFields(ifr,cpDecisionLocal,decApprove);
             disableFields(ifr,new String[]{cpDecisionLocal,cpSetReDiscountRateBtn});

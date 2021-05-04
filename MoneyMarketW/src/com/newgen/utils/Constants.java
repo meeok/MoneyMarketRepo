@@ -17,6 +17,7 @@ public interface Constants {
 	String treasuryOpsFailed = "TreasuryOps_Failed";
 	String awaitingMaturity = "AwaitingMaturity";
 	String treasuryOpsSuccessful = "TreasuryOps_Successful";
+	String utilityWs = "Utility_Initiation";
 	String discardWs = "Discard";
 	String exit = "Exit";
 	String query = "Query";
@@ -54,7 +55,7 @@ public interface Constants {
 	String wiNameFormLocal ="winame";
 	String utilityFlagLocal = "cp_utilityFlag";
 	String downloadFlagLocal ="downloadFlag";
-	String utilityWs = "Utility_Initiation";
+
 
 
 	// cp sections
@@ -68,13 +69,15 @@ public interface Constants {
 	String cpDecisionSection = "cp_dec_section";
 	String cpTreasuryPriSection = "cp_pmTreasury_section";
 	String cpTreasurySecSection = "cp_secTreasury_section";
-	String cpTreasuryOpsSecSection = "cp_treasuryOpsSec_section";
+	String cpUtilityFailedPostSection = "cp_utilityFailedPost_section";
 	String cpTreasuryOpsPriSection = "cp_treasuryOpsPm_section";
 	String cpPostSection = "cp_post_section";
 	String cpSetupSection="cp_setup_section";
 	String cpCutOffTimeSection = "cp_cutoff_section";
 	String cpCustomerDetailsSection ="cp_custDetails_section";
-	String cpRediscountRateSection = "rediscountratesection";
+	String cpReDiscountRateSection = "rediscountratesection";
+	String cpMandateTypeSection = "cp_mandatetypesection";
+	String cpLienSection = "cpLienSection";
 
     // end of cp sections
 
@@ -183,11 +186,64 @@ public interface Constants {
 	String cpSmMinPrincipalBrLocal = "cp_sec_miniPrincipalAmt_brch";
 	String cpInvestBtn = "invest_btn";
 	String cpReDiscountRateLess90Local = "cp_less90_prim";
-	String cpReDiscountRate90To180Local = "cp_91_180days_prim";
+	String cpReDiscountRate91To180Local = "cp_91_180days_prim";
 	String cpReDiscountRate181To270Local = "cp_181_270days_prim";
 	String cpReDiscountRate271To364Local = "cp_271_364days_prim";
-
-
+	String cpMandateTypeLocal = "cp_mandatetype";
+	String cpMandateTypeTerminate = "Termination";
+	String cpMandateTypePoi = "POI";
+	String cpMandateTypeLien = "Lien";
+	String cpMandateTypeRemoveLien = "Remove Lien";
+	String cpTermMandateLocal = "CP_TERMMANDATE";
+	String cpTermMandateDateCol = "Date";
+	String cpTermMandateRefNoCol = "Reference Number";
+	String cpTermMandateAmountCol = "Amount";
+	String cpTermMandateAcctNoCol = "Account Number";
+	String cpTermMandateCustNameCol = "Customer Name";
+	String cpTermMandateDtmCol = "Number of Days to Maturity";
+	String cpTermMandateStatusCol = "Status";
+	String cpTermMandateWinRefCol = "winref";
+	String cpTermMandateTbl = "table94";
+	String cpSelectMandateTermBtn = "cpTerminateMandateBtn";
+	String cpSearchMandateTermBtn = "cpTermMandateSearchBtn";
+	String cpTerminationTypeLocal = "cp_term_type";
+	String cpTermSpecialRateLocal = "cp_special_rate";
+	String cpTermSpecialRateValueLocal = "cp_special_rate_value";
+	String cpTerminationTypeFull = "fullTerm";
+	String cpTerminationTypePartial = "partTerm";
+	String cpTermPartialAmountLocal = "CP_TERMPARTIALAMT";
+	String cpTermPartialOptionLocal = "CP_TERMPTOPTION";
+	String cpTermCustIdLocal = "CP_TERMCUSTID";
+	String cpTermAmountDueLocal = "CP_TERMAMTDUE";
+	String cpTermAdjustedPrincipalLocal = "CP_TERMADPRINCIPAL";
+	String cpTermCalculateBtn = "calculateTermBtn";
+	String cpTermDtmLocal = "CPTERMDTM";
+	String cpTerminateBtn = "cpTerminateBtn";
+	String cpLienTypeLocal = "CPLIENTYPE";
+	String cpLienTypeSet = "SET";
+	String cpLienTypeRemove = "REMOVE";
+	String cpLienMandateIdLocal = "CPLIENMANDATEID";
+	String cpPoiTbl = "table56";
+	String cpPoiSearchBtn = "cpPoiSearchBtn";
+	String cpPoiGenerateBtn = "cpPoiGenerateBtn";
+	String cpPoiCustNameLocal = "cp_poi_acctName";
+	String cpPoiCustAcctNoLocal = "cp_poi_acctNumb";
+	String cpPoiCustEffectiveDateLocal = "cp_poi_effectiveDate";
+	String cpPoiCustInterestLocal = "cp_poi_interest";
+	String cpPoiCustMaturityDateLocal = "cp_poi_maturityDate";
+	String cpPoiCustPrincipalAtMaturityLocal = "cp_poi_principalMaturity";
+	String cpPoiCustTenorLocal = "cp_poi_tenor";
+	String cpPoiCustIdLocal = "cp_poi_refCode";
+	String cpPoiCustRateLocal = "cp_poi_rate";
+	String cpPoiDateLocal = "POI_DATE";
+	String cpPoiCustAmountInvestedLocal = "cp_poi_amtInvested";
+	String cpPoiMandateLocal = "CPPOIMANDATE";
+	String cpPoiDateCol = "Date";
+	String cpPoiIdCol = "Reference Number";
+	String cpPoiAmountCol = "Amount";
+	String cpPoiAcctNoCol = "Account Number";
+	String cpPoiAcctNameCol = "Customer Name";
+	String cpPoiStatusCol = "Status";
 
 	//common variables
 	String omoProcess = "omo_market";
@@ -237,13 +293,13 @@ public interface Constants {
 	String cpSmMinPrincipalErrorMsg ="Customer principal cannot be less than window minimum principal or greater than available investment amount";
 	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";
 	String cpValidateWindowErrorMsg ="This CP window has been closed. Kindly wait till the next window to initiate";
-	String tbDocumentName ="Proof of Investment for TB";
-	String cpDocumentName ="Proof of Investment for CP";
+	String tbTemplateName ="TB_POI";
+	String cpTemplateName ="CP_POI";
 	String cpEmailMsg = "Update email of customer on account maintenance workflow";
 	String cpPmInvestmentPrincipal ="Principal";
 	String cpPostSuccessMsg = "Posting Done Successfully";
 	String currencyNgn ="NGN";
-	String apiSuccess ="success";
+	//String apiSuccess ="success";
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";
 	String exceptionMsg ="Exception occurred contact IBPS support";
 	String statusAwaitingTreasury = "Awaiting Treasury";
@@ -264,6 +320,20 @@ public interface Constants {
 	String yes = "YES";
 	String no = "NO";
 	String cpSmMaturityDateErrMsg = "Maturity date differs from selected bid maturity date, please amend.";
+	String cpLienErrMsg ="Commercial paper is Lien, kindly remove Lien on Commercial paper and try again.";
+	String cpLienSetFlag = "Y";
+	String cpLienRemoveFlag = "N";
+	String apiSuccess = "SUCCESS";
+	String apiFailed = "FAILED";
+	String apiFailure = "FAILURE";
+	String apiStatus = "Status";
+	String debitFlag = "D";
+	String creditFlag = "C";
+	String transType = "T";
+	String transSubTypeC = "CI";
+	String transSubTypeB = "BI";
+	String apiNoResponse = "No Response Found";
+
 
 
 	//eventName/controlName
@@ -302,6 +372,18 @@ public interface Constants {
 	String cpSmInvestEvent = "cpSmInvest";
 	String cpUpdateCutOffTimeEvent = "updateCutOffTime";
 	String cpUpdateReDiscountRateEvent = "updateRediscountRate";
+	String cpMandateTypeEvent = "mandateType";
+	String cpSearchTermMandateEvent ="searchTermMandate";
+	String cpSelectTermMandateEvent = "selectTermMandate";
+	String cpSelectTermSpecialRateEvent = "selectSpecialRateTerm";
+	String cpSelectTermTypeEvent = "selectTermType";
+	String cpCalculateTermEvent = "calculateTermination";
+	String cpPartialTermOptionEvent = "partialTermOption";
+	String cpLienEvent = "lienEvent";
+	String generateTemplateEvent = "TemplateGeneration";
+	String cpPoiSearchEvent="poiSearch";
+	String cpPoiProcessEvent="poiProcess";
+
 
 	//config
 	String logPath = "nglogs/NGF_Logs/MoneyMarket/";
@@ -309,7 +391,21 @@ public interface Constants {
 	String configPath2 = "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/installedApps/HO-IBPSAPP01Cell01/MoneyMarketW_war.ear/MoneyMarketW.war/config/moneymarket.properties";
 	String mailFromField ="MAILFROM";
 	String processDefIdField = "PROCESSDEFID";
-	
+	String serverPortField = "SERVERPORT";
+	String serverIpField = "SERVERIP";
+	String templatePortField = "TEMPLATEPORT";
+
+	//API SERVICENAME
+
+	String postServiceName = "postRequestToFinacle";
+	String fetchOdaAcctServiceName ="CURRENTACCOUNT";
+	String fetchCaaAcctServiceName ="SPECIALACCOUNT";
+	String fetchSbaAcctServiceName ="SAVINGACCOUNT";
+	String fetchLienServiceName = "FETCHLIEN";
+	String fetchLimitServiceName = "CIGETUSERLIMIT";
+	String searchTranServiceName = "CISEARCHTRANSACTION";
+	String tokenValidationServiceName = "TOKENVALIDATION";
+
 	
 	/*************TREASURY BILLS STARTS HERE********************/
 	//treasury events
