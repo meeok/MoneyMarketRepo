@@ -59,17 +59,17 @@ public class Commons implements Constants {
         ifr.addDataToGrid(decisionHisTable, jsRowArray);
     }
     public String getUsersMailsInGroup(IFormReference ifr, String groupName){
-        String groupMail= "";
+        StringBuilder groupMail= new StringBuilder();
         try {
-            DbConnect dbConnect = new DbConnect(ifr, new Query().getUsersInGroup(groupName));
-            for (int i = 0; i < dbConnect.getData().size(); i++){
-                groupMail = dbConnect.getData().get(i).get(0)+endMail+","+groupMail; }
+            resultSet = new DbConnect(ifr, new Query().getUsersInGroup(groupName)).getData();
+            for (List<String> result : resultSet)
+                groupMail.append(result.get(0)).append(endMail).append(",");
         } catch (Exception e){
             logger.error("Exception occurred in getUsersMailInGroup Method-- "+ e.getMessage());
             return null;
         }
-        logger.info("getUsersMailsGroup method --mail of users-- "+groupMail.trim());
-        return groupMail.trim();
+        logger.info("getUsersMailsGroup method --mail of users-- "+ groupMail.toString().trim());
+        return groupMail.toString().trim();
     }
     public void setCpDecisionHistory (IFormReference ifr){
         String marketType = getCpMarketName(ifr);
@@ -86,10 +86,10 @@ public class Commons implements Constants {
     public String getCurrentDateTime (String format){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(format));
     }
-    public String getCurrentDateTime (){
+    public static String getCurrentDateTime (){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(dbDateTimeFormat));
     }
-    public String getCurrentDate (){
+    public static String  getCurrentDate (){
         return LocalDate.now().toString();
     }
     public static String getCpDecision (IFormReference ifr){ return getFieldValue(ifr,cpDecisionLocal);}
@@ -200,12 +200,12 @@ public class Commons implements Constants {
         ifr.clearCombo(local);
         for (int i = 0; i < values.length; i++) ifr.addItemInCombo(local,labels[i],values[i]);
     }
-    public void setDecision (IFormReference ifr,String decisionLocal, String [] values){
+    public  void setDecision (IFormReference ifr,String decisionLocal, String [] values){
         ifr.clearCombo(decisionLocal);
         for (String value: values) ifr.addItemInCombo(decisionLocal,value,value);
         clearFields(ifr,new String[]{decisionLocal});
     }
-    public void setDecision (IFormReference ifr,String decisionLocal,String [] labels, String [] values){
+    public  void setDecision (IFormReference ifr,String decisionLocal,String [] labels, String [] values){
         ifr.clearCombo(decisionLocal);
         for (int i = 0; i < values.length; i++) ifr.addItemInCombo(decisionLocal,labels[i],values[i]);
         clearFields(ifr,new String[]{decisionLocal});
@@ -217,7 +217,6 @@ public class Commons implements Constants {
     public static void disableFields(IFormReference ifr, String field) { ifr.setStyle(field,disable, True); }
     public static void clearFields(IFormReference ifr, String [] fields) { for(String field: fields) ifr.setValue(field, empty); }
     public static void setVisible(IFormReference ifr, String[] fields) { for(String field: fields) ifr.setStyle(field,visible, True);}
-    public static void hideShowFields(IFormReference ifr, String[] fields, String [] states) {for (int i = 0; i < fields.length; i++) ifr.setStyle(fields[i],visible,states[i]); }
     public static void setInvisible(IFormReference ifr, String [] fields ) { for(String field: fields) ifr.setStyle(field,visible, False); }
     public static void setInvisible(IFormReference ifr, String field ) { ifr.setStyle(field,visible, False); }
     public static void enableFields(IFormReference ifr, String [] fields) {for(String field: fields) ifr.setStyle(field,disable, False);}
@@ -473,7 +472,6 @@ public class Commons implements Constants {
     public static String getCpTermSpecialRate(IFormReference ifr){
         return getFieldValue(ifr,cpTermSpecialRateLocal);
     }
-
     public static String getCpTermDtm(IFormReference ifr){
         return getFieldValue(ifr,cpTermDtmLocal);
     }
@@ -507,7 +505,7 @@ public class Commons implements Constants {
     public  static String getCpPoiMandate(IFormReference ifr){
         return getFieldValue(ifr,cpPoiMandateLocal);
     }
-    public static String getCpPoiCustId(IFormReference ifr){
+    public static String getCpPoiCusId(IFormReference ifr){
         return getFieldValue(ifr,cpPoiCustIdLocal);
     }
 

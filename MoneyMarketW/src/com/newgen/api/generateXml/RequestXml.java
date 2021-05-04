@@ -5,7 +5,7 @@ public class RequestXml {
     public static String getUserLimitXml (String user){
         return "<USERID>"+user+"</USERID>";
     }
-    public String searchRequestXml (String startDate, String endDate, String acctNo, String amount, String debitCredit, String transParts){
+    public static String searchRequestXml (String startDate, String endDate, String acctNo, String amount, String debitCredit, String transParts){
 
         return "<executeFinacleScriptRequest>"
                 + "<ExecuteFinacleScriptInputVO>"
@@ -23,7 +23,7 @@ public class RequestXml {
                 + "</executeFinacleScriptRequest>";
     }
 
-    public String postTransactionXml(
+    public static String postTransactionXml(
             String transType, String tranSubType,String acct1, String sol1, String Debit, String amount, String currency,String transParticulars,
             String partTranRemarks, String todayDateTime, String acct2, String sol2, String Credit, String logInUser)
     {
@@ -78,7 +78,7 @@ public class RequestXml {
 
 
 
-    public String fetchLienRequestXml (String acctNumber){
+    public static String fetchLienRequestXml (String acctNumber){
         return "<ngXmlRequest>"
                 +		"<AcctLienInqRequest>"
                 +			"<AcctLienInqRq>"
@@ -148,7 +148,7 @@ public class RequestXml {
 
     }
 
-    public String fetchOdaRequestXml (String acctNumber){
+    public static String fetchOdaRequestXml (String acctNumber){
         return "<ODAcctInqRequest>"
                 +		"<ODAcctInqRq>"
                 +			"<ODAcctId>"
@@ -163,7 +163,7 @@ public class RequestXml {
 
     }
 
-    public String fetchSbaRequestXml (String acctNumber){
+    public static String fetchSbaRequestXml (String acctNumber){
         return "<SBAcctInqRequest>"
                 +		"<SBAcctInqRq>"
                 +			"<SBAcctId>"
@@ -178,7 +178,7 @@ public class RequestXml {
 
     }
 
-    public String fetchCaaRequestXml (String acctNumber){
+    public static String fetchCaaRequestXml (String acctNumber){
         return "<CAAcctInqRequest>"
                 +		"<CAAcctInqRq>"
                 +			"<CAAcctId>"
@@ -187,7 +187,7 @@ public class RequestXml {
                 +		"</CAAcctInqRq>"
                 +	"</CAAcctInqRequest>";
     }
-    public String tokenValidationXml(String userName, String otp){
+    public static String tokenValidationXml(String userName, String otp){
         return "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\" xmlns:ent=\"http://schemas.datacontract.org/2004/07/EntrustWrapper.Model\">" +
                 "   <soapenv:Header/>" +
                 "   <soapenv:Body>" +

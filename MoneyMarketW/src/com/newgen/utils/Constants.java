@@ -299,7 +299,7 @@ public interface Constants {
 	String cpPmInvestmentPrincipal ="Principal";
 	String cpPostSuccessMsg = "Posting Done Successfully";
 	String currencyNgn ="NGN";
-	String apiSuccess ="success";
+	//String apiSuccess ="success";
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";
 	String exceptionMsg ="Exception occurred contact IBPS support";
 	String statusAwaitingTreasury = "Awaiting Treasury";
@@ -323,6 +323,17 @@ public interface Constants {
 	String cpLienErrMsg ="Commercial paper is Lien, kindly remove Lien on Commercial paper and try again.";
 	String cpLienSetFlag = "Y";
 	String cpLienRemoveFlag = "N";
+	String apiSuccess = "SUCCESS";
+	String apiFailed = "FAILED";
+	String apiFailure = "FAILURE";
+	String apiStatus = "Status";
+	String debitFlag = "D";
+	String creditFlag = "C";
+	String transType = "T";
+	String transSubTypeC = "CI";
+	String transSubTypeB = "BI";
+	String apiNoResponse = "No Response Found";
+
 
 
 	//eventName/controlName
