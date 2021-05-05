@@ -89,9 +89,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         case cpOnSelectCategory:{cpSelectCategory(ifr);}
                         break;
                         case cpSmSetupEvent:{
-                            if (getCpSmSetup(ifr).equalsIgnoreCase(smSetupNew) || getCpSmSetup(ifr).equalsIgnoreCase(smSetupUpdate))
-                                setVisible(ifr,new String[]{cpSmCpBidTbl, cpSmIFrameLocal});
-                            else setInvisible(ifr,new String[]{cpSmCpBidTbl, cpSmIFrameLocal});
+                            if (getCpSmSetup(ifr).equalsIgnoreCase(smSetupNew))
+                                setVisible(ifr,new String[]{cpSmCpBidTbl, cpIFrameLocal});
+                            else setInvisible(ifr,new String[]{cpSmCpBidTbl, cpIFrameLocal});
 
                             break;
                         }

@@ -158,4 +158,7 @@ public class Query {
     public static String getCpPoiDtlQuery(String id){
         return "select reqdate,custrefid,custprincipal,custacctno,custname,principalatmaturity,interest,maturitydate,tenor,rate from mm_bid_tbl where custrefid = '"+id+"'";
     }
+    public static String getCpTermDetailsQuery(String id){
+        return "select tenor,maturitydate,custprincipal from mm_bid_tbl where custrefid = '"+id+"'";
+    }
 }

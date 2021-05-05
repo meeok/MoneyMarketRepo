@@ -65,6 +65,7 @@ public interface Constants {
 	String cpMarketSection = "cp_market_section";
 	String cpPrimaryBidSection = "cp_primaryBid_section";
 	String cpTerminationSection = "cp_termination_section";
+	String cpTerminationDetailsSection = "cp_terminationdetails_section";
 	String cpProofOfInvestSection = "cp_poi_section";
 	String cpDecisionSection = "cp_dec_section";
 	String cpTreasuryPriSection = "cp_pmTreasury_section";
@@ -244,6 +245,14 @@ public interface Constants {
 	String cpPoiAcctNoCol = "Account Number";
 	String cpPoiAcctNameCol = "Customer Name";
 	String cpPoiStatusCol = "Status";
+	String cpTermIssueDateLocal = "CPTERMISSUEDATE";
+	String cpTermBoDateLocal = "CPTERMBODATE";
+	String cpTermTenorLocal = "CPTERMTENOR";
+	String cpTermMaturityDateLocal = "CPTERMMATURITYDATE";
+	String cpTermNoDaysDueLocal = "CPTERMNODAYSDUE";
+	String cpTermPenaltyChargeLocal = "CPTERMPCHARGE";
+	String cpTermRateLocal ="CPTERMRATE";
+	String cpIFrameLocal = "cpUploadExcelIframe";
 
 	//common variables
 	String omoProcess = "omo_market";

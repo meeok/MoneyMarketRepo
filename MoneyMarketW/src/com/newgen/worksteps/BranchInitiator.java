@@ -436,6 +436,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         enableFields(ifr,new String[]{cpSelectMandateTermBtn});
     }
     private String cpSelectMandateForTermination(IFormReference ifr, int rowIndex){
+        String issueDate = ifr.getTableCellValue(cpTermMandateTbl,rowIndex,0);
         String custId = ifr.getTableCellValue(cpTermMandateTbl,rowIndex,1);
         String winId = ifr.getTableCellValue(cpTermMandateTbl,rowIndex,7);
         String dtm = ifr.getTableCellValue(cpTermMandateTbl,rowIndex,5);
@@ -444,7 +445,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         setInvisible(ifr, new String[]{cpTerminationTypeLocal});
         undoMandatory(ifr, new String[]{cpTerminationTypeLocal});
         disableFields(ifr, new String[]{cpTerminationTypeLocal});
-        clearFields(ifr,new String[]{cpTermCustIdLocal,cpTerminationTypeLocal,cpTermDtmLocal});
+        clearFields(ifr,new String[]{cpTermCustIdLocal,cpTerminationTypeLocal,cpTermDtmLocal,cpTermIssueDateLocal,cpTermBoDateLocal});
 
         if (isCpLien(ifr,custId))
             return cpLienErrMsg;
@@ -486,7 +487,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         setVisible(ifr, new String[]{cpTerminationTypeLocal});
         setMandatory(ifr, new String[]{cpTerminationTypeLocal});
         enableFields(ifr, new String[]{cpTerminationTypeLocal});
-        setFields(ifr,new String[]{cpTermCustIdLocal,cpTermDtmLocal},new String[]{custId,dtm});
+        setFields(ifr,new String[]{cpTermCustIdLocal,cpTermDtmLocal,cpTermIssueDateLocal,cpTermBoDateLocal},new String[]{custId,dtm,issueDate,getCurrentDate()});
         return null;
     }
     private void cpSelectTerminationType (IFormReference ifr){
@@ -522,7 +523,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     }
     private void cpCalculateTermination(IFormReference ifr){
         try {
-            resultSet = new DbConnect(ifr, Query.getCpBidDtlForTerminationQuery(getCpTermCustId(ifr), getCpMarket(ifr))).getData();
+            resultSet = new DbConnect(ifr, Query.getCpBidDtlForTerminationQuery(getCpTermCusId(ifr), getCpMarket(ifr))).getData();
             logger.info("details to calc termination-- " + resultSet);
             String maturityDate = resultSet.get(0).get(1).trim();
             logger.info("maturityDate -- " + maturityDate);
@@ -555,7 +556,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                     amountDue = amountDue + (principalValue * reDiscountRateValue * (dtm / 366));
                     logger.info("LeapYear amountDue-- "+amountDue);
                 }
-                setFields(ifr, new String[]{cpTermAmountDueLocal}, new String[]{String.valueOf(amountDue)});
+                setFields(ifr, new String[]{cpTermAmountDueLocal,cpTermRateLocal}, new String[]{String.valueOf(amountDue),reDiscountRate});
 
             } else if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)) {
                 String principal = getCpTermPartialAmt(ifr);
@@ -571,13 +572,13 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                     logger.info("adjustedPrincipal-- "+adjustedPrincipal);
                     double amountDue = adjustedPrincipal - (adjustedPrincipal * reDiscountRateValue * dtm / 365) + (adjustedPrincipal * reDiscountRateValue * dtm / 366);
                     logger.info("amountDue-- "+amountDue);
-                    setFields(ifr, new String[]{cpTermAmountDueLocal, cpTermAdjustedPrincipalLocal}, new String[]{String.valueOf(amountDue), String.valueOf(adjustedPrincipal)});
+                    setFields(ifr, new String[]{cpTermAmountDueLocal, cpTermAdjustedPrincipalLocal,cpTermRateLocal}, new String[]{String.valueOf(amountDue), String.valueOf(adjustedPrincipal),reDiscountRate});
                 } else {
                     double adjustedPrincipal = (principalValue * 366 * 100) / ((366 * 100) - (dtm * reDiscountRateValue));
                     logger.info("adjustedPrincipal-- "+adjustedPrincipal);
                     double amountDue = adjustedPrincipal - (adjustedPrincipal * reDiscountRateValue * dtm / 365);
                     logger.info("amountDue-- "+amountDue);
-                    setFields(ifr, new String[]{cpTermAmountDueLocal, cpTermAdjustedPrincipalLocal}, new String[]{String.valueOf(amountDue), String.valueOf(adjustedPrincipal)});
+                    setFields(ifr, new String[]{cpTermAmountDueLocal, cpTermAdjustedPrincipalLocal,cpTermRateLocal}, new String[]{String.valueOf(amountDue), String.valueOf(adjustedPrincipal),reDiscountRate});
                 }
             }
             disableFields(ifr,cpTermCalculateBtn);

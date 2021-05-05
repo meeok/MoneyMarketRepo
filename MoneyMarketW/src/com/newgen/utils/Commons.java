@@ -176,7 +176,7 @@ public class Commons implements Constants {
         catch (Exception e){ logger.error("Exception occurred in getSol Method-- "+e.getMessage());return  null;}
     }
     public void hideCpSections (IFormReference ifr){
-        setInvisible(ifr,new String []{cpLienSection,cpMandateTypeSection, cpReDiscountRateSection,cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
+        setInvisible(ifr,new String []{cpTerminationDetailsSection,cpLienSection,cpMandateTypeSection, cpReDiscountRateSection,cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
         cpTerminationSection,cpCutOffTimeSection,cpDecisionSection,cpTreasuryPriSection,cpTreasurySecSection,cpTreasuryOpsPriSection,cpUtilityFailedPostSection,cpPostSection,cpSetupSection,cpCustomerDetailsSection});
     }
     public void disableCpSections (IFormReference ifr){
@@ -396,6 +396,9 @@ public class Commons implements Constants {
     public static long getDaysToMaturity(String maturityDate){
         return ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.parse(maturityDate));
     }
+    public static long getDaysBetweenTwoDates(String startDate, String endDate){
+        return ChronoUnit.DAYS.between(LocalDate.parse(startDate),LocalDate.parse(endDate));
+    }
     public String cpSetupSecondaryMarketWindow(IFormReference ifr, int rowCount){
         setCpSmCloseDate(ifr);
         int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(getFieldValue(ifr,cpSmWinRefLocal),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getFieldValue(ifr,cpSmMinPrincipalLocal),getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
@@ -475,7 +478,7 @@ public class Commons implements Constants {
     public static String getCpTermDtm(IFormReference ifr){
         return getFieldValue(ifr,cpTermDtmLocal);
     }
-    public static String getCpTermCustId(IFormReference ifr){
+    public static String getCpTermCusId(IFormReference ifr){
         return getFieldValue(ifr,cpTermCustIdLocal);
     }
     public static String getCpTermPartialAmt(IFormReference ifr){
@@ -508,6 +511,8 @@ public class Commons implements Constants {
     public static String getCpPoiCusId(IFormReference ifr){
         return getFieldValue(ifr,cpPoiCustIdLocal);
     }
+    public static String getCpTermRate(IFormReference ifr){return getFieldValue(ifr,cpTermRateLocal);}
+    public static String getCpTermBoDate(IFormReference ifr){return getFieldValue(ifr,cpTermBoDateLocal);}
 
 
 
