@@ -104,7 +104,6 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         }
                         case tbGetCustInvestmentDetails:{
                         	return tbGetCustInvestmentDetails(ifr);
-                            
                         }
                         case tbPopulatePOIFields:{
                         	try {
