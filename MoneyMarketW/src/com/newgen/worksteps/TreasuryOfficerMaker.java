@@ -617,6 +617,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate,tbCategorydd});
                 disableFields(ifr, new String[]{tbPriOpenDate,tbPriCloseDate,tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd,tbAssigndd});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup},new String[]{tbCategorySetup,tbCategoryReDiscountRate,tbCategoryCutOff});
+
         	}
         	
         	//At cutoff time show select view report to view all bid requests for both fresh and rollover mandate
@@ -667,7 +669,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		enableFields(ifr,new String[]{tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbCategorydd});
                 disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketTypedd});
-                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup},new String[]{tbCategorySetup,tbCategoryReDiscountRate,tbCategoryCutOff,tbCategoryReport});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup},new String[]{tbCategorySetup,tbCategoryReDiscountRate,tbCategoryCutOff});
         	}
         	/*else if (getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)) {//landing msg is approved
         		clearDropDown(ifr,tbCategorydd);
@@ -712,13 +714,29 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             		disableField(ifr,tbAssigndd );
             	}
             }
-            else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
+           else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
             	setVisible(ifr,new String [] {tbPrimaryBidSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
         		enableFields(ifr,new String[]{tbViewPriBidReportbtn,tbPrimaryBidSection,tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {});
                 disableFields(ifr, new String[]{tbAssigndd,tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd});
                 hideFields(ifr, new String[] {tbPriBidAllocationTable,tbPriBidCustRqstTable,tbPriBidReportTable});
             }
+            else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){
+    			setDropDown(ifr,tbDecisiondd,new String[]{decSubmit});
+    			//setFields(ifr,decSubmit,decSubmit);
+    			setVisible(ifr,new String [] {tbPriSetupSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbRediscountRate});
+    			//check if rediscount rate has already been set
+    			if(!getFieldValue(ifr,tbRediscoutApprovedFlg).equalsIgnoreCase(yesFlag)) {// not set
+    				disableFields(ifr, new String[]{tbDecisionSection,tbLandingMsgSection,tbSecUniqueReftbx,tbPriSetupSection});
+                    enableFields(ifr,new String[]{tbRediscountRate,tbDecisionSection});
+                    setMandatory(ifr,new String [] {tbRdrlessEqualto90tbx,tbRdr91to180,tbRdr181to270,tbRdr271to364days,tbDecisiondd});
+    			}
+    			else {//already set - disable rediscount rate field
+    				clearFields(ifr, new String[] {tbDecisiondd});
+    				disableFields(ifr, new String[]{tbRediscountRate,tbDecisionSection,tbDecisionSection,tbLandingMsgSection,tbSecUniqueReftbx,tbPriSetupSection});
+    			}
+                
+    		}
             else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryCutOff)){
             	disableFields(ifr, new String[] {tbPriOpenDate,tbDecisiondd});
             	enableFields(ifr,new String[] {tbPriCloseDate});
@@ -762,9 +780,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){
         			setDropDown(ifr,tbDecisiondd,new String[]{decSubmit});
         			//setFields(ifr,decSubmit,decSubmit);
-        			setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbSecRediscountRate});
+        			setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbRediscountRate});
                     disableFields(ifr, new String[]{tbDecisionSection,tbLandingMsgSection,tbSecUniqueReftbx,tbTreasurySecSection});
-                    enableFields(ifr,new String[]{tbSecRediscountRate,tbDecisionSection});
+                    enableFields(ifr,new String[]{tbRediscountRate,tbDecisionSection});
                     setMandatory(ifr,new String [] {tbRdrlessEqualto90tbx,tbRdr91to180,tbRdr181to270,tbRdr271to364days,tbDecisiondd});
         		}
         		
@@ -889,10 +907,39 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     		//	check if all bids are set --- get bdStatus
     			retMsg =tbCheckUnallocatedBids(ifr);
     		}
+    		else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){
+        		//update the database with rediscount rates
+        			retMsg =setUpRediscountrate(ifr);
+        		}
     	}
-    	 else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){ }
+    	 else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+    		 
+    	 }
     	 
     	logger.info("Ondone Validate retMsg>>"+retMsg);
+    	return retMsg;
+    }
+    
+    /*
+     * setup - save redicount rate into setup table
+     */
+    private String setUpRediscountrate(IFormReference ifr) {
+    	String retMsg ="";
+    	if (getTbDecision(ifr).equalsIgnoreCase(decSubmit)) {
+			 //update setuptable with details
+			 String tb90 = getFieldValue(ifr,tbRdrlessEqualto90tbx);
+			 String tb180 = getFieldValue(ifr,tbRdr91to180);
+			 String tb270 = getFieldValue(ifr,tbRdr181to270);
+			 String tb364 = getFieldValue(ifr,tbRdr271to364days);
+			 
+			 String qry = new Query().getUpdateRdRateQuery(getTbMarketUniqueRefId(ifr), getWorkItemNumber(ifr), tb90, tb180, tb270, tb364);
+			 logger.info("getUpdateRdRateQuery>>"+qry);
+		     int dbr = new DbConnect(ifr,qry).saveQuery();
+		     logger.info("dbr>>"+dbr);
+		     if (dbr < 0) 
+		    	 retMsg ="Unable to update rediscount rate on Setup table";
+		     updateApprovalFlg(ifr,tbRediscoutApprovedFlg,retMsg);
+		 }
     	return retMsg;
     }
     

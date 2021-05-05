@@ -287,8 +287,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
  	    	   setMandatory(ifr,new String [] {tbVerificationAmtttbx});
    			}
  	       else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){// Approving rediscount rate
- 	    	   setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbSecRediscountRate});
-               disableFields(ifr, new String[]{tbTreasurySecSection,tbLandingMsgSection,tbMarketSection,tbSecRediscountRate});
+ 	    	   setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbRediscountRate});
+               disableFields(ifr, new String[]{tbTreasurySecSection,tbLandingMsgSection,tbMarketSection,tbRediscountRate});
                enableFields(ifr,new String[]{tbDecisionSection,tbDecisiondd,tbRemarkstbx});
                setMandatory(ifr,new String [] {tbDecisiondd,tbDecisiondd,tbRemarkstbx});
    		}
@@ -427,7 +427,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     }
     
     //set approval flags
-    private void updateApprovalFlg(IFormReference ifr,String cntrlName,String retMsg) {
+ /*   private void updateApprovalFlg(IFormReference ifr,String cntrlName,String retMsg) {
     	if(isEmpty(retMsg)) {
     		setFields(ifr,cntrlName,yesFlag);
     	}
@@ -435,7 +435,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     		clearFields(ifr,tbDecisiondd);
     		setFields(ifr,cntrlName,noFlag);
     	}
-    }
+    }*/
     
     //*************** Treasury End *************************/
 

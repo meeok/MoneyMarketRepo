@@ -439,10 +439,11 @@ public interface Constants {
 	String tbGetCustInvestmentDetails = "tbGetCustInvestmentDetails";
 	String tbMandateTypeChanged ="tbMandateTypeChanged";
 	String tbPopulatePOIFields = "tbPopulatePOIFields";
+	String tbGetCustDetailsForTermination="tbGetCustDetailsForTermination";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
-	String tbSecondaryMarket = "secondary";
+	String tbSecondaryMarket = "Secondary";
 	String tbSetupWindowBtn = "tb_setupWin_btn";
 	String tbUpdateCutoffTimeBtn = "tb_updateCutoff_btn";
 	String tbSetReDiscountRateBtn = "tb_rediscRate_btn";
@@ -456,8 +457,8 @@ public interface Constants {
 	String tbAssigndd ="assign";
 	String tbMandateTypedd = "tb_mandateTypedd";
 	String terminationVal = "Termination";
-	String proofofinvestmentVal ="ProofOfInvestment";
-	String proofofinvestmentLbl ="Proof od Investment";
+	String proofofinvestmentVal ="POI";
+	String proofofinvestmentLbl ="Proof of Investment";
 	
 	//tbLandingMsgSection- Setup Landing Message
 	String tbLandMsgtbx = "tb_landingMsg";
@@ -530,6 +531,7 @@ public interface Constants {
 	
 	
 	//sections
+	String tbSearchCustSection ="tb_searchCust_section";
 	String tbMarketSection = "tb_market_section";
 	String tbLandingMsgSection = "tb_setupmsg_section";
 	String tbPriSetupSection = "tb_treasuryPm_section";
@@ -547,7 +549,7 @@ public interface Constants {
 	String tbPostSection = "tb_post_section";
 	//String tbSetupSection="tb_setup_section";
 	String tbCutOffTimeSection = "tb_cutoff_section";
-	String tbSecRediscountRate ="tb_rediscount_section";
+	String tbRediscountRate ="tb_rediscount_section";
 	String tbCustBidSection ="tb_cust_bid_section";
 	
 	//String tbBranchPriSection = "tb_pm_br_section";
@@ -672,8 +674,6 @@ public interface Constants {
 	String tbDaysToMaturityCol = "DaysToMaturity";
 	String tbSmInvestmentIdCol = "SmInvestmentId";
 	
-	
-	
 	//Primary re discount rate
 	String tbRdrlessEqualto90tbx = "tb_less90";
 	String tbRdr91to180 ="tb_91to180";
@@ -713,6 +713,11 @@ public interface Constants {
 	String tbPoiMarketUniqueIdCol ="MarketUniqueId";
 	String tbPoiPrincipalAtMaturityCol ="PrincipalAtMaturity";
 	//tb_sec_maturityDte, tb_sec_pm, tb_sec_maturityDate,tb_SmInvestmentId, tb_sec_tnor,tb_sec_rate
+	
+	//termination fields
+	String tbSearchCustForTerminationBtn ="tb_searchCustForTerminationBtn";
+	String tbTerminationMandateTbl="table74";
+	
 	
 	//Document names
 	String customers_instruction ="customers_instruction";
@@ -754,7 +759,7 @@ public interface Constants {
 	
 	String[] allTbSections = {tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
-			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbSecRediscountRate };
+			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection };
 	
 	/*************TREASURY BILLS ENDS HERE********************/
 

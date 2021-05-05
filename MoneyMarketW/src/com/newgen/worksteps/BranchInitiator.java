@@ -103,7 +103,13 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         	tbConcesionaryRateClicked(ifr);
                         }
                         case tbGetCustInvestmentDetails:{
-                        	return tbGetCustInvestmentDetails(ifr);
+                        	if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(proofofinvestmentVal)) {
+                        		return tbGetCustInvestmentDetails(ifr);
+                        	}
+                        	else if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(terminationVal)) {
+                        		return tbGetCustDetailsForTermination(ifr);
+                        	}
+                        	
                         }
                         case tbPopulatePOIFields:{
                         	try {
@@ -118,13 +124,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         	}
                         	
                         }
-                        case tbMandateTypeChanged:{
-                        	tbMandateTypeChanged(ifr);
-                        }
                        
-                        
-                        
-                        
                         //****************Treasurry Ends here *********************//
                     }
                 }
@@ -218,6 +218,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	                case tbValidateSmBidAmount:{
     	                	return tbValidateSmBidAmount(ifr);
     	                }
+    	                case tbMandateTypeChanged:{
+                        	tbMandateTypeChanged(ifr);
+                        }
+                        break;
     	              
                         //****************Treasurry Ends here *********************//
     	              
@@ -704,8 +708,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
         setVisible(ifr, new String[]{tbMarketSection, tbDecisionSection});
         enableFields(ifr,new String[]{tbMarketTypedd});
-        setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx});
-        setDropDown(ifr,tbCategorydd,new String[]{tbCategoryBid,tbCategoryReport,tbCategoryMandate});
+        setMandatory(ifr,new String [] {tbMarketTypedd});// {tbCategorydd,tbDecisiondd,tbRemarkstbx});
+        setDropDown(ifr,tbCategorydd,new String[]{tbCategoryBid,tbCategoryMandate});
         
     }
     /*
@@ -714,30 +718,41 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
      */
     private String tbMarketTypeddChange(IFormReference ifr){
     	String retMsg ="";
-    	
+    	clearFields(ifr, new String[] {tbMandateTypedd,tbCategorydd});
+    	hideFields(ifr,new String[] {tbMandateTypedd});
     	if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
     		setTbPriWindownUnqNo(ifr,getTbActiveWindowwithRefid(ifr));
+    		setVisible(ifr, new String[]{tbCategorydd});
+    		setMandatory(ifr,new String [] {tbCategorydd});// {tbCategorydd,tbDecisiondd,tbRemarkstbx});
     		if(!isEmpty(getTbPriWindownUnqNo(ifr))){
-    			setVisible(ifr, new String[]{tbCategorydd});
+    			setVisible(ifr, new String[]{tbMarketUniqueRefId});
+    			//disableFields(ifr, new String[]{tbMarketUniqueRefId});
+    		}
+    		else {
+    			hideFields(ifr, new String[]{tbMarketUniqueRefId});
+    			//clearFields(ifr,tbMarketTypedd);
+    			//retMsg = getTbMarket(ifr)+tbWindowInactiveMessage;
+    		}
+    	}
+    	else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+    		setTbBrnchSmWindownUnqNo(ifr,getTbActiveWindowwithRefid(ifr));
+    		setVisible(ifr, new String[]{tbCategorydd});
+    		setMandatory(ifr,new String [] {tbCategorydd});
+    		if(!isEmpty(getTbBrnchSmWindownUnqNo(ifr))){
+    			setVisible(ifr, new String[]{tbMarketUniqueRefId});
     			//disableFields(ifr, new String[]{tbMarketSection});
     		}
     		else {
-    			clearFields(ifr,tbMarketTypedd);
-    			retMsg = getTbMarket(ifr)+tbWindowInactiveMessage;
+    			
+    			hideFields(ifr, new String[]{tbMarketUniqueRefId,tbCategorydd});
+    			//clearFields(ifr,tbMarketTypedd);
+    			//retMsg = getTbMarket(ifr)+tbWindowInactiveMessage;
     			//hide or disable all fields
     		}
     	}
-    	if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
-    		setTbBrnchSmWindownUnqNo(ifr,getTbActiveWindowwithRefid(ifr));
-    		if(!isEmpty(getTbBrnchSmWindownUnqNo(ifr))){
-    			setVisible(ifr, new String[]{tbCategorydd});
-    			//disableFields(ifr, new String[]{tbMarketSection});
-    		}
-    		else {
-    			clearFields(ifr,tbMarketTypedd);
-    			retMsg = getTbMarket(ifr)+tbWindowInactiveMessage;
-    			//hide or disable all fields
-    		}
+    	else {
+    		clearFields(ifr, new String[]{tbMarketUniqueRefId,tbCategorydd});
+    		hideFields(ifr, new String[]{tbCategorydd});
     	}
     	return retMsg;
     }
@@ -756,7 +771,6 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     		hideField(ifr,tbBrcnhPriPersonalRate);
     		clearFields(ifr,tbBrcnhPriPersonalRate);
     	}
-    	
     	String retMsg ="";
     	retMsg = tbValidatePrincipalAmt(ifr);
     	logger.info("tbretmsg>>>>"+retMsg);
@@ -768,12 +782,27 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
      */
     private String tbCategoryddChange(IFormReference ifr){
     	String retMsg = "";
+    	setVisible(ifr, new String[] {tbDecisionSection});
+    	hideFields(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection,tbMandateTypedd});
+    	enableFields(ifr, new String[] {tbDecisionSection});
+    	undoMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo,tbMandateTypedd});
+    	
+    	//if rediscount rate is set, get rates from db and show rediscount rate 
+    	if(getFieldValue(ifr,tbRediscoutApprovedFlg).equalsIgnoreCase(yesFlag)) {// set
+			setVisible(ifr, new String[]{tbRediscountRate});
+			tbPorpulateRDRFields(ifr); ////porpulate rediscount rate fields
+            disableFields(ifr,new String[]{tbRediscountRate});
+		}
+		else {//already set - disable rediscount rate field
+            hideFields(ifr,new String[]{tbRediscountRate});
+		}
     	if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
 	    	if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){		
 	    		 if(isTbWindowOpen(ifr,getTbPriWindownUnqNo(ifr))){//check if market is is open
 		    		setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection});
 		    		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
 		    		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
+		    		
 		    		//tbGenerateCustRefNo(ifr, getTbMarket(ifr));)
 		    	}
 		    	else {
@@ -783,11 +812,16 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		    		retMsg ="No window is opened";
 		    	}
 	    	}
-	    	if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)){	
-	    		setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection,tbMandateTypedd});
-	    		disableFields(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection});
+	    	else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)){	
+	    		setVisible(ifr, new String[] {tbMandateTypedd});
+	    		//disableFields(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection});
 	    		enableFields(ifr,new String[] {tbMandateTypedd});
 	    		setMandatory(ifr, new String[] {tbMandateTypedd});
+	    		
+	    	}
+	    	else {
+	    		clearFields(ifr, new String[] {tbMandateTypedd});
+	    		hideFields(ifr, new String[] {tbMandateTypedd});
 	    	}
     	}
     	
@@ -809,11 +843,37 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		
 		    	}
     	}
-    }
+    	}
     	return retMsg;
     	//logger.info("tbOnDone1>>>");
     	//tbOnDone(ifr);
     	//logger.info("tbOnDone2>>>");
+    }
+    
+    /*
+     * porpulate rediscount rate Fields
+     * 
+     */
+    private void tbPorpulateRDRFields(IFormReference ifr){
+    	String retMsg ="";
+		String rdrQry = new Query().getReDiscounteQuery(getTbMarketUniqueRefId(ifr));
+    	logger.info("getReDiscounteQuery>>"+ rdrQry);
+        List<List<String>> rdrDbr = new DbConnect(ifr, rdrQry).getData();
+        logger.info("getReDiscounteQuery save db result>>>"+rdrDbr);
+        int dbrSize = rdrDbr.size();
+        if(dbrSize>0) {
+    		String tb90 = rdrDbr.get(0).get(0);
+    		String tb180 = rdrDbr.get(0).get(1);
+    		String tb270 = rdrDbr.get(0).get(2);
+    		String tb364 = rdrDbr.get(0).get(3);
+    		
+            setFields(ifr,new String[]{tbRdrlessEqualto90tbx,tbRdr91to180,tbRdr181to270,tbRdr271to364days},
+                    new String[]{tb90,tb180,tb270,tb364});
+        }
+        else
+        	logger.info("getReDiscounteQuery returned no fields: no rediscount rate set for this market id: >>>"+getTbMarketUniqueRefId(ifr));
+        
+        	
     }
     
     /*
@@ -984,10 +1044,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		}
 	}
 	 /*
-     * Search customer and populate table with customer investments
+     * Search customer and populate termination table with customer investments
      */
-    private String tbGetCustInvestmentDetails(IFormReference ifr){
-        clearTable(ifr,tbPoiCustDetailsTbl);
+    private String tbGetCustDetailsForTermination(IFormReference ifr){
+        clearTable(ifr,tbTerminationMandateTbl);
         String idqry = new Query().getTbCustMandateDetailsQuery(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID),getTbMarketUniqueRefId(ifr));
         logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
         List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
@@ -1004,11 +1064,47 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                  setTableGridData(ifr,tbPoiCustDetailsTbl,new String[]{tbPoiDateCol,tbPoiRefNoCol,tbPoiAcctNoCol,tbPoiCustNameCol,tbPoiAmountCol,tbPoiStatusCol},
                          new String[]{date,custid,accountNo,accountName,principalamt,status});
              }
-             setVisible(ifr,new String[]{tbPoiGenerateBtn,tbPoiCustDetailsTbl});
-             enableFields(ifr,new String[]{tbPoiGenerateBtn});
+             setVisible(ifr,new String[]{tbTerminationSection,tbPoiGenerateBtn,tbPoiCustDetailsTbl});
+             enableFields(ifr,new String[]{tbTerminationSection,tbPoiGenerateBtn});
         }
-        else
+        else {
+        	 hideFields(ifr,new String[]{tbTerminationSection});
         	return "No Details found for this Mandate";
+        	
+        }
+        return "";
+    }
+	 /*
+     * Search customer and populate table with customer investments for POI
+     */
+    private String tbGetCustInvestmentDetails(IFormReference ifr){
+        clearTable(ifr,tbPoiCustDetailsTbl);
+        String idqry = new Query().getTbCustMandate(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID));
+        logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
+        List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
+        logger.info("getTbCustMandateDetailsQuery db result>>>"+idqry);
+        if (iddbr.size()>0) {
+        	 for (List<String> ls : iddbr){
+                 String date = ls.get(0);
+                 String refNo = ls.get(1);
+                 String custid = ls.get(1);
+                 String accountNo = ls.get(2);
+                 String accountName = ls.get(3);
+                 String principalamt = ls.get(4);
+                 String status = ls.get(5);
+
+                 setTableGridData(ifr,tbPoiCustDetailsTbl,new String[]{tbPoiDateCol,tbPoiRefNoCol,tbPoiAcctNoCol,tbPoiCustNameCol,tbPoiAmountCol,tbPoiStatusCol},
+                         new String[]{date,custid,accountNo,accountName,principalamt,status});
+             }
+        	 disableFields(ifr,new String[]{tbPoiCustDetailsTbl});
+        	 setVisible(ifr,new String[]{tbProofOfInvestSection});
+             enableFields(ifr,new String[]{tbProofOfInvestSection,tbPoiCustDetailsTbl+"_0"});
+        }
+        else {
+       	 hideFields(ifr,new String[]{tbProofOfInvestSection});
+       	return "No Details found for this Mandate";
+       	
+       }
         return "";
     }
     
@@ -1037,14 +1133,21 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     
     //mandate type changed
     private void tbMandateTypeChanged (IFormReference ifr){
-    	if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(proofofinvestmentVal)) {
+    	hideFields(ifr, new String[] {tbProofOfInvestSection,tbTerminationSection});
+    	setVisible(ifr, new String[] {tbSearchCustSection});
+    	/*if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(proofofinvestmentVal)) {
     		setVisible(ifr, new String[] {tbProofOfInvestSection});
     		enableFields(ifr,new String[] {tbProofOfInvestSection});
     	}
     	else if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(terminationVal)) {
-    		setVisible(ifr, new String[] {tbProofOfInvestSection});
-    		enableFields(ifr,new String[] {});
+    		setVisible(ifr, new String[] {tbTerminationSection});
+    		enableFields(ifr,new String[] {tbTerminationSection});
+    		//enableFields(ifr,new String[] {});
     	}
+    	/*else {
+    		hideFields(ifr, new String[] {tbProofOfInvestSection});
+    	}*/
+    	
     }
 
     

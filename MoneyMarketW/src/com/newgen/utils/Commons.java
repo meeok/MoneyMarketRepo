@@ -1018,7 +1018,16 @@ public class Commons implements Constants {
     	return bidamt*(interest+(rate*tenor));
     }
     
-    
+    //set approval flags
+    public void updateApprovalFlg(IFormReference ifr,String cntrlName,String retMsg) {
+    	if(isEmpty(retMsg)) {
+    		setFields(ifr,cntrlName,yesFlag);
+    	}
+    	else {//clear decision setup was not successful
+    		clearFields(ifr,tbDecisiondd);
+    		setFields(ifr,cntrlName,noFlag);
+    	}
+    }
     	
 
     
