@@ -607,7 +607,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		setVisible(ifr,new String [] {tbMarketSection,tbLandingMsgSection,tbDecisionSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
         		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate,tbCategorydd});
-                disableFields(ifr, new String[]{tbLandingMsgSection,tbUniqueReftbx,tbMarketTypedd,tbAssigndd});
+                disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketUniqueRefId,tbMarketTypedd,tbAssigndd});
                 setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup,tbPoolManagerLabel},new String[]{tbCategorySetup,tbPoolManagerLabel});
                 
         	}
@@ -620,7 +620,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         	}
         	
         	//At cutoff time show select view report to view all bid requests for both fresh and rollover mandate
-        	if(isTbWindowClosed(ifr,getTbUniqueRef(ifr))){
+        	if(isTbWindowClosed(ifr,getTbMarketUniqueRefId(ifr))){
         		setVisible(ifr,new String [] {tbPrimaryBidSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
         		enableFields(ifr,new String[]{tbViewPriBidReportbtn,tbPrimaryBidSection,tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {});
@@ -699,7 +699,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             	//check if a window is open
             	logger.info("!isTbWindowOpen(ifr)>>"+!isTbWindowOpen(ifr));
             	if(!isTbWindowOpen(ifr)) {
-            		setTbUniqueRef(ifr,generateTbUniqueReference(ifr)); //set the unique reference
+            		setTbMarketUniqueRefId(ifr,generateTbUniqueReference(ifr)); //set the unique reference
                 	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
                 	hideField(ifr,tbDecisionSection);
             	}
@@ -748,7 +748,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         //make invisible grids visible.
         			}
         			else {//new bid setup
-        				setTbSecUniqueReftbx(ifr,generateTbUniqueReference(ifr)); //set the unique reference
+        				setTbMarketUniqueRefId(ifr,generateTbUniqueReference(ifr)); //set the unique reference
                     	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
                     	setFields(ifr,tbSmSetupdd,smSetupNew);
                     	hideField(ifr,tbDecisionSection);
@@ -807,7 +807,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     private void tbUpdateLandingMsg(IFormReference ifr){
         if (getTbUpdateLandingMsg(ifr)){ //true
         	clearDropDown(ifr,tbCategorydd);
-            clearFields(ifr, new String[]{tbUniqueReftbx,tbPriOpenDate,tbPriCloseDate});
+            clearFields(ifr, new String[]{tbMarketUniqueRefId,tbPriOpenDate,tbPriCloseDate});
             disableFields(ifr, new String[]{tbPriSetupSection,tbCategorydd});
             setMandatory(ifr,tbLandMsgtbx);
             setVisible(ifr,tbLandingMsgSubmitBtn); setTbDecisiondd(ifr,decSubmit);
@@ -818,7 +818,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         	setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection});
     		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection});
     		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate});
-            disableFields(ifr, new String[]{tbLandingMsgSection,tbUniqueReftbx,tbMarketTypedd});
+            disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketUniqueRefId,tbMarketTypedd});
         }
     }
     
@@ -865,7 +865,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     //on done check if all approved bids have been allocated befor submitting
     private String tbCheckUnallocatedBids(IFormReference ifr) {
     	//get the refid  of the workitem
-    	String qry = new Query().getTbPmNoBidAllocationQuery(getFieldValue(ifr,tbUniqueReftbx));
+    	String qry = new Query().getTbPmNoBidAllocationQuery(getTbMarketUniqueRefId(ifr));
     	logger.info("getTbPmNoBidAllocationQuery>>"+qry);
         List<List<String>> dbr = new DbConnect(ifr,qry).getData();
         logger.info("getTbPmNoBidAllocationQuery>>"+dbr);
@@ -883,7 +883,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){
     		//	retMsg = validateDate(ifr);
     			if(!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))) //market not set
-	    				retMsg = setUpTbMarketWindow(ifr,getTbUniqueRef(ifr),getTbPriOpenDate(ifr),getTbPriCloseDate(ifr),"");// set market
+	    				retMsg = setUpTbMarketWindow(ifr,getTbMarketUniqueRefId(ifr),getTbPriOpenDate(ifr),getTbPriCloseDate(ifr),"");// set market
     		}
     		else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
     		//	check if all bids are set --- get bdStatus
@@ -931,7 +931,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     private void tbViewPriBidSmryReport(IFormReference ifr){
     	logger.info("tbViewRepor>>>");
     	ifr.clearTable(tbPriBidReportTable);
-    	String qry = new Query().getTbPmBidSummaryQuery(getTbUniqueRef(ifr));
+    	String qry = new Query().getTbPmBidSummaryQuery(getTbMarketUniqueRefId(ifr));
     	logger.info("getTbPmBidSummaryQuery>>"+qry);
         List<List<String>> dbr = new DbConnect(ifr,qry).getData();
         logger.info("TbPmBidSummary>>"+dbr);
@@ -964,7 +964,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     //view 
     private void tbViewPriCustomerBids(IFormReference ifr, int rowIndex){
         ifr.clearTable(tbPriBidCustRqstTable);
-        String refid = getTbUniqueRef(ifr);
+        String refid = getTbMarketUniqueRefId(ifr);
         logger.info("refid>> "+ refid);
         String rqstType = ifr.getTableCellValue(tbPriBidReportTable,rowIndex,0);
         logger.info("rqstType>> "+ rqstType);

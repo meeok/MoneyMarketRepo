@@ -7,10 +7,15 @@ import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.controller.CpController;
 import com.newgen.utils.Commons;
 import com.newgen.utils.CommonsI;
+import com.newgen.utils.DbConnect;
 import com.newgen.utils.GenerateDocument;
 import com.newgen.utils.LogGen;
+import com.newgen.utils.Query;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,6 +83,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         	return tbValidateCustomer(ifr);
                             
                         }
+                       
                         
                         //****************Treasurry Ends here *********************//
                 	
@@ -338,6 +344,8 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     	setTb_BrnchPri_LienID(ifr,"L234");
     	return "Customer Principal liened Succesfully";
   	}
+    
+   
     
 
     

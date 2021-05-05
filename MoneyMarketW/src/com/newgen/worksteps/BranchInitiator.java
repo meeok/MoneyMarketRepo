@@ -102,6 +102,28 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         case tbConcesionaryRateClicked:{
                         	tbConcesionaryRateClicked(ifr);
                         }
+                        case tbGetCustInvestmentDetails:{
+                        	return tbGetCustInvestmentDetails(ifr);
+                            
+                        }
+                        case tbPopulatePOIFields:{
+                        	try {
+                        		int selectedrow = Integer.parseInt(data);
+                        		logger.info("selectedrow>>"+selectedrow);
+                        		tbPopulatePOIFields(ifr,selectedrow);
+                        		return"";
+                        	}
+                        	catch(Exception ex) {
+                        		logger.info("tbSmApplyBid Exception>>"+ex.toString());
+                        		return "Cannot fetch details for row Number :"+data;
+                        	}
+                        	
+                        }
+                        case tbMandateTypeChanged:{
+                        	tbMandateTypeChanged(ifr);
+                        }
+                       
+                        
                         
                         
                         //****************Treasurry Ends here *********************//
@@ -762,6 +784,12 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		    		retMsg ="No window is opened";
 		    	}
 	    	}
+	    	if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)){	
+	    		setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection,tbMandateTypedd});
+	    		disableFields(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection});
+	    		enableFields(ifr,new String[] {tbMandateTypedd});
+	    		setMandatory(ifr, new String[] {tbMandateTypedd});
+	    	}
     	}
     	
     	//secondary market
@@ -956,6 +984,69 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		
 		}
 	}
+	 /*
+     * Search customer and populate table with customer investments
+     */
+    private String tbGetCustInvestmentDetails(IFormReference ifr){
+        clearTable(ifr,tbPoiCustDetailsTbl);
+        String idqry = new Query().getTbCustMandateDetailsQuery(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID),getTbMarketUniqueRefId(ifr));
+        logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
+        List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
+        logger.info("getTbCustMandateDetailsQuery db result>>>"+idqry);
+        if (iddbr.size()>0) {
+        	 for (List<String> ls : iddbr){
+                 String date = ls.get(0);
+                 String custid = ls.get(1);
+                 String accountNo = ls.get(2);
+                 String accountName = ls.get(3);
+                 String principalamt = ls.get(4);
+                 String status = ls.get(5);
+
+                 setTableGridData(ifr,tbPoiCustDetailsTbl,new String[]{tbPoiDateCol,tbPoiRefNoCol,tbPoiAcctNoCol,tbPoiCustNameCol,tbPoiAmountCol,tbPoiStatusCol},
+                         new String[]{date,custid,accountNo,accountName,principalamt,status});
+             }
+             setVisible(ifr,new String[]{tbPoiGenerateBtn,tbPoiCustDetailsTbl});
+             enableFields(ifr,new String[]{tbPoiGenerateBtn});
+        }
+        else
+        	return "No Details found for this Mandate";
+        return "";
+    }
+    
+    /*
+     * generate proof of investment
+     */
+    private void tbPopulatePOIFields (IFormReference ifr, int rowIndex){
+    	
+            String reqDate =ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,0);
+            String custId = ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,1);
+            String principal = ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,2);
+            String accountNo = ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,3);
+            String accountName = ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,4);
+            String maturityDte  =ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,6);
+            String interest = ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,7);
+            String principalMaturity =ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,8);
+            String tenor =ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,9);
+            String rate =ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,10);
+            
+            setFields(ifr, new String[]{tbPoiEffectiveDate,tbPoiCustRefid,tbPoiAmtInvested,tbPoiCustAcctNum,tbPoiActName,
+            		tbPoiPrincipalAtMaturity,tbPoiIntrest,tbPoiMaturityDte,tbPoiTenor,tbPoiRate,tbPoiDte},
+                    new String[]{reqDate,custId,principal,accountNo,accountName,principalMaturity,interest,maturityDte,
+                    		tenor,rate,getCurrentDate()});
+           
+    }
+    
+    //mandate type changed
+    private void tbMandateTypeChanged (IFormReference ifr){
+    	if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(proofofinvestmentVal)) {
+    		setVisible(ifr, new String[] {tbProofOfInvestSection});
+    		enableFields(ifr,new String[] {tbProofOfInvestSection});
+    	}
+    	else if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(terminationVal)) {
+    		setVisible(ifr, new String[] {tbProofOfInvestSection});
+    		enableFields(ifr,new String[] {});
+    	}
+    }
 
     
     //**********************Treasury Ends here **********************//

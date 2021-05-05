@@ -556,7 +556,7 @@ public class Commons implements Constants {
     public static void setTbCategorydd  (IFormReference ifr, String value){ifr.setValue(tbCategorydd,value);}
     public static String getTbPriOpenDate(IFormReference ifr){return (String)ifr.getValue(tbPriOpenDate);}
     public static String getTbPriCloseDate(IFormReference ifr){return (String)ifr.getValue(tbPriCloseDate);}
-    public static String getTbUniqueRef(IFormReference ifr){return (String)ifr.getValue(tbUniqueReftbx);}
+    
     public static void setTbSetUpFlg(IFormReference ifr,String value){ifr.setValue(windowSetupFlagLocal,value);}
     public static String getTbSetUpFlg(IFormReference ifr){return (String)ifr.getValue(windowSetupFlagLocal);}
     public static void setTbCustSchemeCode(IFormReference ifr,String value){ifr.setValue(tbCustSchemeCode,value);}
@@ -564,11 +564,10 @@ public class Commons implements Constants {
     public static void setTbBrnchPriPrncplAmt(IFormReference ifr,String value){ifr.setValue(tbBrnchPriPrncplAmt,value);}
     public static String getTbBrnchPriPrncplAmt(IFormReference ifr){return (String)ifr.getValue(tbBrnchPriPrncplAmt);}
     
-   
-    
-    public static void setTbUniqueRef(IFormReference ifr,String value){
-    	if(isEmpty(getTbUniqueRef(ifr)))
-    		ifr.setValue(tbUniqueReftbx,value);
+    public static String getTbMarketUniqueRefId(IFormReference ifr){return (String)ifr.getValue(tbMarketUniqueRefId);}
+    public static void setTbMarketUniqueRefId(IFormReference ifr,String value){
+    	if(isEmpty(getTbMarketUniqueRefId(ifr)))
+    		ifr.setValue(tbMarketUniqueRefId,value);
     }
     public static String getTbLandingMsgApprovedFlg(IFormReference ifr){return getFieldValue(ifr,tbLandingMsgApprovedFlg);}
     public static void setTbLandingMsgApprovedFlg(IFormReference ifr, String value){ ifr.setValue(tbLandingMsgApprovedFlg,value);}
@@ -616,7 +615,7 @@ public class Commons implements Constants {
     }
     
     public static String setUpTbMarketWindow(IFormReference ifr){
-    	String qry = new Query().getSetupMarketWindowQuery(getTbUniqueRef(ifr) ,getWorkItemNumber(ifr), treasuryProcessName, getTbMarket(ifr), 
+    	String qry = new Query().getSetupMarketWindowQuery(getTbMarketUniqueRefId(ifr) ,getWorkItemNumber(ifr), treasuryProcessName, getTbMarket(ifr), 
     			getTbLandingMsg(ifr),getTbPriOpenDate(ifr),getTbPriCloseDate(ifr));
         logger.info("setUpTbMarketWindow Query>> "+qry);
         int insertVal = new DbConnect(ifr,qry).saveQuery();
@@ -787,8 +786,10 @@ public class Commons implements Constants {
 	public static void setTbCustAcctEmail(IFormReference ifr, String value) {ifr.setValue(tbCustAcctEmail,value);}
 	public static String getTbCustAcctEmail(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctEmail);}
 	
+	
 	public static void setTbPriWindownUnqNo(IFormReference ifr, String value) {ifr.setValue(tbBrnchPriWindownUnqNo,value);}
 	public static String getTbPriWindownUnqNo(IFormReference ifr) {return (String) ifr.getValue(tbBrnchPriWindownUnqNo);}
+	
 	public static void setTbBrnchPriRqsttype(IFormReference ifr, String value) {ifr.setValue(tbBrnchPriRqsttype,value);}
 	public static String getTbBrnchPriRqsttype(IFormReference ifr) {return (String) ifr.getValue(tbBrnchPriRqsttype);}
 	public static String getTbBrcnhPriRateTypedd(IFormReference ifr) {return (String) ifr.getValue(tbBrcnhPriRateTypedd);}
@@ -806,8 +807,6 @@ public class Commons implements Constants {
 	public static String getTb_BrnchPri_LienID(IFormReference ifr) {return (String) ifr.getValue(tb_BrnchPri_LienID);}
 	public static void setTbVerificationAmttbx(IFormReference ifr, String value) {ifr.setValue(tbVerificationAmtttbx,value);}
 	public static String getTbVerificationAmttbx(IFormReference ifr) {return (String) ifr.getValue(tbVerificationAmtttbx);}
-	public static void setTbSecUniqueReftbx(IFormReference ifr, String value) {ifr.setValue(tbSecUniqueReftbx,value);}
-	public static String getTbSecUniqueReftbx(IFormReference ifr) {return (String) ifr.getValue(tbSecUniqueReftbx);}
 	
 	public static void setTbBrnchSmWindownUnqNo(IFormReference ifr, String value) {ifr.setValue(tbBrnchSmWindownUnqNo,value);}
 	public static String getTbBrnchSmWindownUnqNo(IFormReference ifr) {return (String) ifr.getValue(tbBrnchSmWindownUnqNo);}
@@ -1018,6 +1017,8 @@ public class Commons implements Constants {
     	double interest =  tbCalcSmInterestAtMaturity(ifr, maturityDte, bidamt,  tenor,  csrate);
     	return bidamt*(interest+(rate*tenor));
     }
+    
+    
     	
 
     

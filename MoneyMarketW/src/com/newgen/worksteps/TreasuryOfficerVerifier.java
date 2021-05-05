@@ -369,7 +369,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     	    	}
     			 else { //Updating setup--- ****make setupdd mandatory at maker...//update setup table with minimum principal  
     				 if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
-    					 String qry = new Query().getUpdateminPrincipalQuery(getTbSecUniqueReftbx(ifr),getFieldValue(ifr,tbVerificationAmtttbx));
+    					 String qry = new Query().getUpdateminPrincipalQuery(getTbMarketUniqueRefId(ifr),getFieldValue(ifr,tbVerificationAmtttbx));
 	        			 logger.info("getUpdateminPrincipalQuery>>"+qry);
 	        		     int dbr = new DbConnect(ifr,qry).saveQuery();
 	        		     logger.info("dbr>>"+dbr);
@@ -391,7 +391,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	    			 String tb270 = getFieldValue(ifr,tbRdr181to270);
 	    			 String tb364 = getFieldValue(ifr,tbRdr271to364days);
 	    			 
-	    			 String qry = new Query().getUpdateRdRateQuery(getTbSecUniqueReftbx(ifr), getWorkItemNumber(ifr), tb90, tb180, tb270, tb364);
+	    			 String qry = new Query().getUpdateRdRateQuery(getTbMarketUniqueRefId(ifr), getWorkItemNumber(ifr), tb90, tb180, tb270, tb364);
 	    			 logger.info("getUpdateRdRateQuery>>"+qry);
 	    		     int dbr = new DbConnect(ifr,qry).saveQuery();
 	    		     logger.info("dbr>>"+dbr);
@@ -407,7 +407,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     			 if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
 	    			 //update setuptable with details
 	    			 String cutofftime = getFieldValue(ifr,tbSecCuttOfftime);
-	    			 String qry = new Query().getUpdateCutoffTimeQuery(getTbSecUniqueReftbx(ifr), cutofftime);
+	    			 String qry = new Query().getUpdateCutoffTimeQuery(getTbMarketUniqueRefId(ifr), cutofftime);
 	    			 logger.info("getUpdateCutoffTimeQuery>>"+qry);
 	    		     int dbr = new DbConnect(ifr,qry).saveQuery();
 	    		     logger.info("dbr>>"+dbr);

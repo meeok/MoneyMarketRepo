@@ -436,6 +436,9 @@ public interface Constants {
 	String tbSmApplyBid ="tbSmApplyBid";
 	String tbValidateSmBidAmount ="tbValidateSmBidAmount";
 	String tbConcesionaryRateClicked ="tbConcesionaryRateClicked";
+	String tbGetCustInvestmentDetails = "tbGetCustInvestmentDetails";
+	String tbMandateTypeChanged ="tbMandateTypeChanged";
+	String tbPopulatePOIFields = "tbPopulatePOIFields";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -446,21 +449,30 @@ public interface Constants {
 	String tbLandingMsgSubmitBtn="tb_landMsgSubmit_btn";
 	//String tbPmMinPriAmtLocal = "tb_mp_amount";
 	String tbMaturityDte ="tb_maturity_date";
+	
 	//tbMarketSection - Market
 	String tbMarketTypedd = "tb_select_market";
 	String tbCategorydd = "tb_category";
 	String tbAssigndd ="assign";
+	String tbMandateTypedd = "tb_mandateTypedd";
+	String terminationVal = "Termination";
+	String proofofinvestmentVal ="ProofOfInvestment";
+	String proofofinvestmentLbl ="Proof od Investment";
+	
 	//tbLandingMsgSection- Setup Landing Message
 	String tbLandMsgtbx = "tb_landingMsg";
 	String tbUpdateLandingMsgcbx = "tb_updateMsg";
+	
 	// tb_open_window_date - Treasury Primary SetUp
-	String tbUniqueReftbx = "tb_pmwu_ref";
+	//String tbUniqueReftbx = "tb_pmwu_ref";
 	String tbPriOpenDate= "tb_open_window_date";
 	String tbPriCloseDate = "tb_close_window_date";
 	String tbPriSetupbtn ="tb_pmSetup_btn";
+	
 	//Decision
 	String tbDecisiondd = "tb_decision";
 	String tbRemarkstbx = "tb_remarks";
+	
 	//Customer Details --
 	String tbCustAcctNo ="tb_custAcctNum";
 	String tbCustAcctEmail ="tb_custAcctEmail";
@@ -472,6 +484,14 @@ public interface Constants {
 	String tbLienPrincipalbtn ="tb_LienPrincipal";
 	String tb_BrnchPri_LienID ="tb_BrnchPri_LienID";
 	String tb_SmCustBidRemark = "tb_custBidRemark";
+	
+	String tbBidRequestDte ="tb_bidRequestDte";
+	String tbBidRStatus ="tb_bidStatus";
+
+	String tbCustUniquerefId ="tb_custUniquerefId";
+	String tbCustPrincipalAmount ="tb_principalAmt";//"tb_custPrincipalAmount";
+	String tbMarketUniqueRefId ="tb_marketUniqueRefId";
+	
 	//branch Primary
 	String tbBrnchPriTenordd ="tb_pm_tenor";
 	String tbBrnchPriRollovrdd="tb_rollover_type";
@@ -635,7 +655,7 @@ public interface Constants {
 	String tbSmPrincipalAtMaturity ="tb_sec_pm";
 	String tbSmIntstMaturityNonLpYr ="tb_sec_intMaturityNonLpYr"; //del
 	String tbSmIntrsyMaturityLpYr ="tb_sec_intMaturityLpYr";  //del
-	String tbSmIntrestAtMaturity ="tb_sec_intAtMaturity";
+	String tbSmIntrestAtMaturity ="tb_intMaturity";//""tb_sec_interestAtMaturity";
 	String tbSmResidualIntrst ="tb_sec_residual_int";
 	
 	
@@ -660,14 +680,47 @@ public interface Constants {
 	String tbRdr181to270 = "tb_181to270";
 	String tbRdr271to364days = "tb_271to364days";
 	
+	//tbProofOfInvestSection section control ids
+	String tbCustAcctOrRefID = "textbox421"; //for searching
+	String tbPoiCustRefid = "tb_poi_unique_num";
+	String tbPoiActName = "tb_poi_acctName";
+	String tbPoiAmtInvested ="tb_poi_amtInvested";
+	String tbPoiCustAcctNum="tb_poi_custAcctNum";
+	String tbPoiCustDetailsTbl ="table75";
+	String tbPoiEffectiveDate = "tb_poi_effectiveDate";
+	String tbPoiIntrest = "tb_poi_interest";
+	String tbPoiMaturityDte = "tb_poi_maturityDate";
+	String tbPoiPrincipalAtMaturity = "tb_poi_principalMaturity";
+	String tbPoiRate ="tb_poi_rate";
+	String tbPoiTenor ="tb_poi_tenor";
+	String tbPoiRefCode = "tb_poi_refCode";
+	String tbPoiDte = "tb_poi_date";
+	String tbPoiGenerateBtn = "tbPoiGenerateBtn";
+	String tbPoiSeacrchCustBtn = "tbPoiSeacrchCustBtn";
+	
+	//	String tbCustAcctORRefID = "textbox421"; //for searchinf volumn names
+	String tbPoiDateCol = "Date";
+	String tbPoiRefNoCol ="ReferenceNumber";
+	String tbPoiAmountCol="Amount";
+	String tbPoiAcctNoCol ="AccountNumber";
+	String tbPoiCustNameCol = "CustomerName";
+	String tbPoiStatusCol = "Status";
+	String tbPoiMaturityDateCol ="MaturityDate";
+	String tbPoiInterestAtMaturityCol ="InterestAtMaturity";
+	String tbPoiInvestmentIdCol ="InvestmentId";
+	String tbPoiTenorCol ="tenor";
+	String tbPoiRateCol ="rate";
+	String tbPoiMarketUniqueIdCol ="MarketUniqueId";
+	String tbPoiPrincipalAtMaturityCol ="PrincipalAtMaturity";
+	//tb_sec_maturityDte, tb_sec_pm, tb_sec_maturityDate,tb_SmInvestmentId, tb_sec_tnor,tb_sec_rate
+	
 	//Document names
 	String customers_instruction ="customers_instruction";
+	
 	
 	//return messages
 	
 	//hidden fields
-	
-
 	String tbLandingMsgApprovedFlg ="tb_landingMsgApprovedFlg";
 	String tbRediscoutApprovedFlg ="tb_RediscoutApprovedFlg";
 	String tbCutoffApproveFlg="tb_CutoffApproveFlg";
