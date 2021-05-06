@@ -958,6 +958,16 @@ public class Commons implements Constants {
     		return 0;
     	}
     }
+    public int convertStringToInt(String s) {
+    	try{
+    		return Integer.parseInt(s);
+    	}
+    	catch(Exception ex) {
+    		///retMsg = "parsing cbnrate error:>>>"+ ex.toString();
+    		logger.info("parseDoubleValue Excepton:>>>"+ ex.toString());
+    		return 0;
+    	}
+    }
     
     public String convertDoubleToString(double d) {
     	logger.info("converting double : "+d+" to String>>");
@@ -979,27 +989,12 @@ public class Commons implements Constants {
     public void updateSmIBAvailableAmt(double bidamt) {
     	//double newAvailAmt = ()
     }
-    
-    //leap year calculator
-    private boolean isLeapyear(String maturityDte) {
-		try {
-			int year = Integer.parseInt(new SimpleDateFormat("yyyy").format(
-					new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").parse(maturityDte)));
-			logger.info("year >>."+year);
-	    	return ((year%4 ==0) && (year % 100!=0)) || (year%400 ==0) ? true:false;
-		} catch (NumberFormatException | ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-    }
-    
     /*
      * Interest for maturity date  in Non Leap year ={(Principal * Tenor *concessionary rate)/365 *100)
      */
     public double tbCalcSmInterestAtMaturity(IFormReference ifr,String maturityDte,double bidamt, double tenor, double csrate) {
     	//check for leap year
-    	if(isLeapyear(maturityDte)) {
+    	if(isLeapYear(maturityDte)) {
     		return isEmpty(getTbSmConcessionValue(ifr)) ? ( bidamt* tenor)/(365*100):
     			(( bidamt* tenor*csrate)/(365*100))+(tenor/366);
     	}
@@ -1028,8 +1023,42 @@ public class Commons implements Constants {
     		setFields(ifr,cntrlName,noFlag);
     	}
     }
-    	
-
+    
+    //rediscountRate
+    /*
+     * get rediscount rate and populate at branch... for all tenors 
+     * for termination
+     */
+    public String tbPorpulateRediscountRate(IFormReference ifr) {
+    	String rdqry = new Query().getReDiscounteQuery(getFieldValue(ifr,tbMarketUniqueRefId));
+	    logger.info("getReDiscounteQuery>>>"+rdqry);
+	    List<List<String>> rddbr= new DbConnect(ifr,rdqry).getData();
+	    logger.info("getReDiscounteQuery db result>>>"+rddbr);
+	    if(rddbr.size()>0) {
+			 //populate rediscount fields with values
+			 setFields(ifr,tbRdrlessEqualto90tbx,rddbr.get(0).get(0));
+			 setFields(ifr,tbRdr91to180,rddbr.get(0).get(1));
+			 setFields(ifr,tbRdr181to270,rddbr.get(0).get(2));
+			 setFields(ifr,tbRdr271to364days,rddbr.get(0).get(3));
+			 return "";
+		 }
+	    else {
+	    	logger.info("No rediscount rate for : >>>"+getFieldValue(ifr,tbMarketUniqueRefId));
+	    	return "No rediscount rate";
+	    }
+    }
+    
+    public String tbGetRediscountRate(IFormReference ifr, int tenor) {
+    	if(tenor<=90)
+    		return  getFieldValue(ifr,tbRdrlessEqualto90tbx);
+    	else if(tenor<=180)
+    		return getFieldValue(ifr,tbRdr91to180);
+    	else if(tenor<=270)
+    		return getFieldValue(ifr,tbRdr181to270);
+    	else if(tenor<=180)
+    		return getFieldValue(ifr,tbRdr271to364days);
+    	else return"";
+    }
     
     
     /******************  TREASURY BILL CODE ENDS ***********************************/

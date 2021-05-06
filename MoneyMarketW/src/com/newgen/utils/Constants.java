@@ -440,6 +440,8 @@ public interface Constants {
 	String tbMandateTypeChanged ="tbMandateTypeChanged";
 	String tbPopulatePOIFields = "tbPopulatePOIFields";
 	String tbGetCustDetailsForTermination="tbGetCustDetailsForTermination";
+	String tbTerminateTypeChanged ="tbTerminateTypeChanged";
+	String tbTerminate = "tbTerminate";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -699,24 +701,33 @@ public interface Constants {
 	String tbPoiSeacrchCustBtn = "tbPoiSeacrchCustBtn";
 	
 	//	String tbCustAcctORRefID = "textbox421"; //for searchinf volumn names
-	String tbPoiDateCol = "Date";
-	String tbPoiRefNoCol ="ReferenceNumber";
-	String tbPoiAmountCol="Amount";
-	String tbPoiAcctNoCol ="AccountNumber";
-	String tbPoiCustNameCol = "CustomerName";
-	String tbPoiStatusCol = "Status";
-	String tbPoiMaturityDateCol ="MaturityDate";
-	String tbPoiInterestAtMaturityCol ="InterestAtMaturity";
-	String tbPoiInvestmentIdCol ="InvestmentId";
-	String tbPoiTenorCol ="tenor";
-	String tbPoiRateCol ="rate";
-	String tbPoiMarketUniqueIdCol ="MarketUniqueId";
-	String tbPoiPrincipalAtMaturityCol ="PrincipalAtMaturity";
+	String tbDateCol = "Date";
+	String tbRefNoCol ="ReferenceNumber";
+	String tbAmountCol="Amount";
+	String tbAcctNoCol ="AccountNumber";
+	String tbCustNameCol = "CustomerName";
+	String tbStatusCol = "Status";
+	String tbMaturityDateCol ="MaturityDate";
+	String tbInterestAtMaturityCol ="InterestAtMaturity";
+	String tbInvestmentIdCol ="InvestmentId";
+	String tbTenorCol ="tenor";
+	String tbRateCol ="rate";
+	String tbMarketUniqueIdCol ="MarketUniqueId";
+	String tbPrincipalAtMaturityCol ="PrincipalAtMaturity";
+//	String tbDaysToMaturityCol ="DaysToMaturity";
 	//tb_sec_maturityDte, tb_sec_pm, tb_sec_maturityDate,tb_SmInvestmentId, tb_sec_tnor,tb_sec_rate
 	
 	//termination fields
 	String tbSearchCustForTerminationBtn ="tb_searchCustForTerminationBtn";
 	String tbTerminationMandateTbl="table74";
+	String tbTermtypedd = "tb_termination_type";
+	String tbTermVal = "tb_termination_val";//cash or face val
+	String tbTermAdjustedPrncpal = "tb_adjustedPrncpal";
+	String tbTermAmtDueCust ="tb_termAmtDueCust";
+	String tbTermCashValue ="tb_termCashValue";
+	String tbTermbtn = "tb_terminate_btn";
+	String tbTermCustUniqId = "tb_termCustUniqId";//will get this from the populated customer field
+	String tbTermRediscountRate ="tb_termRediscountRate";
 	
 	
 	//Document names

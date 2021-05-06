@@ -240,17 +240,27 @@ public class Query {
     public String updateTbIBMandateAndTAmt(String invesmentid,double bidAmt){
         return "update tb_SmIssuedBills set totalamountsold = totalamountsold + "+bidAmt+", mandate =mandate+1 where insertionorderid = '"+invesmentid+"'";
     }
-    public static String getTbCustMandateDetailsQuery(String custId, String acctno){
+    public static String getTbCustMandateDetailsQuery(String custId, String acctno,String marketType){
         return "select tb_bidRequestDte,tb_custAcctNum,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_principalAmt,tb_bidStatus,"
-        		+ " tb_sec_maturityDte, tb_sec_pm, tb_sec_intMaturity, tb_sec_maturityDate,tb_SmInvestmentId, tb_sec_tnor,tb_sec_rate,tbMarketUniqueRefId from MONEYMARKET_EXT "
-        		+ "where upper(tb_pm_custId) = upper('"+custId+"') or upper(tb_pm_custId) = upper('"+acctno+"')";	
+        		+ " tb_sec_maturityDte, tb_sec_pm, tb_sec_intMaturity, tb_sec_maturityDate,tb_SmInvestmentId, tb_sec_tnor,tb_sec_rate,"
+        		+ "tbMarketUniqueRefId from MONEYMARKET_EXT "
+        		+ "where upper(g_select_market) =upper('tb_market') and upper(tb_select_market) = upper('"+marketType+"') and "
+        				+ "upper(tb_pm_custId) = upper('"+custId+"') or upper(tb_custAcctNum) = upper('"+acctno+"')";	
+    }
+    public static String getTbCustMandateDetailsQuery(String custId,String marketType){
+        return "select TB_MATURITY_DATE,tb_principalAmt,TB_PM_TENOR,tb_bidRequestDte,tb_custAcctNum,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_bidStatus,"
+        		+ " tb_sec_maturityDte, tb_sec_pm, tb_sec_intMaturity, tb_sec_maturityDate,tb_SmInvestmentId, tb_sec_tnor,tb_sec_rate,"
+        		+ "tbMarketUniqueRefId from MONEYMARKET_EXT "
+        		+ "where upper(g_select_market) =upper('tb_market') and upper(tb_select_market) = upper('"+marketType+"') and "
+        				+ "upper(tb_pm_custId) = upper('"+custId+"')";	
     }
     //get details of a customers mandate using the customer unique id
     public static String getTbCustMandate(String marketType, String data){
         return "select tb_bidRequestDte,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_principalAmt,tb_bidStatus,tb_pm_custId from MONEYMARKET_EXT "
-        		+ "where and upper(g_select_market) =upper('Treasury Bills') and upper(tb_select_market) = upper('"+marketType+"') "
-        				+ "and (upper(tb_pm_custId) = upper('"+data+"') or upper(tb_custAcctNum) = upper('"+data+"')";	
+        		+ "where upper(g_select_market) =upper('tb_market') and upper(tb_select_market) = upper('"+marketType+"') "
+        				+ "and (upper(tb_pm_custId) = upper('"+data+"') or upper(tb_custAcctNum) = upper('"+data+"'))";	
     }
+  
     ////-----------------------treasury end -------------------------------------///////////////
     public static String getUpdateReDiscountRateQuery(String id,String redicsountless90, String rediscount91180, String rediscount181270, String rediscount271364){
         return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+redicsountless90+"', REDISCOUNTRATELESS180 = '"+rediscount91180+"', REDISCOUNTRATELESS270 = '"+rediscount181270+"', REDISCOUNTRATELESS364 = '"+rediscount271364+"' where  refid = '"+id+"'";

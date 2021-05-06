@@ -104,7 +104,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         }
                         case tbGetCustInvestmentDetails:{
                         	if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(proofofinvestmentVal)) {
-                        		return tbGetCustInvestmentDetails(ifr);
+                        		return tbGetCustDetailsForPoi(ifr);
                         	}
                         	else if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(terminationVal)) {
                         		return tbGetCustDetailsForTermination(ifr);
@@ -123,6 +123,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         		return "Cannot fetch details for row Number :"+data;
                         	}
                         	
+                        }
+                        case tbTerminate:{
+                        	return tbGetTermDetails(ifr);
                         }
                        
                         //****************Treasurry Ends here *********************//
@@ -222,6 +225,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         	tbMandateTypeChanged(ifr);
                         }
                         break;
+    	                case tbTerminate:{
+    	                	//tbTerminateTypeChanged(ifr);
+    	                }
+    	                break;
     	              
                         //****************Treasurry Ends here *********************//
     	              
@@ -278,6 +285,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         }
         return null;
     }
+
+	
 
 	@Override
     public JSONArray validateSubmittedForm(FormDef formDef, IFormReference iFormReference, String s) {
@@ -871,9 +880,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                     new String[]{tb90,tb180,tb270,tb364});
         }
         else
-        	logger.info("getReDiscounteQuery returned no fields: no rediscount rate set for this market id: >>>"+getTbMarketUniqueRefId(ifr));
-        
-        	
+        	logger.info("getReDiscounteQuery returned no fields: no rediscount rate set for this market id: >>>"+getTbMarketUniqueRefId(ifr));	
     }
     
     /*
@@ -1061,11 +1068,18 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                  String principalamt = ls.get(4);
                  String status = ls.get(5);
 
-                 setTableGridData(ifr,tbPoiCustDetailsTbl,new String[]{tbPoiDateCol,tbPoiRefNoCol,tbPoiAcctNoCol,tbPoiCustNameCol,tbPoiAmountCol,tbPoiStatusCol},
+                 setTableGridData(ifr,tbTerminationMandateTbl,new String[]{tbDateCol,tbRefNoCol,tbAcctNoCol,tbCustNameCol,tbAmountCol,tbStatusCol},
                          new String[]{date,custid,accountNo,accountName,principalamt,status});
              }
              setVisible(ifr,new String[]{tbTerminationSection,tbPoiGenerateBtn,tbPoiCustDetailsTbl});
              enableFields(ifr,new String[]{tbTerminationSection,tbPoiGenerateBtn});
+             
+           //if rediscount rate is set, get rates from db and show rediscount rate 
+         	if(getFieldValue(ifr,tbRediscoutApprovedFlg).equalsIgnoreCase(yesFlag)) {//get it from setup table or get it from the market id.. query
+     			setVisible(ifr, new String[]{tbRediscountRate});
+     			tbPorpulateRDRFields(ifr); ////porpulate rediscount rate fields
+                 disableFields(ifr,new String[]{tbRediscountRate});
+     		}
         }
         else {
         	 hideFields(ifr,new String[]{tbTerminationSection});
@@ -1077,7 +1091,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 	 /*
      * Search customer and populate table with customer investments for POI
      */
-    private String tbGetCustInvestmentDetails(IFormReference ifr){
+    private String tbGetCustDetailsForPoi(IFormReference ifr){
         clearTable(ifr,tbPoiCustDetailsTbl);
         String idqry = new Query().getTbCustMandate(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID));
         logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
@@ -1092,9 +1106,12 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                  String accountName = ls.get(3);
                  String principalamt = ls.get(4);
                  String status = ls.get(5);
+                 String maturityDte = ls.get(6);
 
-                 setTableGridData(ifr,tbPoiCustDetailsTbl,new String[]{tbPoiDateCol,tbPoiRefNoCol,tbPoiAcctNoCol,tbPoiCustNameCol,tbPoiAmountCol,tbPoiStatusCol},
-                         new String[]{date,custid,accountNo,accountName,principalamt,status});
+                 String daystoMaturity =  String.valueOf( getDaysToMaturity(maturityDte));
+                 
+                 setTableGridData(ifr,tbPoiCustDetailsTbl,new String[]{tbDateCol,tbRefNoCol,tbAcctNoCol,tbCustNameCol,tbAmountCol,tbDaysToMaturityCol,tbStatusCol},
+                         new String[]{date,custid,accountNo,accountName,principalamt,daystoMaturity,status});
              }
         	 disableFields(ifr,new String[]{tbPoiCustDetailsTbl});
         	 setVisible(ifr,new String[]{tbProofOfInvestSection});
@@ -1112,6 +1129,15 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
      * generate proof of investment
      */
     private void tbPopulatePOIFields (IFormReference ifr, int rowIndex){
+    	String custRefid = ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,0);
+    	String acctno = ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,3);
+    	clearFields(ifr,new String[] {tbPoiEffectiveDate,tbPoiCustRefid,tbPoiAmtInvested,tbPoiCustAcctNum,tbPoiActName,
+        		tbPoiPrincipalAtMaturity,tbPoiIntrest,tbPoiMaturityDte,tbPoiTenor,tbPoiRate,tbPoiDte});
+        String idqry = new Query().getTbCustMandateDetailsQuery(getTbMarket(ifr),custRefid, acctno);
+        logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
+        List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
+        logger.info("getTbCustMandateDetailsQuery db result>>>"+iddbr);
+        if (iddbr.size()>0) {
     	
             String reqDate =ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,0);
             String custId = ifr.getTableCellValue(tbPoiCustDetailsTbl,rowIndex,1);
@@ -1128,6 +1154,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
             		tbPoiPrincipalAtMaturity,tbPoiIntrest,tbPoiMaturityDte,tbPoiTenor,tbPoiRate,tbPoiDte},
                     new String[]{reqDate,custId,principal,accountNo,accountName,principalMaturity,interest,maturityDte,
                     		tenor,rate,getCurrentDate()});
+        }
            
     }
     
@@ -1149,6 +1176,123 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	}*/
     	
     }
+    
+   /*
+    * full termination calculation
+    * Amount due to customer For Face Value Or Full Termination For leap year maturity date	Principal – 
+    * (principal x Rediscount Rate x no.of days to maturity/365) + (pricipal x Rediscount Rate x no.of days to maturity/366)
+    * Amount due to customer For Face Value Or Full Termination For non leap year maturity date	Principal –
+    * (principal x Rediscount Rate x  no.of days to maturity/365)
+    */
+    private double tbGetCalcFullTermAmtDueCustomer(String maturityDte,double principal,int rediscountRate,int daysToMaturity ){
+    	if(isLeapYear(maturityDte))
+    		return ((principal * rediscountRate *(daysToMaturity/365)) + (principal * rediscountRate *(daysToMaturity/366)));
+    	else
+    		return (principal * rediscountRate *(daysToMaturity/365));
+    }
+    
+    /*
+     * Where terminate cash amount is selected for leap year maturity date
+     * Adjusted Principal for cash amount for leap maturity date	
+     * (Cash Amount*366 * 365*100*100) / 
+     * {(365*366*100*100)-(Rediscount value*100*no of days to maturity in non-leap year*366)+
+     * (Rediscount value*100* no of days to maturity in leap year *365)}	
+     * 
+     * Where terminate cash amount is selected for non leap year maturity date
+     *  (Cash Amount*366 *100) / ((366*100) –(days to maturity * Rediscount value))
+     */
+    private double tbGetCashAmtAdjustPrncpal(String maturityDte,int daysToMaturity, double rediscountVal,int daysToMatNLyr,int daysToMatLyr,double cashamt){
+    	if(isLeapYear(maturityDte))
+    		return (cashamt*366 * 365*100*100) / 
+    				((365*366*100*100)-(rediscountVal*100*daysToMatNLyr*366)+ (rediscountVal*100* daysToMatLyr *365));	
+    	else
+    		return(cashamt*366 *100) / 
+    				((366*100)-(daysToMaturity *rediscountVal));
+    }
+    
+    /*
+     *Amount due customer for partial amount
+     * Amount due to customer For Cash amount for leap year maturity date
+     * When cash value is selected for leap year maturity date (Cash amount must not be above principal) 
+     * Adjusted Principal – (Adjusted principal x Rediscount Rate x no.of days to maturity/365) +
+     *  (Adjusted principal x Rediscount Rate x no.of days to maturity/366)	
+     *  
+     *  Amount due to customer For Cash amount for non leap year maturity date	
+     *  When cash value is selected for leap year maturity date (Cash amount must not be above principal)
+     *  Adjusted principal – (Adjusted principal x Rediscount Rate x  no.of days to maturity/365)
+     */
+    private double tbGetPartTermAmtDueCustomer(String maturityDte,int daysToMaturity, double rediscountVal,int daysToMatNLyr,int daysToMatLyr,double cashamt,
+    		double rediscountRate, double principal){
+    	double adjustedPrncpal =tbGetCashAmtAdjustPrncpal( maturityDte, daysToMaturity,  rediscountVal, daysToMatNLyr, daysToMatLyr, cashamt);
+    	
+    	if(isLeapYear(maturityDte))
+    		return adjustedPrncpal - (adjustedPrncpal * rediscountRate * daysToMaturity/365) + 
+    				(adjustedPrncpal * rediscountRate * daysToMaturity/366);	
+    	else
+    		return  adjustedPrncpal - (adjustedPrncpal * rediscountRate * daysToMaturity/365);
+    }
+    
+    /*
+     * 
+     */
+    private void tbTerminateTypeChanged(IFormReference ifr, int rowIdex) {
+    	//
+		if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(cpTerminationTypeFull)) {
+			setVisible(ifr, new String[] {tbTermbtn});
+			hideFields(ifr, new String[] {tbTermVal,tbTermCashValue});
+			undoMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
+		}
+		else if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(cpTerminationTypePartial)) {
+			setVisible(ifr, new String[] {tbTermVal,tbTermCashValue,tbTermbtn});
+			setMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
+		}
+		else {
+			hideFields(ifr, new String[] {tbTermVal,tbTermCashValue,tbTermbtn});
+			undoMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
+			//clear all termfiels
+			clearFields(ifr, new String[] {tbTermAdjustedPrncpal,tbTermCashValue,tbTermAmtDueCust,tbTermCashValue});
+		}
+	}
+    
+    //termination button clicked....
+	private String tbGetTermDetails(IFormReference ifr) {
+		// porpulate customer details field
+		if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(cpTerminationTypeFull)){
+			 String idqry = new Query().getTbCustMandateDetailsQuery(getFieldValue(ifr,tbTermCustUniqId),getTbMarket(ifr));
+		     logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
+		     List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
+		     logger.info("getTbCustMandateDetailsQuery db result>>>"+iddbr);
+		     if(iddbr.size()>0) {
+		    	 String maturityDte= iddbr.get(0).get(0);
+		    	 double principal= convertStringToDouble(iddbr.get(0).get(1));
+		    	 int tenor= convertStringToInt(iddbr.get(0).get(2));
+		     }
+		     //check if re
+		   /*  int rediscountRate = convertStringToInt(getFieldValue(ifr,tbTermtypedd));
+		     if(iddbr.size()>0) {
+		    	 String principal ="";
+				
+				
+				double principal;
+				int rediscountRate;,int daysToMaturity ;
+				String amtDueCustomer = tbGetCalcFullTermAmtDueCustomer(maturityDte,principal,rediscountRate,daysToMaturity)
+				setFieldValue(ifr,)
+				setVisible(ifr, new String[] {tbTermbtn});
+				hideFields(ifr, new String[] {tbTermVal,tbTermCashValue});
+				undoMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
+		     }
+		}
+		else if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(cpTerminationTypePartial)) {
+			setVisible(ifr, new String[] {tbTermVal,tbTermCashValue,tbTermbtn});
+			setMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
+		}*/
+		}
+		return null;
+	}
+	
+	private void getCustRediscountRate(String tenor) {
+		
+	}
 
     
     //**********************Treasury Ends here **********************//
