@@ -1048,7 +1048,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
      */
     private String tbGetCustDetailsForTermination(IFormReference ifr){
         clearTable(ifr,tbTerminationMandateTbl);
-        String idqry = new Query().getTbCustMandateDetailsQuery(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID),getTbMarketUniqueRefId(ifr));
+        String idqry = new Query().getTbCustMandate(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID));
         logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
         List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
         logger.info("getTbCustMandateDetailsQuery db result>>>"+idqry);
@@ -1082,7 +1082,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         String idqry = new Query().getTbCustMandate(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID));
         logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
         List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
-        logger.info("getTbCustMandateDetailsQuery db result>>>"+idqry);
+        logger.info("getTbCustMandateDetailsQuery db result>>>"+iddbr);
         if (iddbr.size()>0) {
         	 for (List<String> ls : iddbr){
                  String date = ls.get(0);

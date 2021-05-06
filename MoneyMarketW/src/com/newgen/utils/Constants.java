@@ -681,7 +681,7 @@ public interface Constants {
 	String tbRdr271to364days = "tb_271to364days";
 	
 	//tbProofOfInvestSection section control ids
-	String tbCustAcctOrRefID = "textbox421"; //for searching
+	String tbCustAcctOrRefID = "textbox593"; //for searching
 	String tbPoiCustRefid = "tb_poi_unique_num";
 	String tbPoiActName = "tb_poi_acctName";
 	String tbPoiAmtInvested ="tb_poi_amtInvested";
@@ -757,9 +757,9 @@ public interface Constants {
 	String tbBidRllovrMndtelbl ="Roll Over Mandate";
 	String tbBidRllovrMndte ="RollOverMandate";
 	
-	String[] allTbSections = {tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
+	String[] allTbSections = {tbSearchCustSection,"tb_searchCust_section",tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
-			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection };
+			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection};
 	
 	/*************TREASURY BILLS ENDS HERE********************/
 
