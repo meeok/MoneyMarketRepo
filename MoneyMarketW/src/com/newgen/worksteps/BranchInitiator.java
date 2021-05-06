@@ -1154,7 +1154,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
             		tbPoiPrincipalAtMaturity,tbPoiIntrest,tbPoiMaturityDte,tbPoiTenor,tbPoiRate,tbPoiDte},
                     new String[]{reqDate,custId,principal,accountNo,accountName,principalMaturity,interest,maturityDte,
                     		tenor,rate,getCurrentDate()});
-        }
+        }//
            
     }
     
