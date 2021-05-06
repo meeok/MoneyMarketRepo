@@ -291,6 +291,7 @@ public interface Constants {
 	String windowOpen = "opened";
 	String windowClosed = "closed";
 	String windowInactiveMessage = "No Window is currently open, Try again later";
+	String windowActiveErrMessage = "A Window for this market is currently open, Kindly wait till it elapse to open a new window";
 	String invalidSchemeCode1 = "SA231";
 	String invalidSchemeCode2 = "SA310";
 	String invalidSchemeCode3 = "SA340";
