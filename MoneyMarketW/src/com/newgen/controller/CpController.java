@@ -24,31 +24,6 @@ public class CpController implements Constants {
     public CpController(IFormReference ifr) {
         this.ifr = ifr;
     }
-
-    public static String fetchAccountDetailsController(IFormReference ifr){
-        Map<String, String> getData = FetchAccountDetails.fetchAccountDetails();
-        String name = getData.get("name");
-        String email = getData.get("email");
-        //String email = empty;
-        String schemeCode = getData.get("schemeCodePass");
-        if (schemeCode.equalsIgnoreCase(invalidSchemeCode1) || schemeCode.equalsIgnoreCase(invalidSchemeCode2) || schemeCode.equalsIgnoreCase(invalidSchemeCode3) || schemeCode.equalsIgnoreCase(invalidSchemeCode4)) {
-            Commons.clearFields(ifr,new String[]{cpCustomerAcctNoLocal,cpCustomerNameLocal, cpCustomerEmailLocal});
-            return cpInvalidAccountErrorMessage;
-        }
-        else if (Commons.isEmpty(email)){
-            Commons.setFields(ifr,new String[]{cpCustomerNameLocal, cpCustomerEmailLocal}, new String[]{name,email});
-            Commons.enableFields(ifr,new String[]{cpCustomerEmailLocal});
-            Commons.setMandatory(ifr,new String[]{cpCustomerEmailLocal});
-            return cpEmailMsg;
-        }
-        else Commons.setFields(ifr,new String[]{cpCustomerNameLocal, cpCustomerEmailLocal}, new String[]{name,email});
-        return null;
-    }
-    public static  String fetchLienController (IFormReference ifr){
-        String status = FetchLien.fetchLienCall();
-        Commons.setFields(ifr, new String[]{cpLienStatusLocal},new String[]{status});
-        return empty;
-    }
     public static String postTranController(IFormReference ifr){
         String resp = limitController(ifr);
         logger.info("resp -- "+ resp);
@@ -133,7 +108,7 @@ public class CpController implements Constants {
         }
         return null;
     }
-    public String getPostTxn(String acct1, String sol1, String amount,String transParticulars, String partTranRemarks, String todayDate, String acct2, String sol2){
+    public String getPostTxn(String acct1, String sol1, String amount, String transParticulars, String partTranRemarks, String acct2, String sol2){
         try {
             outputXml = Api.executeCall(postServiceName, RequestXml.postTransactionXml(transType, transSubTypeC, acct1, sol1, debitFlag, amount, currencyNgn, transParticulars, partTranRemarks, Commons.getCurrentDate(), acct2, sol2, creditFlag,Commons.getLoginUser(ifr)));
             if (!Commons.isEmpty(outputXml)){
@@ -143,7 +118,7 @@ public class CpController implements Constants {
                 if (isSuccess(status)){
                     String txnId = xmlParser.getValueOf("TrnId");
                     if (!Commons.isEmpty(txnId.trim()))
-                        return txnId;
+                        return txnId.trim();
                 }
                 else if (isFailed(status)){
                     String errCode = xmlParser.getValueOf("ErrorCode");
@@ -209,7 +184,7 @@ public class CpController implements Constants {
             }
         }
         else return apiNoResponse;
-        return null;
+        return empty;
     }
     public String fetchLien(){
         outputXml = Api.executeCall(fetchLienServiceName,RequestXml.fetchLienRequestXml(Commons.getCpAcctNo(ifr).trim()));
@@ -244,7 +219,7 @@ public class CpController implements Constants {
         }
         else return apiNoResponse;
 
-        return  null;
+        return  empty;
     }
 
     private boolean isSuccess(String data){

@@ -19,7 +19,7 @@ public class CpServiceHandler implements Constants {
     public CpServiceHandler(IFormReference ifr) {
         setIfr(ifr);
     }
-    private CpController cpController = new CpController(getIfr());
+    private final CpController cpController = new CpController(getIfr());
 
     public  String validateAccount (){
         String fetchAcctCall = cpController.fetchAcctDetails();
