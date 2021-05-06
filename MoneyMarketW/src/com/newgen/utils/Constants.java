@@ -79,6 +79,7 @@ public interface Constants {
 	String cpReDiscountRateSection = "rediscountratesection";
 	String cpMandateTypeSection = "cp_mandatetypesection";
 	String cpLienSection = "cpLienSection";
+	String cpServiceSection = "cpServiceSection";
 
     // end of cp sections
 
@@ -112,7 +113,7 @@ public interface Constants {
 	String cpCustomerNameLocal ="cp_custAcctName";
 	String cpCustomerAcctNoLocal ="cp_custAcctNum";
 	String cpCustomerEmailLocal = "cp_custAcctEmail";
-	String cpCustomerSolLocal = "";
+	String cpCustomerSolLocal = "CPCUSTSOL";
 	String cpLienStatusLocal ="cp_lien_status";
 	String cpPmRateTypeLocal = "cp_rate_type";
 	String cpPmPersonalRateLocal ="cp_personal_rate";
@@ -252,7 +253,9 @@ public interface Constants {
 	String cpTermNoDaysDueLocal = "CPTERMNODAYSDUE";
 	String cpTermPenaltyChargeLocal = "CPTERMPCHARGE";
 	String cpTermRateLocal ="CPTERMRATE";
-	String cpIFrameLocal = "cpUploadExcelIframe";
+	String cpUploadExcelBtn = "cpUploadExcelBtn";
+	String cpFileNameLocal = "CPFILENAME";
+	String cpFetchMandateBtn = "cpFetchMandateBtn";
 
 	//common variables
 	String omoProcess = "omo_market";
@@ -310,6 +313,7 @@ public interface Constants {
 	String cpPostSuccessMsg = "Posting Done Successfully";
 	String currencyNgn ="NGN";
 	//String apiSuccess ="success";
+	String cpCusMailErrMsg ="Update email of customer on account maintenance workflow";
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";
 	String exceptionMsg ="Exception occurred contact IBPS support";
 	String statusAwaitingTreasury = "Awaiting Treasury";

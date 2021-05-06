@@ -1,5 +1,6 @@
 package com.newgen.worksteps;
 
+import com.newgen.api.customService.CpServiceHandler;
 import com.newgen.controller.CpController;
 import com.newgen.utils.*;
 import com.newgen.iforms.EControl;
@@ -38,10 +39,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                 case formLoad:
                 case onLoad:
                 case cpApiCallEvent:{
-                  String resp = CpController.fetchAccountDetailsController(ifr);
-                  if (isEmpty(resp)) return CpController.fetchLienController(ifr);
-                  else if (resp.equalsIgnoreCase(cpEmailMsg)) return cpEmailMsg + "#" + CpController.fetchLienController(ifr);
-                  else return resp;
+                   return new CpServiceHandler(ifr).validateAccount();
                 }
                 case onClick:{
                     switch (control){

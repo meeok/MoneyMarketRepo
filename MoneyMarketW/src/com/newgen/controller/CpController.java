@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class CpController implements Constants {
     private static final Logger logger = LogGen.getLoggerInstance(CpController.class);
-    private String outputXml;
+    private static String outputXml;
     private static final XmlParser xmlParser = new XmlParser();
     private final IFormReference ifr;
 
@@ -161,6 +161,7 @@ public class CpController implements Constants {
     }
 
     public String fetchAcctDetails(){
+        Commons.clearFields(ifr,new String[]{cpCustomerSolLocal,cpCustomerEmailLocal,cpCustomerNameLocal,cpCustomerAcctNoLocal});
         String accountNumber = Commons.getCpAcctNo(ifr).trim();
         if (accountNumber.startsWith("1"))
             outputXml = Api.executeCall(fetchCaaAcctServiceName,RequestXml.fetchCaaRequestXml(accountNumber));
@@ -168,6 +169,8 @@ public class CpController implements Constants {
             outputXml = Api.executeCall(fetchOdaAcctServiceName,RequestXml.fetchOdaRequestXml(accountNumber));
         else if (accountNumber.startsWith("3"))
             outputXml = Api.executeCall(fetchSbaAcctServiceName,RequestXml.fetchSbaRequestXml(accountNumber));
+
+        logger.info("fetch account outputXml-- "+outputXml);
 
         if (!Commons.isEmpty(outputXml)){
             xmlParser.setInputXML(outputXml);
@@ -186,6 +189,16 @@ public class CpController implements Constants {
               String cusDetails = xmlParser.getValueOf("PersonName");
               xmlParser.setInputXML(cusDetails);
               String name = xmlParser.getValueOf("Name");
+
+
+              if (Commons.isEmpty(email)){
+                  Commons.setFields(ifr,new String[]{cpCustomerNameLocal,cpCustomerSolLocal},new String[]{name,sol});
+                  Commons.enableFields(ifr,new String[]{cpCustomerEmailLocal});
+                  return cpCusMailErrMsg;
+              }
+              else {
+                  Commons.setFields(ifr,new String[]{cpCustomerEmailLocal,cpCustomerNameLocal,cpCustomerSolLocal},new String[]{email,name,sol});
+              }
             }
             else if (isFailed(status)){
                 String errCode = xmlParser.getValueOf("ErrorCode");
@@ -198,6 +211,41 @@ public class CpController implements Constants {
         else return apiNoResponse;
         return null;
     }
+    public String fetchLien(){
+        outputXml = Api.executeCall(fetchLienServiceName,RequestXml.fetchLienRequestXml(Commons.getCpAcctNo(ifr).trim()));
+        if (!Commons.isEmpty(outputXml)){
+
+            xmlParser.setInputXML(outputXml);
+
+            String status = xmlParser.getValueOf(apiStatus);
+
+            if (isSuccess(status)){
+              String lienId = xmlParser.getValueOf("LienId");
+                logger.info("lienId: "+lienId);
+                if (!Commons.isEmpty(lienId))
+                   Commons.setFields(ifr,cpLienStatusLocal,yes);
+            }
+            else if(isFailed(status)){
+                String errDetails = xmlParser.getValueOf("ErrorDetail");
+                logger.info("errDetails: "+errDetails);
+                xmlParser.setInputXML(errDetails);
+                String errCode = xmlParser.getValueOf("ErrorCode");
+                String errDesc = xmlParser.getValueOf("ErrorDesc");
+                String errType = xmlParser.getValueOf("ErrorType");
+                logger.info("errCode: "+errCode);
+                logger.info("errDesc: "+errDesc);
+                logger.info("errType: "+errType);
+                if (isNotLien(errCode,errDesc,errType))
+                    Commons.setFields(ifr,cpLienStatusLocal,no);
+
+                else return "Error Code: "+ errCode + " Error Description: " + errDesc + " Error Type: " + errType+ ".";
+
+            }
+        }
+        else return apiNoResponse;
+
+        return  null;
+    }
 
     private boolean isSuccess(String data){
         return data.equalsIgnoreCase(apiSuccess);
@@ -207,5 +255,11 @@ public class CpController implements Constants {
     }
     private boolean isSchemeCodeInvalid(String data){
         return   data.equalsIgnoreCase(invalidSchemeCode1) || data.equalsIgnoreCase(invalidSchemeCode2) || data.equalsIgnoreCase(invalidSchemeCode3) || data.equalsIgnoreCase(invalidSchemeCode4) ;
+    }
+    private boolean isNotLien(String errCode, String errMsg, String errType){
+        String errMsgActual = "The record is not found.";
+        String errTypeActual = "BE";
+        String errCodeActual = "005";
+        return errCode.equalsIgnoreCase(errCodeActual) && errMsg.equalsIgnoreCase(errMsgActual) && errType.equalsIgnoreCase(errTypeActual);
     }
 }

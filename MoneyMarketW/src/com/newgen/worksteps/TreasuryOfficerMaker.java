@@ -89,10 +89,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         case cpOnSelectCategory:{cpSelectCategory(ifr);}
                         break;
                         case cpSmSetupEvent:{
-                            if (getCpSmSetup(ifr).equalsIgnoreCase(smSetupNew))
-                                setVisible(ifr,new String[]{cpSmCpBidTbl, cpIFrameLocal});
-                            else setInvisible(ifr,new String[]{cpSmCpBidTbl, cpIFrameLocal});
-
+                            cpSmInvestmentSetup(ifr);
                             break;
                         }
 
@@ -476,6 +473,24 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         }
         setFields(ifr,new String[]{cpSmWinRefLocal}, new String[]{generateCpWinRefNo(cpSmLabel)});
         return empty;
+    }
+
+    private void cpSmInvestmentSetup(IFormReference ifr){
+        disableFields(ifr,cpSmSetupLocal);
+        if (getCpSmInvestmentSetupType(ifr).equalsIgnoreCase(smSetupNew)){
+            if (isEmpty(getWindowSetupFlag(ifr))) {
+                setVisible(ifr, new String[]{cpSmCpBidTbl, cpUploadExcelBtn, cpFileNameLocal});
+                enableFields(ifr, new String[]{cpUploadExcelBtn, cpSmCpBidTbl});
+            }
+        }
+        else if (getCpSmInvestmentSetupType(ifr).equalsIgnoreCase(smSetupUpdate)) {
+            setVisible(ifr,new String[]{cpSmCpBidTbl,cpUploadExcelBtn,cpFileNameLocal});
+            setInvisible(ifr,new String[]{cpUploadExcelBtn,cpFileNameLocal});
+            disableFields(ifr,new String[]{cpSmCpBidTbl});
+        }
+        else {
+            setInvisible(ifr,new String[]{cpUploadExcelBtn,cpFileNameLocal,cpSmCpBidTbl});
+        }
     }
 
 
