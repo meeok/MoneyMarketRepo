@@ -256,10 +256,12 @@ public class Query {
     }
     //get details of a customers mandate using the customer unique id
     public static String getTbCustMandate(String marketType, String data){
-        return "select tb_bidRequestDte,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_principalAmt,tb_bidStatus,tb_pm_custId from MONEYMARKET_EXT "
+        return "select tb_bidRequestDte,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_principalAmt,tb_bidStatus,TB_MATURITY_DATE,tb_pm_custId,tb_uniqueNum from MONEYMARKET_EXT "
         		+ "where upper(g_select_market) =upper('tb_market') and upper(tb_select_market) = upper('"+marketType+"') "
         				+ "and (upper(tb_pm_custId) = upper('"+data+"') or upper(tb_custAcctNum) = upper('"+data+"'))";	
     }
+    //
+   
   
     ////-----------------------treasury end -------------------------------------///////////////
     public static String getUpdateReDiscountRateQuery(String id,String redicsountless90, String rediscount91180, String rediscount181270, String rediscount271364){

@@ -111,7 +111,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                             setFields(ifr,downloadFlagLocal,flag);
                             break;
                         }
-                        	
+                       
                         
                         /**** Treasury onClick End ****/
                         case cpViewReportEvent:{
@@ -585,13 +585,13 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     	//setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
     	clearFields(ifr,new String[]{tbRemarkstbx});
     	//setVisible(ifr, new String[] {tbCategorydd});
-    	//disableFields(ifr, new String[]{tbLandingMsgSection});
+    	disableFields(ifr, new String[]{tbMarketUniqueRefId});
     	
         //tb primary Market
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
         	disableField(ifr,tbAssigndd);
         	hideFields(ifr, new String[] {goBackDashboardSection,tbPriSetupbtn});
-            setDropDown(ifr,tbAssigndd,new String[]{tbTreasuryUtilityLabel,tbTreasuryVerifierLable},new String[]{tbTreasuryUtility,tbTreasuryVerifier});
+            //setDropDown(ifr,tbAssigndd,new String[]{tbTreasuryUtilityLabel,tbTreasuryVerifierLable},new String[]{tbTreasuryUtility,tbTreasuryVerifier});
             //disableTbSections(ifr);
             
         	if (!getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)) {//landing msg is not approved
@@ -602,35 +602,47 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 setTbUpdateLandingMsg(ifr,True);
                 disableFields(ifr, new String[]{tbMarketTypedd,tbCategorydd});
         	}
-        	if(!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))){ //(getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)
+        	else if(!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))){ //flaghas not been set
         		// ready to set Market;
-        		setVisible(ifr,new String [] {tbMarketSection,tbLandingMsgSection,tbDecisionSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
-        		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
-        		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate,tbCategorydd});
-                disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketUniqueRefId,tbMarketTypedd,tbAssigndd});
-                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup,tbPoolManagerLabel},new String[]{tbCategorySetup,tbPoolManagerLabel});
+        		logger.info("flag is not set");
+        		setVisible(ifr,new String [] {tbMarketSection,tbLandingMsgSection,tbDecisionSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx,tbAssigndd,tbMarketUniqueRefId});
+        		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbMarketSection,tbCategorydd,tbAssigndd});
+        		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbPriOpenDate,tbPriCloseDate,tbCategorydd,tbAssigndd});
+                disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketUniqueRefId,tbMarketTypedd,tbDecisiondd});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup},new String[]{tbCategorySetup});
+                setFields(ifr,tbCategorydd,tbCategorySetup);
+                hideFields(ifr,new String[]{tbMarketUniqueRefId});
+                try {
+                	logger.info("1");
+					tbCategoryChange(ifr);
+					logger.info("2");
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					logger.info("e.printStackTrace()");
+				}
                 
-        	}
-        	else if((getTbSetUpFlg(ifr).equalsIgnoreCase(flag))){ //getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag) && 
+              //setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup,tbPoolManagerLabel},new String[]{tbCategorySetup,tbPoolManagerLabel});
+        	} 
+        	else if((getTbSetUpFlg(ifr).equalsIgnoreCase(flag))){ 
         		// Market is already set
-        		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
+        		logger.info("isTbWindowClosed>>>"+isTbWindowClosed(ifr,getTbMarketUniqueRefId(ifr))+getTbMarketUniqueRefId(ifr));
+        		setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx,tbAssigndd});
         		enableFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbPriOpenDate,tbPriCloseDate,tbCategorydd});
-                disableFields(ifr, new String[]{tbPriOpenDate,tbPriCloseDate,tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd,tbAssigndd});
-                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup},new String[]{tbCategorySetup,tbCategoryReDiscountRate,tbCategoryCutOff});
-
+                disableFields(ifr, new String[]{tbPriOpenDate,tbPriCloseDate,tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd,tbAssigndd,tbMarketUniqueRefId});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategoryReDiscountRate,tbCategoryCutOff,tbPoolManagerLabel},new String[]{tbCategoryReDiscountRate,tbCategoryCutOff,tbPoolManager});
         	}
         	
         	//At cutoff time show select view report to view all bid requests for both fresh and rollover mandate
         	if(isTbWindowClosed(ifr,getTbMarketUniqueRefId(ifr))){
-        		setVisible(ifr,new String [] {tbPrimaryBidSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx});
+        		logger.info("test7");
+        		setVisible(ifr,new String [] {tbPrimaryBidSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbPriSetupSection,tbCategorydd,tbUpdateLandingMsgcbx,tbAssigndd});
         		enableFields(ifr,new String[]{tbViewPriBidReportbtn,tbPrimaryBidSection,tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {});
                 disableFields(ifr, new String[]{tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd,tbAssigndd});
                 hideFields(ifr, new String[] {tbPriBidAllocationTable,tbPriBidCustRqstTable,tbPriBidReportTable});
-                
                 //bid allocation
-                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup,tbCategoryBid},new String[]{tbCategorySetup,tbCategoryBid});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup,tbCategoryBid,tbCategoryReDiscountRate,tbPoolManagerLabel},new String[]{tbCategorySetup,tbCategoryBid,tbCategoryReDiscountRate,tbPoolManager});
         	}
         	//
         	/*else if(getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag) && (getTbSetUpFlg(ifr).equalsIgnoreCase(flag)) && getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){ // ready to set Market(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbTreasuryPriSetupSection});
@@ -662,7 +674,6 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbCategorydd});
                 disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketTypedd});
                 setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup},new String[]{tbCategorySetup});
-                
         	}
         	else if(getTbSetUpFlg(ifr).equalsIgnoreCase(flag)){// Market is set. Can perform rediscount rate etc
         		setVisible(ifr,new String [] {tbMarketSection,tbLandingMsgSection,tbDecisionSection,tbCategorydd,tbUpdateLandingMsgcbx});
@@ -704,6 +715,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             		setTbMarketUniqueRefId(ifr,generateTbUniqueReference(ifr)); //set the unique reference
                 	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
                 	hideField(ifr,tbDecisionSection);
+                	setVisible(ifr,tbMarketUniqueRefId);
             	}
             	else if(getTbCategorydd(ifr).equalsIgnoreCase(tbPoolManager)){ 
             		enableField(ifr,tbAssigndd);
@@ -743,9 +755,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             	setTbDecisiondd(ifr,decSubmit);
             }
             else {
-            	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
+            	tbFormLoad(ifr); //remove the set gendetails...
+            	/*setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
             	setVisible(ifr,tbDecisionSection);
-            	setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});
+            	setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup});*/
             }
         }
         
@@ -1104,7 +1117,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	    	
 	    	String tenor = ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,4);
 	    	logger.info("tenor>>>"+tenor);
-	    	logger.info("tenor2>>>"+tenor.substring(0, tenor.indexOf(" ")));
+	    	//logger.info("tenor2>>>"+tenor.substring(0, tenor.indexOf(" ")));
 	    	
 	    
 	    	
@@ -1121,7 +1134,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	    	
 	       
 	       // String defaultAll =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,10);
-	        String maturityDate =getMaturityDate(Integer.parseInt(tenor.substring(0, tenor.indexOf(" "))));
+	        String maturityDate =getMaturityDate(Integer.parseInt(tenor));//.substring(0, tenor.indexOf(" "))));
 	        logger.info("maturityDate>>>"+maturityDate);
 	        String rateType =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,15);
 	        logger.info("rateType>>>"+rateType);

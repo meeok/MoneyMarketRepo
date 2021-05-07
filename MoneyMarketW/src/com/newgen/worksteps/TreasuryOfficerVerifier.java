@@ -58,6 +58,11 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                         case cpUpdateReDiscountRateEvent:{
                             return cpUpdateReDiscountRate(ifr);
                         }
+                        //****btreasury onclick start **********//
+                        case tbPost:{
+                        	return tbPost(ifr);  
+                        }
+                        //****btreasury onclick End **********//	
                     }
                 }
                 break;
@@ -74,7 +79,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 break;
                 case onDone:{
                 	switch(controlName){
-                	case tbOndone:{
+                	case tbOnDone:{
                 		return tbOnDone(ifr);
                 	}
                 	/*** Treasury start****/
@@ -252,16 +257,18 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	            setVisible(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbValidatebtn});
 	            enableFields(ifr,new String[] {tbDecisionSection,tbValidatebtn});
 	            setMandatory(ifr, new String[]{tbDecisiondd,tbRemarkstbx});
+	            hideFields(ifr,new String[]{tbMarketUniqueRefId});
 	        }
 	      
 	        else if(getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){  //bid has been approved by branch verifier and customer's account has been liened.assign to utility or verifier
 	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchPriSection,
-	        	tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID});
-	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection});
+	        	tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbPostSection}); 
+	        	enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn,tbFetchMandatebtn,tbPostSection});
+	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbTranID});
 	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
-	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
+	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd,tbtoken});//setInvisible(ifr, new String[]{});
 	          //  disableFields(ifr, new String[] {});
-	            enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
+	           
 	        }
 	     	
 	        else {//Modification of Primary Market Cut-off Time 

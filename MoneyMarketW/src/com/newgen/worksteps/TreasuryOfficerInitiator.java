@@ -169,7 +169,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     	setVisible(ifr, new String[]{tbLandingMsgSection, tbDecisionSection, tbMarketSection});
     	setMandatory(ifr,new String [] {tbMarketTypedd,tbCategorydd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
     	enableFields(ifr,new String[]{tbLandingMsgSection,tbDecisionSection,tbMarketSection});
-    	hideFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbCategorydd,tbAssigndd});
+    	hideFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbCategorydd,tbAssigndd,tbMarketUniqueRefId});
         //setDropDown(ifr,tbAssigndd,new String[]{tbTreasuryUtilityLabel,tbTreasuryVerifierLable},new String[]{tbTreasuryUtility,tbTreasuryVerifier});
     }
     public void tbSendMail(IFormReference ifr){

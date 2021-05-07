@@ -24,16 +24,12 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     private static final Logger logger = LogGen.getLoggerInstance(BranchVerifier.class);
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
-    	logger.info("3993");
         clearDecHisFlag(ifr);
-        logger.info("44");
         if (!isEmpty(getProcess(ifr))) {
-        	logger.info("111");
         	showSelectedProcessSheet(ifr);
         }
         if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
         else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) {
-        	logger.info("122");
         	tbFormLoadActivity(ifr);
         }
     }
@@ -83,7 +79,9 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         	return tbValidateCustomer(ifr);
                             
                         }
-                       
+                        case tbPost:{
+                        	return tbPost(ifr);  
+                        }
                         
                         //****************Treasurry Ends here *********************//
                 	
@@ -111,7 +109,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                                 }
                             }
                         }
-                        case tbOndone:{
+                        case tbOnDone:{
                         	return tbOndone(ifr);
                         }
                         case tbTokenChange:{
@@ -251,11 +249,11 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
             if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
             	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchPriSection,
-            			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID});
-            	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection});
+            			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbAssigndd});
+            	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbCustPrincipalAmount});
             	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
             	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
-              //  disableFields(ifr, new String[] {});
+            	hideFields(ifr, new String[] {tbBidRequestDte,tbBidRStatus});
                 enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
                
             }
@@ -315,10 +313,11 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     }
     /*
      * 
-     */
+   
     private String tbPost(IFormReference ifr){
     	if(isTbWinValid(ifr)){
     		//post
+    		 * 
     		if(getPostStatus(ifr).equalsIgnoreCase(tbSuccess)) {
         		setTbDecisiondd(ifr,decApprove);
         		disableFields(ifr,new String[] {tbDecisiondd});
@@ -328,7 +327,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     		return "Cutoff time for window has elapsed";
 		}
     	return "";
-    }
+    }  */
     //check if docs are uploaded
     private String tbOndone(IFormReference ifr) {
     	return isTbDocUploaded(ifr,getWorkItemNumber(ifr),customers_instruction) ?"Kindly attach customers_instruction ":"";
@@ -342,6 +341,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     	disableFields(ifr, new String[] {tbLienPrincipalbtn,tbDecisiondd});
     	undoMandatory(ifr,tbRemarkstbx);
     	setTb_BrnchPri_LienID(ifr,"L234");
+    	setFields(ifr,tbCustAcctLienStatus,"Yes");
     	return "Customer Principal liened Succesfully";
   	}
     

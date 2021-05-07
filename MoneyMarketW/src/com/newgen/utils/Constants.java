@@ -422,7 +422,7 @@ public interface Constants {
 	String tbBrnchPriPrncplAmtChange = "tbBrnchPriPrncplAmtChange";
 	String tbTokenChange ="tbTokenChange";
 	String tbPost ="tbPost";
-	String tbOndone ="tbOndone";
+//	String tbOndone ="tbOndone";
 	String tbLienCustFaceValue = "tbLienCustFaceValue";
 	String tbViewPriBidSmryReport ="tbViewPriBidSmryReport";
 	String tbDownloadPriBidSmryReport ="tbDownloadPriBidSmryReport";
@@ -509,7 +509,7 @@ public interface Constants {
 	//Post section --tb_post_section
 	String tbtoken = "tb_token";
 	String tbTranID = "tb_trn";
-	
+	String tbRemoveLien ="";
 	
 	//Branch Prmy View tbBranchSection
 	
@@ -566,7 +566,7 @@ public interface Constants {
 	String tbCategoryCutOff = "Cutoff time modification";
 	String tbCategoryReport = "Report";
 	String tbCategoryMandate = "Mandate";
-	String tbPoolManager ="Pool_Manager";
+	String tbPoolManager ="PoolManager";
 	String tbPoolManagerLabel ="Pool Manager";
 	
 	
@@ -712,6 +712,7 @@ public interface Constants {
 	String tbInvestmentIdCol ="InvestmentId";
 	String tbTenorCol ="tenor";
 	String tbRateCol ="rate";
+	String tbMarketWinRefIDCol ="Market Window RefId";
 	String tbMarketUniqueIdCol ="MarketUniqueId";
 	String tbPrincipalAtMaturityCol ="PrincipalAtMaturity";
 //	String tbDaysToMaturityCol ="DaysToMaturity";
@@ -719,7 +720,7 @@ public interface Constants {
 	
 	//termination fields
 	String tbSearchCustForTerminationBtn ="tb_searchCustForTerminationBtn";
-	String tbTerminationMandateTbl="table74";
+	String tbTerminationMandateTbl="table99";
 	String tbTermtypedd = "tb_termination_type";
 	String tbTermVal = "tb_termination_val";//cash or face val
 	String tbTermAdjustedPrncpal = "tb_adjustedPrncpal";

@@ -664,10 +664,14 @@ public class Commons implements Constants {
      * else return false
      */
      public boolean isTbWindowClosed(IFormReference ifr,String refid){
+    	 logger.info("testtttt");
      	String qry = new Query().getClosedMarketWinRefIDQuery(treasuryProcessName,getTbMarket(ifr),refid,getWorkItemNumber(ifr));
          logger.info("isTbWindowClosed query --"+ qry);
          List<List<String>> dbr = new DbConnect(ifr,qry).getData();
          logger.info("isTbWindowClosed db output>>"+dbr);
+         boolean tt =  dbr.size()>0 ? true:false;
+         logger.info("isTbWindowClosed db output>>"+tt);
+        
          return dbr.size()>0 ? true:false;
      }
      /*
@@ -719,6 +723,7 @@ public class Commons implements Constants {
     		retMsg = isEmpty(getTbCustAcctEmail(ifr)) ? "Update email of customer on account maintenance workflow":"";
     	logger.info("retMsg1>>"+ retMsg);
     	
+    	setVisible(ifr, tbFetchMandatebtn);
     	//scheme code PB2010
     	if(getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
     		if(getTbCustSchemeCode(ifr).equalsIgnoreCase(PB2010)) {
@@ -736,29 +741,29 @@ public class Commons implements Constants {
     }
     
     public static void tbFetchAccountDetails(IFormReference ifr) {
-    	if(getTbCustAcctNo(ifr).equalsIgnoreCase("22")){
-	    	setTbCustAcctName(ifr, "John Doe");
-	    	setTbCustAcctLienStatus(ifr, "Yes");
-	    	setTbCustAcctEmail(ifr, "someone@gmail.com");
-	    	setTbCustSchemeCode(ifr,"SA931");
-	    }
-    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("33")){
-	    	setTbCustAcctName(ifr, "Miranda");
+    	if(getTbCustAcctNo(ifr).equalsIgnoreCase("3094925864")){
+	    	setTbCustAcctName(ifr, "ODEY JOHN KEVIN");
 	    	setTbCustAcctLienStatus(ifr, "No");
-	    	setTbCustAcctEmail(ifr, "someone@gmail.com");
-	    	setTbCustSchemeCode(ifr,"SA931");
+	    	setTbCustAcctEmail(ifr, "odeyjohnkevin@yahoo.com");
+	    	setTbCustSchemeCode(ifr,"SA321");
 	    }
-    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("44")){
-	    	setTbCustAcctName(ifr, "Mercy Lee");
+    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("3107060971")){
+	    	setTbCustAcctName(ifr, "ONONYABA CHIDERA LOVETH");
 	    	setTbCustAcctLienStatus(ifr, "No");
-	    	setTbCustAcctEmail(ifr, "ogb@gmail.com");
-	    	setTbCustSchemeCode(ifr,"SA931");
+	    	setTbCustAcctEmail(ifr, "");
+	    	setTbCustSchemeCode(ifr,"SA321");
+	    }
+    	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("3084614352")){
+	    	setTbCustAcctName(ifr, "FAMUYIWA OLUWASEGUN EMMANUEL");
+	    	setTbCustAcctLienStatus(ifr, "No");
+	    	setTbCustAcctEmail(ifr, "SHEGJAZY1@YAHOO.COM");
+	    	setTbCustSchemeCode(ifr,"SA321");
 	    }
     	else if(getTbCustAcctNo(ifr).equalsIgnoreCase("55")){
 	    	setTbCustAcctName(ifr, "Nabcy bbbe");
 	    	setTbCustAcctLienStatus(ifr, "No");
 	    	setTbCustAcctEmail(ifr, "ogb@gmail.com");
-	    	setTbCustSchemeCode(ifr,"SA931");
+	    	setTbCustSchemeCode(ifr,"SA321");
 	    }
     	//return isEmpty(getTbCustAcctEmail(ifr)) ? "Update email of customer on account maintenance workflow":null;
     }
@@ -912,7 +917,7 @@ public class Commons implements Constants {
 		return randNo.toUpperCase();
 	}
 	
-	 //check if cutoff time has elapsed
+	 //check if cutoff time has elapsed //change to use flag with utility is working
 	 public static boolean isTbWinValid(IFormReference ifr){
     	String qry = new Query().getWinCloseDateByIdQuery(getTbPriWindownUnqNo(ifr));
         logger.info("check tb window query --"+ qry);
@@ -932,7 +937,6 @@ public class Commons implements Constants {
    			
    			logger.info("currDte>>"+new Date()); 
    			System.out.println(closeDte.compareTo(new Date()));
-   			
         }
         return  closeDte.compareTo(new Date())>=0  ?true:false;
     }
@@ -1058,6 +1062,28 @@ public class Commons implements Constants {
     	else if(tenor<=180)
     		return getFieldValue(ifr,tbRdr271to364days);
     	else return"";
+    }
+    
+    /*
+     * posting 
+     */
+    public String tbPost(IFormReference ifr){
+    	if(isTbWinValid(ifr)){
+    		//post
+    		if(!isEmpty(getFieldValue(ifr,tbtoken))) {
+    			if(getPostStatus(ifr).equalsIgnoreCase(tbSuccess)) {
+    				setFields(ifr,tbTranID,"M62");
+            		setTbDecisiondd(ifr,decApprove);
+            		disableFields(ifr,new String[] {tbDecisiondd});
+            	}	
+    		}
+    		else return "Please enter token before posting";
+    		
+    	}
+    	else { //window is closed
+    		return "Cutoff time for window has elapsed";
+		}
+    	return "";
     }
     
     
