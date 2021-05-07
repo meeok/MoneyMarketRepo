@@ -4,6 +4,9 @@ public class Query {
     public String getSolQuery(String userName) {
         return "select sole_id from usr_0_fbn_usr_branch_mapping where upper(user_id) = upper('" + userName + "')";
     }
+    public static String getUserDetailsQuery(String userName) {
+        return "select sole_id, branch_name from usr_0_fbn_usr_branch_mapping where upper(user_id) = upper('" + userName + "')";
+    }
     public String getUsersInGroup(String groupName) {
         return "select username from pdbuser where userindex in (select userindex from pdbgroupmember where groupindex = (select groupindex from PDBGroup where GroupName='" + groupName + "'))";
     }

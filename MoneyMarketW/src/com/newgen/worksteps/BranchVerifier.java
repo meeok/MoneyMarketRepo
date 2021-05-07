@@ -1,5 +1,6 @@
 package com.newgen.worksteps;
 
+import com.newgen.api.customService.CpServiceHandler;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
@@ -41,7 +42,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
             switch (event){
                 case cpApiCallEvent:{
                     switch (control) {
-                        case cpTokenEvent: return CpController.tokenController(ifr);
+                        case cpTokenEvent: return new CpServiceHandler(ifr).validateToken();
                         case cpPostEvent:{
                             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
                                 if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr))) return CpController.postTranController(ifr);

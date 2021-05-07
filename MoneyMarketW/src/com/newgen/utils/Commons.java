@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class Commons implements Constants {
     private static final Logger logger = LogGen.getLoggerInstance(Commons.class);
-    public List<List<String>> resultSet;
+    public static List<List<String>> resultSet;
 
     /************************* COMMERCIAL PAPER CODE BEGINS **************************/
     private String getTat (String entryDate, String exitDate){
@@ -97,7 +97,7 @@ public class Commons implements Constants {
         return (String)ifr.getControlValue(wiNameLocal);
     }
     public static String getLoginUser(IFormReference ifr){
-        return ifr.getUserName();
+        return ifr.getUserName().toUpperCase();
     }
     public static String getActivityName (IFormReference ifr){
         return ifr.getActivityName();
@@ -172,8 +172,11 @@ public class Commons implements Constants {
         ifr.setTabStyle(processTabName,treasuryTab,visible,False);
     }
     public static String getSol (IFormReference ifr){
-        try { return new DbConnect(ifr, new Query().getSolQuery(getLoginUser(ifr))).getData().get(0).get(0); }
-        catch (Exception e){ logger.error("Exception occurred in getSol Method-- "+e.getMessage());return  null;}
+        return new DbConnect(ifr, new Query().getSolQuery(getLoginUser(ifr))).getData().get(0).get(0);
+    }
+    public static void setBranchDetails(IFormReference ifr){
+        resultSet = new DbConnect(ifr, Query.getUserDetailsQuery(getLoginUser(ifr))).getData();
+        setFields(ifr, new String[]{loginUserLocal,solLocal,branchNameLocal}, new String[]{getLoginUser(ifr),resultSet.get(0).get(0), resultSet.get(0).get(1)});
     }
     public void hideCpSections (IFormReference ifr){
         setInvisible(ifr,new String []{cpServiceSection,cpTerminationDetailsSection,cpLienSection,cpMandateTypeSection, cpReDiscountRateSection,cpBranchPriSection,cpBranchSecSection,cpLandingMsgSection,cpMarketSection,cpPrimaryBidSection,cpProofOfInvestSection,
@@ -503,7 +506,7 @@ public class Commons implements Constants {
         return getFieldValue(ifr, cpLienMandateIdLocal);
     }
     public static boolean doesCpIdExist(IFormReference ifr, String id, String marketType){
-        return Integer.parseInt(new DbConnect(ifr,Query.getCpCustIdExistQuery(id,marketType)).getData().get(0).get(0)) > 1;
+        return Integer.parseInt(new DbConnect(ifr,Query.getCpCustIdExistQuery(id,marketType)).getData().get(0).get(0)) > 0;
     }
     public  static String getCpPoiMandate(IFormReference ifr){
         return getFieldValue(ifr,cpPoiMandateLocal);
@@ -513,6 +516,7 @@ public class Commons implements Constants {
     }
     public static String getCpTermRate(IFormReference ifr){return getFieldValue(ifr,cpTermRateLocal);}
     public static String getCpTermBoDate(IFormReference ifr){return getFieldValue(ifr,cpTermBoDateLocal);}
+    public static String getCpOtp(IFormReference ifr){return  getFieldValue(ifr,cpTokenLocal);}
 
 
 

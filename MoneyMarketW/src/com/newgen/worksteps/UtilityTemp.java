@@ -17,7 +17,7 @@ public class UtilityTemp extends Commons implements IFormServerEventHandler , Co
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
         startUtility(ifr);
-        //setFields(ifr,utilityFlagLocal,flag);
+        setFields(ifr,utilityFlagLocal,flag);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.newgen.utils.XmlParser;
 import org.apache.log4j.Logger;
 
 import java.util.Map;
+import java.util.Set;
 
 public class CpController implements Constants {
     private static final Logger logger = LogGen.getLoggerInstance(CpController.class);
@@ -68,8 +69,51 @@ public class CpController implements Constants {
     }
 
 
-    public String getUserLimit(){
-        outputXml = Api.executeCall(fetchLimitServiceName, RequestXml.getUserLimitXml("SN022357"));
+    public String getUserLimit(String postAmount) {
+        try {
+            if (Integer.parseInt(postAmount) > 0) {
+                outputXml = Api.executeCall(fetchLimitServiceName, RequestXml.getUserLimitXml("SN022357"));
+                logger.info("outputXml limit call -- " + outputXml);
+                String currency;
+                String amount = empty;
+
+                if (!Commons.isEmpty(outputXml)) {
+                    xmlParser.setInputXML(outputXml);
+
+                    String status = xmlParser.getValueOf(apiStatus);
+
+                    if (isSuccess(status)) {
+                        Set<Map<String, String>> resultSet = xmlParser.getXMLData(outputXml, "DATA");
+
+                        for (Map<String, String> result : resultSet) {
+
+                            currency = result.get("CRNCYCODE");
+                            logger.info("limit currency-- " + currency);
+
+                            if (currency.equalsIgnoreCase(currencyNgn)) {
+                                amount = result.get("USERCASHDRLIM");
+                                logger.info("limit amount" + amount);
+                                break;
+                            }
+                        }
+
+                        if (Integer.parseInt(postAmount) < Integer.parseInt(amount))
+                            return apiSuccess;
+
+                        return apiLimitErrMsg;
+                    } else if (isFailed(status)) {
+                        String errCode = xmlParser.getValueOf("ErrorCode");
+                        String errDesc = xmlParser.getValueOf("ErrorDesc");
+                        String errType = xmlParser.getValueOf("ErrorType");
+                        logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
+                        return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
+                    }
+                } else return apiNoResponse;
+            }
+        } catch (Exception e){
+            logger.info("Exception occurred-- "+e.getMessage());
+            return e.getMessage();
+        }
         return null;
     }
 
@@ -110,25 +154,25 @@ public class CpController implements Constants {
     }
     public String getPostTxn(String acct1, String sol1, String amount, String transParticulars, String partTranRemarks, String acct2, String sol2){
         try {
-            outputXml = Api.executeCall(postServiceName, RequestXml.postTransactionXml(transType, transSubTypeC, acct1, sol1, debitFlag, amount, currencyNgn, transParticulars, partTranRemarks, Commons.getCurrentDate(), acct2, sol2, creditFlag,Commons.getLoginUser(ifr)));
-            if (!Commons.isEmpty(outputXml)){
-                xmlParser.setInputXML(outputXml);
-                String status = xmlParser.getValueOf(apiStatus);
+            if (Integer.parseInt(amount) > 0) {
+                outputXml = Api.executeCall(postServiceName, RequestXml.postTransactionXml(transType, transSubTypeC, acct1, sol1, debitFlag, amount, currencyNgn, transParticulars, partTranRemarks, Commons.getCurrentDate(), acct2, sol2, creditFlag, Commons.getLoginUser(ifr)));
+                if (!Commons.isEmpty(outputXml)) {
+                    xmlParser.setInputXML(outputXml);
+                    String status = xmlParser.getValueOf(apiStatus);
 
-                if (isSuccess(status)){
-                    String txnId = xmlParser.getValueOf("TrnId");
-                    if (!Commons.isEmpty(txnId.trim()))
-                        return txnId.trim();
-                }
-                else if (isFailed(status)){
-                    String errCode = xmlParser.getValueOf("ErrorCode");
-                    String errDesc = xmlParser.getValueOf("ErrorDesc");
-                    String errType = xmlParser.getValueOf("ErrorType");
-                    logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
-                    return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
-                }
+                    if (isSuccess(status)) {
+                        String txnId = xmlParser.getValueOf("TrnId");
+                        if (!Commons.isEmpty(txnId.trim()))
+                            return txnId.trim();
+                    } else if (isFailed(status)) {
+                        String errCode = xmlParser.getValueOf("ErrorCode");
+                        String errDesc = xmlParser.getValueOf("ErrorDesc");
+                        String errType = xmlParser.getValueOf("ErrorType");
+                        logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
+                        return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
+                    }
+                } else return apiNoResponse;
             }
-            else return apiNoResponse;
         } catch (Exception e){
             return e.getMessage();
         }
@@ -138,52 +182,51 @@ public class CpController implements Constants {
     public String fetchAcctDetails(){
         Commons.clearFields(ifr,new String[]{cpCustomerSolLocal,cpCustomerEmailLocal,cpCustomerNameLocal,cpCustomerAcctNoLocal});
         String accountNumber = Commons.getCpAcctNo(ifr).trim();
-        if (accountNumber.startsWith("1"))
-            outputXml = Api.executeCall(fetchCaaAcctServiceName,RequestXml.fetchCaaRequestXml(accountNumber));
-        else  if (accountNumber.startsWith("2"))
-            outputXml = Api.executeCall(fetchOdaAcctServiceName,RequestXml.fetchOdaRequestXml(accountNumber));
-        else if (accountNumber.startsWith("3"))
-            outputXml = Api.executeCall(fetchSbaAcctServiceName,RequestXml.fetchSbaRequestXml(accountNumber));
+        if (!accountNumber.isEmpty()) {
+            if (accountNumber.startsWith("1"))
+                outputXml = Api.executeCall(fetchCaaAcctServiceName, RequestXml.fetchCaaRequestXml(accountNumber));
+            else if (accountNumber.startsWith("2"))
+                outputXml = Api.executeCall(fetchOdaAcctServiceName, RequestXml.fetchOdaRequestXml(accountNumber));
+            else if (accountNumber.startsWith("3"))
+                outputXml = Api.executeCall(fetchSbaAcctServiceName, RequestXml.fetchSbaRequestXml(accountNumber));
 
-        logger.info("fetch account outputXml-- "+outputXml);
+            logger.info("fetch account outputXml-- " + outputXml);
 
-        if (!Commons.isEmpty(outputXml)){
-            xmlParser.setInputXML(outputXml);
+            if (!Commons.isEmpty(outputXml)) {
+                xmlParser.setInputXML(outputXml);
 
-            String status = xmlParser.getValueOf(apiStatus);
+                String status = xmlParser.getValueOf(apiStatus);
 
-            if (isSuccess(status)){
-                String schemeCode = xmlParser.getValueOf("SchmCode");
-                if (isSchemeCodeInvalid(schemeCode)) {
-                    Commons.clearFields(ifr,new String[]{cpCustomerAcctNoLocal,cpCustomerNameLocal, cpCustomerEmailLocal,cpLienStatusLocal});
-                    return cpInvalidAccountErrorMessage;
+                if (isSuccess(status)) {
+                    String schemeCode = xmlParser.getValueOf("SchmCode");
+                    if (isSchemeCodeInvalid(schemeCode)) {
+                        Commons.clearFields(ifr, new String[]{cpCustomerAcctNoLocal, cpCustomerNameLocal, cpCustomerEmailLocal, cpLienStatusLocal});
+                        return cpInvalidAccountErrorMessage;
+                    }
+
+                    String email = xmlParser.getValueOf("EmailAddr");
+                    String sol = xmlParser.getValueOf("CustId");
+                    String cusDetails = xmlParser.getValueOf("PersonName");
+                    xmlParser.setInputXML(cusDetails);
+                    String name = xmlParser.getValueOf("Name");
+
+
+                    if (Commons.isEmpty(email)) {
+                        Commons.setFields(ifr, new String[]{cpCustomerNameLocal, cpCustomerSolLocal}, new String[]{name, sol});
+                        Commons.enableFields(ifr, new String[]{cpCustomerEmailLocal});
+                        return cpCusMailErrMsg;
+                    } else {
+                        Commons.setFields(ifr, new String[]{cpCustomerEmailLocal, cpCustomerNameLocal, cpCustomerSolLocal}, new String[]{email, name, sol});
+                    }
+                } else if (isFailed(status)) {
+                    String errCode = xmlParser.getValueOf("ErrorCode");
+                    String errDesc = xmlParser.getValueOf("ErrorDesc");
+                    String errType = xmlParser.getValueOf("ErrorType");
+                    logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
+                    return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
                 }
-
-              String email = xmlParser.getValueOf("EmailAddr");
-              String sol = xmlParser.getValueOf("CustId");
-              String cusDetails = xmlParser.getValueOf("PersonName");
-              xmlParser.setInputXML(cusDetails);
-              String name = xmlParser.getValueOf("Name");
-
-
-              if (Commons.isEmpty(email)){
-                  Commons.setFields(ifr,new String[]{cpCustomerNameLocal,cpCustomerSolLocal},new String[]{name,sol});
-                  Commons.enableFields(ifr,new String[]{cpCustomerEmailLocal});
-                  return cpCusMailErrMsg;
-              }
-              else {
-                  Commons.setFields(ifr,new String[]{cpCustomerEmailLocal,cpCustomerNameLocal,cpCustomerSolLocal},new String[]{email,name,sol});
-              }
-            }
-            else if (isFailed(status)){
-                String errCode = xmlParser.getValueOf("ErrorCode");
-                String errDesc = xmlParser.getValueOf("ErrorDesc");
-                String errType = xmlParser.getValueOf("ErrorType");
-                logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
-                return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
-            }
+            } else return apiNoResponse;
         }
-        else return apiNoResponse;
         return empty;
     }
     public String fetchLien(){
@@ -222,6 +265,30 @@ public class CpController implements Constants {
         return  empty;
     }
 
+    public String tokenValidation(String otp){
+        if (!otp.isEmpty()){
+            outputXml = Api.executeCall(tokenValidationServiceName,RequestXml.tokenValidationXml(Commons.getLoginUser(ifr),otp));
+
+            if (!outputXml.isEmpty()) {
+                xmlParser.setInputXML(outputXml);
+                String status = xmlParser.getValueOf("a:Authenticated");
+                logger.info("token status-- "+status);
+                if (isValidationSuccess(status)) {
+                    Commons.disableFields(ifr,new String[]{cpTokenLocal});
+                    Commons.setVisible(ifr,new String[]{cpDebitPrincipalBtn});
+                    Commons.enableFields(ifr,new String[]{cpDebitPrincipalBtn});
+                }
+                else if (isValidationFailed(status)){
+                    logger.info("token errMgs-- "+ xmlParser.getValueOf("a:Message"));
+                    return xmlParser.getValueOf("a:Message");
+                }
+            }
+                else return apiNoResponse;
+        }
+        return null;
+    }
+
+
     private boolean isSuccess(String data){
         return data.equalsIgnoreCase(apiSuccess);
     }
@@ -236,5 +303,12 @@ public class CpController implements Constants {
         String errTypeActual = "BE";
         String errCodeActual = "005";
         return errCode.equalsIgnoreCase(errCodeActual) && errMsg.equalsIgnoreCase(errMsgActual) && errType.equalsIgnoreCase(errTypeActual);
+    }
+
+    private boolean isValidationSuccess(String data){
+        return data.equalsIgnoreCase(True);
+    }
+    private boolean isValidationFailed(String data){
+        return data.equalsIgnoreCase(False);
     }
 }

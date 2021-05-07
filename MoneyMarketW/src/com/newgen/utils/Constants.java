@@ -55,6 +55,7 @@ public interface Constants {
 	String wiNameFormLocal ="winame";
 	String utilityFlagLocal = "cp_utilityFlag";
 	String downloadFlagLocal ="downloadFlag";
+	String branchNameLocal = "g_branchName";
 
 
 
@@ -347,6 +348,7 @@ public interface Constants {
 	String transSubTypeC = "CI";
 	String transSubTypeB = "BI";
 	String apiNoResponse = "No Response Found";
+	String apiLimitErrMsg = "This transaction is above your limit to Post. Kindly increase your limit and try again";
 
 
 
@@ -397,6 +399,8 @@ public interface Constants {
 	String generateTemplateEvent = "TemplateGeneration";
 	String cpPoiSearchEvent="poiSearch";
 	String cpPoiProcessEvent="poiProcess";
+	String cpFetchMandateEvent = "cpFetchMandate";
+	String cpValidateAcctEvent = "cpValidateAcct";
 
 
 	//config

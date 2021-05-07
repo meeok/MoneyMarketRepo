@@ -39,7 +39,11 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                 case formLoad:
                 case onLoad:
                 case cpApiCallEvent:{
-                   return new CpServiceHandler(ifr).validateAccount();
+                    switch (control) {
+                        case cpValidateAcctEvent: return new CpServiceHandler(ifr).validateAccount();
+                        case cpFetchMandateEvent: return getCpAcctNo(ifr);
+                    }
+
                 }
                 case onClick:{
                     switch (control){
@@ -267,7 +271,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         hideTbSections(ifr);
         hideShowLandingMessageLabel(ifr,False);
         hideShowBackToDashboard(ifr,False);
-        setGenDetails(ifr);
+        setBranchDetails(ifr);
         clearFields(ifr,new String [] {selectProcessLocal});
         setMandatory(ifr, new String[]{selectProcessLocal});
         setFields(ifr, new String[]{currWsLocal,prevWsLocal},new String[]{getCurrentWorkStep(ifr),na});
@@ -295,15 +299,16 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
                 if (isCpWindowActive(ifr)) {
                     if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                        setVisible(ifr, new String[]{cpBranchPriSection, cpCustomerDetailsSection, landMsgLabelLocal});
+                        setVisible(ifr, new String[]{cpBranchPriSection, cpCustomerDetailsSection,cpServiceSection, landMsgLabelLocal});
                         setMandatory(ifr, new String[]{cpCustomerAcctNoLocal, cpPmTenorLocal, cpPmPrincipalLocal, cpPmRateTypeLocal});
-                        enableFields(ifr, new String[]{cpCustomerAcctNoLocal, cpPmTenorLocal, cpPmPrincipalLocal, cpPmRateTypeLocal});
+                        enableFields(ifr, new String[]{cpCustomerAcctNoLocal, cpPmTenorLocal, cpPmPrincipalLocal, cpPmRateTypeLocal,cpAcctValidateBtn});
                         setDropDown(ifr, cpPmReqTypeLocal, new String[]{cpPmReqFreshLabel}, new String[]{cpPmReqFreshValue});
                         setFields(ifr, new String[]{cpPmReqTypeLocal, cpPmInvestmentTypeLocal}, new String[]{cpPmReqFreshValue, cpPmInvestmentPrincipal});
                         setCpPmWindowDetails(ifr);
                     }
                     else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
                         setVisible(ifr,new String[]{cpBranchSecSection,landMsgLabelLocal});
+                        enableFields(ifr,new String[]{cpApplyBtn,cpSmInstructionTypeLocal});
                         setMandatory(ifr,new String[]{cpSmInstructionTypeLocal});
                         setCpSmWindowDetails(ifr);
                         setCpSmInvestmentGrid(ifr);
