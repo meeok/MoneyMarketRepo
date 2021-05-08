@@ -19,7 +19,6 @@ public class SocketService {
           String  requestXml = serviceName + "~" + inputXml + "~";
         try
         {
-
             Socket socket = new Socket(SocketIP, SocketPort);
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.write(requestXml.getBytes(StandardCharsets.UTF_16LE));
