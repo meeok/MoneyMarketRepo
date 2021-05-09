@@ -10,16 +10,19 @@ import java.util.Properties;
 public class SocketService {
     private final String propFile = System.getProperty("user.dir") + File.separator + "INTEGRATION_Properties" + File.separator + "Integration.properties";
     private final Properties prop = loadPropertyFile(propFile);
-    private final String SocketIP = prop.getProperty("SocketIP");
-    private final String tmpSocketPort = prop.getProperty("SocketPort");
-    private final int SocketPort = Integer.parseInt(tmpSocketPort);
+    private final String socketIP = prop.getProperty("SocketIP");
+    private final int socketPort = Integer.parseInt(prop.getProperty("SocketPort"));
+    private static Logger logger = LogGen.getLoggerInstance(SocketService.class);
 
     public String executeIntegrationCall(String serviceName, String inputXml){
           String result = "";
           String  requestXml = serviceName + "~" + inputXml + "~";
+          logger.info("Request Xml to Socket-- "+ requestXml);
+          logger.info("Socket IP-- "+ socketIP);
+          logger.info("Socket Port-- "+ socketPort);
         try
         {
-            Socket socket = new Socket(SocketIP, SocketPort);
+            Socket socket = new Socket(socketIP, socketPort);
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.write(requestXml.getBytes(StandardCharsets.UTF_16LE));
             dataOutputStream.flush();

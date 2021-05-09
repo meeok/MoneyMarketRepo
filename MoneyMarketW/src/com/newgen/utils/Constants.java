@@ -257,6 +257,7 @@ public interface Constants {
 	String cpUploadExcelBtn = "cpUploadExcelBtn";
 	String cpFileNameLocal = "CPFILENAME";
 	String cpFetchMandateBtn = "cpFetchMandateBtn";
+	String cpCheckLienBtn = "cpCheckLienBtn";
 
 	//common variables
 	String omoProcess = "omo_market";
@@ -401,6 +402,7 @@ public interface Constants {
 	String cpPoiProcessEvent="poiProcess";
 	String cpFetchMandateEvent = "cpFetchMandate";
 	String cpValidateAcctEvent = "cpValidateAcct";
+	String cpValidateLienEvent = "cpValidateLien";
 
 
 	//config
