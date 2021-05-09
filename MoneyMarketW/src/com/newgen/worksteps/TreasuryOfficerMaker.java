@@ -180,7 +180,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                showCommercialProcessSheet(ifr);
                setVisible(ifr, new String[]{cpPrimaryBidSection, cpAllocSummaryTbl,cpAllocBankRateLocal,cpAllocCpRateLocal,cpAllocDefaultAllocLocal
                ,cpViewGroupBtn});
-               enableFields(ifr, new String[]{cpAllocDefaultAllocLocal,cpAllocCpRateLocal,cpAllocBankRateLocal,cpViewReportBtn});
+               enableFields(ifr, new String[]{cpAllocDefaultAllocLocal,cpAllocCpRateLocal,cpAllocBankRateLocal});
                setMandatory(ifr, new String[]{cpAllocDefaultAllocLocal,cpAllocCpRateLocal,cpAllocBankRateLocal});
                setInvisible(ifr, new String[]{cpViewReportBtn,cpDownloadBtn});
                setFields(ifr,new String[]{cpPmAllocFlagLocal},new String[]{flag});
@@ -188,10 +188,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
            else {
                setGenDetails(ifr);
                setFields(ifr, new String[]{prevWsLocal, selectProcessLocal, cpSelectMarketLocal}, new String[]{utilityWs, commercialProcess, cpPrimaryMarket});
+               enableFields(ifr,cpViewReportBtn);
                showCommercialProcessSheet(ifr);
                setVisible(ifr, cpPrimaryBidSection);
            }
-
         }
        else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier)){
             if (isEmpty(getWindowSetupFlag(ifr))) {
