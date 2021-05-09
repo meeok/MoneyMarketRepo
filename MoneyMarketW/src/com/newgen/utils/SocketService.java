@@ -12,7 +12,7 @@ public class SocketService {
     private final Properties prop = loadPropertyFile(propFile);
     private final String socketIP = prop.getProperty("SocketIP");
     private final int socketPort = Integer.parseInt(prop.getProperty("SocketPort"));
-    private static Logger logger = LogGen.getLoggerInstance(SocketService.class);
+    private static final Logger logger = LogGen.getLoggerInstance(SocketService.class);
 
     public String executeIntegrationCall(String serviceName, String inputXml){
           String result = "";

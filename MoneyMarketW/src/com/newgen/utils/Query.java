@@ -44,10 +44,7 @@ public class Query {
                 "1," +
                 "'N')";
     }
-    public String getSetupMarketWindowQuery(String refId, String wiName, String process, String marketType, String landingMessage, String minPrincipalAmount, String reDiscountRateLess90, String reDiscountRateLess180, String reDiscountRateLess270, String reDiscountRateLess364, String openDate, String closeDate) {
-        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,REDISCOUNTRATELESS90,REDISCOUNTRATELESS180,REDISCOUNTRATELESS270,REDISCOUNTRATELESS364,OPENDATE,CLOSEDATE)" +
-                "values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','" + minPrincipalAmount + "','" + reDiscountRateLess90 + "','" + reDiscountRateLess180 + "','" + reDiscountRateLess270 + "','" + reDiscountRateLess364 + "','" + openDate + "','" + closeDate + "')";
-    }
+
     public String getSetupMarketWindowQuery(String refId, String wiName, String process, String marketType, String landingMessage,String minimumPrincipal, String openDate, String closeDate) {
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,OPENDATE,CLOSEDATE)" +
                 " values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','"+minimumPrincipal+"','" + openDate + "','" + closeDate + "')";
@@ -68,16 +65,14 @@ public class Query {
     public String getWinDetailsByIdQuery(String winRefId) {
         return "select * from mm_setup_tbl where refid = '" + winRefId + "";
     }
-    public String getWinCloseFlagById(String winRefId) {
-        return "select closeflag from mm_setup_tbl where refid = '" + winRefId + "'";
-    }
+
     public String getUpdateSetupQuery(String columnName, String value, String condition) {
         return "update mm_setup_tbl set " + columnName + " = " + value + " where condition = " + condition + "";
     }
-    public String getCheckActiveWindowByIdQuery(String winRefId) {
+    public static String getCheckActiveWindowByIdQuery(String winRefId) {
         return "select COUNT(closeflag) from mm_setup_tbl where refid = '" + winRefId + "' and closeflag = 'N'";
     }
-    public String getSetupBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rateType, String rate) {
+    public static String getSetupBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rateType, String rate) {
         return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rateType,rate) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rateType + "','" + rate + "')";
     }
     public String getSetupCpSmBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rate,String maturityDate) {

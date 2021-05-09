@@ -250,7 +250,7 @@ public class Commons implements Constants {
         return empty;
     }
     public boolean compareDate(String startDate, String endDate){
-      return  LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern(dbDateTimeFormat)).isBefore(LocalDateTime.parse(startDate,DateTimeFormatter.ofPattern(dbDateTimeFormat)));
+      return  LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern(dbDateTimeFormat)).isAfter(LocalDateTime.parse(startDate,DateTimeFormatter.ofPattern(dbDateTimeFormat)));
     }
     public String getCpOpenDate(IFormReference ifr){return getFieldValue(ifr,cpOpenDateLocal);}
     public String getCpCloseDate(IFormReference ifr){return getFieldValue(ifr,cpCloseDateLocal);}
@@ -328,19 +328,7 @@ public class Commons implements Constants {
     }
     public String getUserSol(IFormReference ifr){return getFieldValue(ifr,solLocal);}
     public boolean cpCheckWindowStateById(IFormReference ifr,String id){
-        return Integer.parseInt(new DbConnect(ifr,
-                new Query().getCheckActiveWindowByIdQuery(id)).getData().get(0).get(0)) > 0;
-    }
-    public void setupCpPmBid(IFormReference ifr){
-        logger.info("query to setup bid-- "+   new Query().getSetupBidQuery(
-                getCurrentDateTime(),getCpPmCusRefNo(ifr), getCpPmWinRefNoBr(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),
-                getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
-        ));
-        new DbConnect(ifr,
-                new Query().getSetupBidQuery(
-                        getCurrentDateTime(),getCpPmCusRefNo(ifr), getCpPmWinRefNoBr(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),
-                        getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
-                )).saveQuery();
+        return Integer.parseInt(new DbConnect(ifr,Query.getCheckActiveWindowByIdQuery(id)).getData().get(0).get(0)) > 0;
     }
     public String setupCpSmBid(IFormReference ifr){
         resultSet = new DbConnect(ifr,new Query().getCpSmInvestmentsSelectQuery(getSelectedCpSmInvestmentId(ifr))).getData();
@@ -353,14 +341,14 @@ public class Commons implements Constants {
         logger.info("is saved -- "+ validate);
 
         if (validate >= 0){
-            float availableAmount =   Float.parseFloat(resultSet.get(0).get(2)) - Float.parseFloat(getCpSmPrincipalBr(ifr)) ;
-            float totalAmountSold = Float.parseFloat(resultSet.get(0).get(3)) + Float.parseFloat(getCpSmPrincipalBr(ifr));
+            double availableAmount =   Double.parseDouble(resultSet.get(0).get(2)) - Double.parseDouble(getCpSmPrincipalBr(ifr)) ;
+            double totalAmountSold = Double.parseDouble(resultSet.get(0).get(3)) + Double.parseDouble(getCpSmPrincipalBr(ifr));
             int mandates = Integer.parseInt(resultSet.get(0).get(4)) + 1;
             new DbConnect(ifr,new Query().getCpSmInvestmentsUpdateQuery(getSelectedCpSmInvestmentId(ifr),String.valueOf(availableAmount),String.valueOf(totalAmountSold),String.valueOf(mandates))).saveQuery();
             disableField(ifr,cpInvestBtn);
             return "Customer Bid has been invested, Thank You.";
         }
-        return "Customer Bid cannot be invested right now. Contact IBPS support";
+        return "Customer Bid cannot be invested right now. Try again later or Contact iBPS support";
     }
     public static String getCpAcctNo(IFormReference ifr){return getFieldValue(ifr,cpCustomerAcctNoLocal);}
     public static String getCpAcctName(IFormReference ifr){return getFieldValue(ifr,cpCustomerNameLocal);}

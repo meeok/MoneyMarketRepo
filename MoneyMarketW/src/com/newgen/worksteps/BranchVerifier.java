@@ -6,10 +6,7 @@ import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.controller.CpController;
-import com.newgen.utils.Commons;
-import com.newgen.utils.CommonsI;
-import com.newgen.utils.GenerateDocument;
-import com.newgen.utils.LogGen;
+import com.newgen.utils.*;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 
@@ -198,7 +195,9 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermPartialOptionLocal});
                     }
                 }
-                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien) || getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeRemoveLien)){}
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
+                    setVisible(ifr,new String[]{cpLienSection});
+                }
             }
         }
     }
@@ -206,6 +205,12 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     @Override
     public void cpSetDecision(IFormReference ifr) {
         setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReject});
+    }
+    public void setupCpPmBid(IFormReference ifr){
+        new DbConnect(ifr,Query.getSetupBidQuery(
+                        getCurrentDateTime(),getCpPmCusRefNo(ifr), getCpPmWinRefNoBr(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),
+                        getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
+                )).saveQuery();
     }
     
     /*********************************  Treasury Starts here ****************/

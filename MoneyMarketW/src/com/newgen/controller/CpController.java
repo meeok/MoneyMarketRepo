@@ -18,8 +18,8 @@ import java.util.Set;
 
 public class CpController implements Constants {
     private static final Logger logger = LogGen.getLoggerInstance(CpController.class);
-    private static String outputXml;
-    private static final XmlParser xmlParser = new XmlParser();
+    private String outputXml;
+    private final XmlParser xmlParser = new XmlParser();
     private final IFormReference ifr;
 
     public CpController(IFormReference ifr) {

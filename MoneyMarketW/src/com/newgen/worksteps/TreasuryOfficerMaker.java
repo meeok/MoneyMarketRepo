@@ -468,6 +468,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             if (dayToMaturity > 270)
                 return "Number of days to maturity Cannot be more 270. Please correct Maturity Date Column. Days to Maturity: "+dayToMaturity+"";
 
+            if (dayToMaturity < 1)
+                return "Number of days to maturity Cannot be less than 1. Please correct Maturity Date Column. Days to Maturity: "+dayToMaturity+"";
+
+
             ifr.setTableCellValue(cpSmCpBidTbl,i,6,String.valueOf(dayToMaturity));
             ifr.setTableCellValue(cpSmCpBidTbl,i,7,smStatusOpen);
         }
