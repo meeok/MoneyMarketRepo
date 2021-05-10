@@ -45,6 +45,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 case onLoad:{}
                 break;
                 case onClick:{
+                	logger.info("onclick>>22");
                     switch (controlName){
                         case cpSetupWindowEvent:{
                           return cpSetupWindow(ifr, Integer.parseInt(data));
@@ -59,9 +60,13 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                             return cpUpdateReDiscountRate(ifr);
                         }
                         //****btreasury onclick start **********//
-                        case tbPost:{
+                        case tbPostFaceValue:{
+                        	logger.info("post");
                         	return tbPost(ifr);  
                         }
+                        case tbUnLienCustFaceValue:{
+	                		return tbUnLienCustFaceValue(ifr);
+	                	}
                         //****btreasury onclick End **********//	
                     }
                 }
@@ -267,6 +272,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbTranID});
 	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
 	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd,tbtoken});//setInvisible(ifr, new String[]{});
+	        	hideField(ifr,tbPostbtn);
+	        	setVisible(ifr,tbUnlienBtn);
 	          //  disableFields(ifr, new String[] {});
 	           
 	        }
@@ -283,8 +290,10 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
  	       setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
  	       if (!getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)) {//landing msg is not approved
  	    	   setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
-               disableFields(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+               //disableFields(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection});
+               enableFields(ifr,new String[] {tbDecisionSection});
                setMandatory(ifr,new String [] {tbDecisiondd,tbRemarkstbx});
+               hideFields(ifr,new String[]{tbMarketUniqueRefId});
  	       }
  	       else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){ //mApproving setup
  	    	   setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection});
@@ -353,20 +362,21 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     	 
     	 //secondary Market
     	 else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
-    		 
+    		 logger.info(tbSecondaryMarket);
     		 //landing message approval
-    		 if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) ||getTbUpdateLandingMsg(ifr) ||!(getTbSetUpFlg(ifr).equalsIgnoreCase(flag))) {//approving or rejecitng landing message
-
+    		 if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) ||getTbUpdateLandingMsg(ifr)) {//approving or rejecitng landing message
+    			 logger.info("approving or rejecitng landing ");
         		 tbUpDateLndingMsgFlg(ifr);
     		 }
     		 
     		 //// Approving setup both new and update
     		 else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){ 
+    			 logger.info("New market");
     			 if(getFieldValue(ifr,tbSmSetupdd).equalsIgnoreCase(smSetupNew)) { //new setup; Set up market
     				 if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
     					 String dte =getCurrentDateTime();
     					 logger.info("dte>>."+dte);
-    					 retMsg = setUpTbMarketWindow(ifr,tbSecUniqueReftbx,dte,getFieldValue(ifr,tbSecCuttOfftime),getFieldValue(ifr,tbVerificationAmtttbx));// set market
+    					 retMsg = setUpTbMarketWindow(ifr,getTbMarketUniqueRefId(ifr),dte,getFieldValue(ifr,tbSecCuttOfftime),getFieldValue(ifr,tbVerificationAmtttbx));// set market
     					 updateApprovalFlg(ifr,tbSetupApprovedFlg,retMsg);
     				 }
     		         else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {
@@ -432,6 +442,17 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     	logger.info("Ondone Validate retMsg>>"+retMsg);
     	return retMsg;
     }
+    private String tbUnLienCustFaceValue(IFormReference ifr) {
+    	//setTbDecisiondd(ifr,decApprove);
+    	//disableFields(ifr, new String[] {tbLienPrincipalbtn,tbDecisiondd});
+    	undoMandatory(ifr,tbRemarkstbx);
+    	setTb_BrnchPri_LienID(ifr,"L244");
+    	setFields(ifr,tbCustAcctLienStatus,"No");
+    	hideField(ifr,tbUnlienBtn);
+    	setVisible(ifr,tbPostbtn);
+    	return "Customer Principal unliened Succesfully";
+    	
+  	}
     
     //set approval flags
  /*   private void updateApprovalFlg(IFormReference ifr,String cntrlName,String retMsg) {

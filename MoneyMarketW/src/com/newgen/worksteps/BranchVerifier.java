@@ -79,7 +79,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         	return tbValidateCustomer(ifr);
                             
                         }
-                        case tbPost:{
+                        case tbPostFaceValue:{
                         	return tbPost(ifr);  
                         }
                         
@@ -249,26 +249,25 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
             if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
             	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchPriSection,
-            			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbAssigndd});
+            			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbAssigndd,tbBrcnhPriPersonalRate});
             	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbCustPrincipalAmount});
             	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
             	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
             	hideFields(ifr, new String[] {tbBidRequestDte,tbBidRStatus});
                 enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
-               
             }
         } 
         else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) {
         	if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
-	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchSecSection,
-	        			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbPostSection});
+	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBranchSecSection,
+	        			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbPostSection});//tbBrnchCusotmerDetails
 	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchSecSection});
 	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
 	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
 	          //  disableFields(ifr, new String[] {});
 	            enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
 	        	
-	        	setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchSecSection,tbDecisionSection});
+	        	setVisible(ifr, new String[] {tbBranchSecSection,tbDecisionSection});//tbBrnchCusotmerDetails
 	    		disableFields(ifr,new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
 	    		setMandatory(ifr, new String[] {tbSmBidAmount,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});	
 	    		setFields(ifr,new String[] {tbSmIntrestAtMaturity,tbSmPrincipalAtMaturity}, new String[] {getSmInterestAtMat(ifr),tbGetSmPrincipalAtMat(ifr)});

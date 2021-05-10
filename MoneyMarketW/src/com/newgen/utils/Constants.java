@@ -421,7 +421,7 @@ public interface Constants {
 	String tbBrcnhPriRateTypeddChange ="tbBrcnhPriRateTypeddChange";
 	String tbBrnchPriPrncplAmtChange = "tbBrnchPriPrncplAmtChange";
 	String tbTokenChange ="tbTokenChange";
-	String tbPost ="tbPost";
+	String tbPostFaceValue ="tbPostFaceValue";
 //	String tbOndone ="tbOndone";
 	String tbLienCustFaceValue = "tbLienCustFaceValue";
 	String tbViewPriBidSmryReport ="tbViewPriBidSmryReport";
@@ -442,6 +442,7 @@ public interface Constants {
 	String tbGetCustDetailsForTermination="tbGetCustDetailsForTermination";
 	String tbTerminateTypeChanged ="tbTerminateTypeChanged";
 	String tbTerminate = "tbTerminate";
+	String tbUnLienCustFaceValue ="tbUnLienCustFaceValue";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -532,6 +533,7 @@ public interface Constants {
 	//String tbPriBidApprovebtn ="tb_allocation_btn";
 	
 	
+	
 	//sections
 	String tbSearchCustSection ="tb_searchCust_section";
 	String tbMarketSection = "tb_market_section";
@@ -553,6 +555,7 @@ public interface Constants {
 	String tbCutOffTimeSection = "tb_cutoff_section";
 	String tbRediscountRate ="tb_rediscount_section";
 	String tbCustBidSection ="tb_cust_bid_section";
+	String tbUtilityFailedPostingSection ="tb_utilityFailedPosting_section";
 	
 	//String tbBranchPriSection = "tb_pm_br_section";
 	//String tbBranchSecSection = "tb_BranchSec_section";
@@ -749,6 +752,11 @@ public interface Constants {
 	String tbSecBidStatusCancelledBids = "Cancelled-Bids";
 	
 	
+	String tbUnlienBtn ="UnLienPrincipal";
+	String tbPostbtn="tb_post_btn";
+	
+	
+	//tbPost
 	/*String minPrincipalErrorMsg ="Customer principal cannot be less and window minimum principal";
 	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";
 	String cpValidateWindowErrorMsg ="This CP window has been closed. Kindly wait till the next window to initiate";
@@ -769,7 +777,7 @@ public interface Constants {
 	String tbBidRllovrMndtelbl ="Roll Over Mandate";
 	String tbBidRllovrMndte ="RollOverMandate";
 	
-	String[] allTbSections = {tbSearchCustSection,"tb_searchCust_section",tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
+	String[] allTbSections = {tbUtilityFailedPostingSection,tbSearchCustSection,tbSearchCustSection,tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
 			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection};
 	

@@ -728,6 +728,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         enableFields(ifr,new String[]{tbMarketTypedd});
         setMandatory(ifr,new String [] {tbMarketTypedd});// {tbCategorydd,tbDecisiondd,tbRemarkstbx});
         setDropDown(ifr,tbCategorydd,new String[]{tbCategoryBid,tbCategoryMandate});
+        hideField(ifr,tbMarketUniqueRefId);
         
     }
     /*
@@ -756,9 +757,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	}
     	else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
     		setTbBrnchSmWindownUnqNo(ifr,getTbActiveWindowwithRefid(ifr));
+    		setTbMarketUniqueRefId(ifr,getTbActiveWindowwithRefid(ifr));
     		setVisible(ifr, new String[]{tbCategorydd});
     		setMandatory(ifr,new String [] {tbCategorydd});
-    		if(!isEmpty(getTbBrnchSmWindownUnqNo(ifr))){
+    		if(!isEmpty(getTbMarketUniqueRefId(ifr))){
     			setVisible(ifr, new String[]{tbMarketUniqueRefId});
     			//disableFields(ifr, new String[]{tbMarketSection});
     		}
@@ -848,8 +850,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	//secondary market
     	else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
     		if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
+    			logger.info(isTbWindowOpen(ifr,getTbBrnchSmWindownUnqNo(ifr)));
     			 if(isTbWindowOpen(ifr,getTbBrnchSmWindownUnqNo(ifr))){//check if market is open for bidding
-		    		setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchSecSection,tbDecisionSection});
+    				 logger.info("market is open");
+		    		setVisible(ifr, new String[] {tbBranchSecSection,tbDecisionSection});//tbBrnchCusotmerDetails
 		    		disableFields(ifr,new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
 		    		setMandatory(ifr, new String[] {tbSmBidAmount,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
 		    		hideFields(ifr, new String[] {tbSmPrincipalAtMaturity,tbSmIntstMaturityNonLpYr,tbSmIntrsyMaturityLpYr,tbSmResidualIntrst});
@@ -943,7 +947,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     		if(!isEmpty(getTbBrnchPriPrncplAmt(ifr))) {
     			logger.info("getTbBrnchPriPrncplAmt>>>>"+Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)));
     			try {
-    				retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbPrsnlMinPrincipalAmt ? "Principal Amount must be minimum of "+String.valueOf(tbPrsnlMinPrincipalAmt):"";
+    				retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbPrsnlMinPrincipalAmt ? "Principal Amount must be minimum of "+String.format("%.0f",tbPrsnlMinPrincipalAmt):"";
     			}
     			catch(Exception ex) {retMsg ="Invalid Principal amount";}
     		}
@@ -952,7 +956,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     		if(!isEmpty(getTbBrnchPriPrncplAmt(ifr))) {
     			logger.info("getTbBrnchPriPrncplAmt>>>>"+Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)));
 	    		try {
-					retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbBnkMinPrincipalAmt ? "Principal Amount must be minimum of "+String.valueOf(tbBnkMinPrincipalAmt) :"";
+					retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbBnkMinPrincipalAmt ? "Principal Amount must be minimum of "+String.format("%.0f",tbBnkMinPrincipalAmt) :"";
 				}
 				catch(Exception ex) {retMsg ="Invalid Principal amount";}
 			}
@@ -1018,7 +1022,6 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         logger.info("getSmMinPrincipalQuery get db result>>>"+minPdbr);
         if(minPdbr.size()>0) 
         	setFields(ifr,tbSmMinPriAmt,minPdbr.get(0).get(0));
-        
     	String retMsg ="";
     	String maturityDte = ifr.getTableCellValue(tbSmOpenBidsTbl,rowIndex,0);
     	logger.info("maturityDte>>>" + maturityDte);

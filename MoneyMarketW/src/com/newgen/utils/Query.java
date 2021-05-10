@@ -73,7 +73,7 @@ public class Query {
     
     //get window close date of a refid
     public String getWinCloseDateByIdQuery(String winRefId){
-        return "select CLOSEDATE from mm_setup_tbl where refid = '"+winRefId+"";
+        return "select CLOSEDATE from mm_setup_tbl where refid = '"+winRefId+"'";
     }
     //get window close date of a market
     public String getWinCloseDateQuery(String process, String marketType){
@@ -164,7 +164,8 @@ public class Query {
       }
     //with personal rate --UPDATE ADD WORKSTEP--
     public String getTbPmCustomerRqstyQuery(String refid,String rqstType, String tenor,String rateType,String personalRate){
-    	return "select tb_request_type,tb_pm_custId, tb_custAcctNum,tb_custAcctName, tb_pm_tenor,tb_rate_type,tb_pm_personal,tb_pm_mpBr,winame,tb_rollover_type from moneymarket_ext " + 
+    	return "select tb_request_type,tb_pm_custId, tb_custAcctNum,tb_custAcctName, tb_pm_tenor,tb_rate_type,tb_pm_personal,tb_pm_mpBr,winame,tb_rollover_type,"
+    			+ "tb_cbnRate,tb_bankrate,tb_maturity_date,tb_allocation_p,tb_bidStatus,tb_status from moneymarket_ext " + 
     	"where tb_request_type is not null and tb_uniqueNum in (select refid from mm_setup_tbl where closeflag ='Y' and refid='"+refid+"') and tb_request_type ='"+rqstType+"'"
     			+ " and tb_pm_tenor ='"+tenor+"' and tb_rate_type='"+rateType+"' and tb_pm_personal = '"+personalRate+"'";
       }
@@ -230,15 +231,15 @@ public class Query {
     }
     //get tb Secondary Available amt and status
     public String getSmAvailableAmtQuery(String invesmentid){
-        return "(select tbillAmt - totalamountsold ), Status, from tb_SmIssuedBills where insertionorderid = '"+invesmentid+"'";
+        return "(select tbillAmt - totalamountsold ), Status, from TB_SMISSUEDBILLS_TBL where insertionorderid = '"+invesmentid+"'";
     }
     //get all colums in issued treasurybids workstep
     public String tbGetSmIssuedBidsQuery(String refid){
-        return "select MaturityDate,Tenor,Status,TBillAmount,tbRate,Mandates,TOTALAMOUNTSOLD,insertionorderid from tb_SmIssuedBills where upper(status) = upper('Open')  and winame in (select winame from  mm_setup_tbl where refid ='"+refid+"')";
+        return "select MaturityDate,Tenor,tbStatus,TBillAmount,tbRate,Mandates,TOTALAMOUNTSOLD,insertionorderid from TB_SMISSUEDBILLS_TBL where upper(tbstatus) = upper('Open')  and winame in (select winame from  mm_setup_tbl where refid ='"+refid+"')";
     }
     //update mandates
     public String updateTbIBMandateAndTAmt(String invesmentid,double bidAmt){
-        return "update tb_SmIssuedBills set totalamountsold = totalamountsold + "+bidAmt+", mandate =mandate+1 where insertionorderid = '"+invesmentid+"'";
+        return "update TB_SMISSUEDBILLS_TBL set totalamountsold = totalamountsold + "+bidAmt+", mandate =mandate+1 where insertionorderid = '"+invesmentid+"'";
     }
     public static String getTbCustMandateDetailsQuery(String custId, String acctno,String marketType){
         return "select tb_bidRequestDte,tb_custAcctNum,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_principalAmt,tb_bidStatus,"

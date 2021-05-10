@@ -585,16 +585,8 @@ public class Commons implements Constants {
 	}
     
     public static String tbGetSmDefaultCutoffDteTime() {
-    	SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-    	try {
-    		String dte = formatter.format(new Date());
-    		logger.info("dte>>"+dte +"Ading timg>>>"+dte+ " 15:00:00");
-    		return (formatter.format(new Date()))+" 15:00:00";
-    	}
-    	catch (Exception e) {
-			logger.info("getDateWithoutTime Exception>>>"+e.toString());
-			return null;
-		}
+    	logger.info("tbGetSmDefaultCutoffDteTime>>>>"+getCurrentDate()+" 15:00:00");
+    	return getCurrentDate()+" 15:00:00";
 	}
     public static void clearDropDown(IFormReference ifr, String controlName){
         ifr.clearCombo(controlName);
@@ -1070,12 +1062,15 @@ public class Commons implements Constants {
     public String tbPost(IFormReference ifr){
     	if(isTbWinValid(ifr)){
     		//post
+    		logger.info("post2");
     		if(!isEmpty(getFieldValue(ifr,tbtoken))) {
-    			if(getPostStatus(ifr).equalsIgnoreCase(tbSuccess)) {
+    			logger.info("post4");
+    			//if(getPostStatus(ifr).equalsIgnoreCase(tbSuccess)) {
     				setFields(ifr,tbTranID,"M62");
             		setTbDecisiondd(ifr,decApprove);
-            		disableFields(ifr,new String[] {tbDecisiondd});
-            	}	
+            		disableFields(ifr,new String[] {tbDecisiondd,tbPostbtn});
+            		return "Posting was successful";
+            	//}	
     		}
     		else return "Please enter token before posting";
     		
@@ -1083,7 +1078,7 @@ public class Commons implements Constants {
     	else { //window is closed
     		return "Cutoff time for window has elapsed";
 		}
-    	return "";
+    	//return "";
     }
     
     
