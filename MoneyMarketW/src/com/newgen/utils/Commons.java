@@ -275,14 +275,10 @@ public class Commons implements Constants {
     public String getPmMinPrincipal(IFormReference ifr){return getFieldValue(ifr,cpPmMinPriAmtLocal);}
     public String cpSetupPrimaryMarketWindow(IFormReference ifr){
         String winRefNo =  generateCpWinRefNo(cpPmLabel);
-        logger.info("pmWinRefNo--"+ winRefNo);
-        logger.info("Query for setup-- "+ new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getPmMinPrincipal(ifr),getCpOpenDate(ifr),getCpCloseDate(ifr)));
        int validate = new DbConnect(ifr,new Query().getSetupMarketWindowQuery(winRefNo,getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpLandingMsg(ifr),getPmMinPrincipal(ifr),getCpOpenDate(ifr),getCpCloseDate(ifr))).saveQuery();
-       logger.info("validate-- "+validate);
        if (validate >= 0) {
            setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
            disableFields(ifr, new String[]{cpTreasuryPriSection,cpCutOffTimeSection,cpMarketSection,cpSetupSection});
-           logger.info("record saved just for checking");
            return apiSuccess;
        }
        else return "Unable to setup window. Kindly contact iBPS support.";

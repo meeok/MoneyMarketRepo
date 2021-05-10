@@ -57,7 +57,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                     switch (controlName){
                         case cpUpdateMsg:{cpUpdateLandingMsg(ifr);}
                         break;
-                        case cpSetupWindowEvent:{ return cpSetupWindow(ifr);}
+                        case cpSetupWindowEvent:{ return cpSetupPmWindow(ifr);}
                         
                         /**** Treasury onClick Start ****/
                         case tbOnClickUpdateMsg:{tbUpdateLandingMsg(ifr);}
@@ -262,14 +262,11 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         clearFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
         setDecision(ifr,cpDecisionLocal,new String [] {decSubmit,decDiscard});
     }
-    private String cpSetupWindow(IFormReference ifr){
-        if (isEmpty(getSetupFlag(ifr))){
+    private String cpSetupPmWindow(IFormReference ifr){
+        if (isEmpty(getWindowSetupFlag(ifr))){
             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
                 if (!compareDate(getCpOpenDate(ifr),getCpCloseDate(ifr))) return cpSetupPrimaryMarketWindow(ifr);
                 else return "Close date cannot be before Open date.";
-            }
-            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
-                return empty;
             }
         }
         return empty;

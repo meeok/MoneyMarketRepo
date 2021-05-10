@@ -52,10 +52,9 @@ public class CpController implements Constants {
                             }
                         }
 
-                        if (Integer.parseInt(postAmount) < Integer.parseInt(amount))
+                        if (Integer.parseInt(postAmount) <= Integer.parseInt(amount))
                             return apiSuccess;
-
-                        return apiLimitErrMsg;
+                       else return apiLimitErrMsg;
                     } else if (isFailed(status)) {
                         String errCode = xmlParser.getValueOf("ErrorCode");
                         String errDesc = xmlParser.getValueOf("ErrorDesc");

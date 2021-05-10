@@ -52,7 +52,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 case onClick:{
                     switch (controlName){
                         case cpSetupWindowEvent:{
-                          return cpSetupWindow(ifr, Integer.parseInt(data));
+                          return cpSetupSmWindow(ifr, Integer.parseInt(data));
                         }
                         case cpSmInvestEvent:{
                            return  setupCpSmBid(ifr);
@@ -173,12 +173,9 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         setDecision(ifr, cpDecisionLocal,new String[]{decApprove,decReject});
     }
 
-    private String cpSetupWindow(IFormReference ifr, int rowCount){
+    private String cpSetupSmWindow(IFormReference ifr, int rowCount){
         if (isEmpty(getWindowSetupFlag(ifr))){
-            if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
-                return empty;
-            }
-            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+             if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
                 return cpSetupSecondaryMarketWindow(ifr,rowCount);
             }
         }
