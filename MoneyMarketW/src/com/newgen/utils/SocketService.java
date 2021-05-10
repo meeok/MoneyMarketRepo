@@ -15,13 +15,14 @@ public class SocketService {
     private static final Logger logger = LogGen.getLoggerInstance(SocketService.class);
 
     public String executeIntegrationCall(String serviceName, String inputXml){
-          String result = "";
-          String  requestXml = serviceName + "~" + inputXml + "~";
-          logger.info("Request Xml to Socket-- "+ requestXml);
-          logger.info("Socket IP-- "+ socketIP);
-          logger.info("Socket Port-- "+ socketPort);
+        String result = "";
         try
         {
+            String  requestXml = serviceName + "~" + inputXml + "~";
+            logger.info("Request Xml to Socket-- "+ requestXml);
+            logger.info("Socket IP-- "+ socketIP);
+            logger.info("Socket Port-- "+ socketPort);
+
             Socket socket = new Socket(socketIP, socketPort);
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.write(requestXml.getBytes(StandardCharsets.UTF_16LE));

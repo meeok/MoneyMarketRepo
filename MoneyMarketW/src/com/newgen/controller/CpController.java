@@ -1,9 +1,7 @@
 package com.newgen.controller;
 
-import com.newgen.api.customService.FetchAccountDetails;
-import com.newgen.api.customService.FetchLien;
-import com.newgen.api.customService.PostTransaction;
-import com.newgen.api.customService.TokenValidation;
+
+
 import com.newgen.api.execute.Api;
 import com.newgen.api.generateXml.RequestXml;
 import com.newgen.iforms.custom.IFormReference;
@@ -25,50 +23,6 @@ public class CpController implements Constants {
     public CpController(IFormReference ifr) {
         this.ifr = ifr;
     }
-    public static String postTranController(IFormReference ifr){
-        String resp = limitController(ifr);
-        logger.info("resp -- "+ resp);
-        if (resp.equalsIgnoreCase(apiSuccess)) {
-            String txnId = PostTransaction.postTransaction();
-            txnId = txnId.trim();
-            if (!Commons.isEmpty(txnId)) {
-                Commons.setVisible(ifr,new String[]{cpTxnIdLocal});
-                Commons.setFields(ifr, new String[]{cpTxnIdLocal, cpDecisionLocal,cpPostFlag}, new String[]{txnId, decApprove,flag});
-                Commons.disableFields(ifr, new String[]{cpDecisionLocal,cpDebitPrincipalBtn,cpTxnIdLocal});
-                if (Commons.getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
-                    Commons.setVisible(ifr,new String[]{cpSetupSection,cpInvestBtn});
-
-                return cpPostSuccessMsg;
-            }
-        }
-        else return resp;
-
-        return null;
-    }
-
-    public static String tokenController(IFormReference ifr){
-        String resp =  TokenValidation.validateToken();
-
-        if (resp.equalsIgnoreCase(apiSuccess)){
-            Commons.disableFields(ifr,new String[]{cpTokenLocal});
-            Commons.setVisible(ifr,new String[]{cpDebitPrincipalBtn});
-            Commons.enableFields(ifr,new String[]{cpDebitPrincipalBtn});
-        }
-        else return resp;
-
-        return null;
-    }
-    public  static  String  limitController (IFormReference ifr){
-        try {
-             return apiSuccess;
-        }
-        catch (Exception e){
-            logger.error("Exception occurred-- "+ e.getMessage());
-            return exceptionMsg;
-        }
-    }
-
-
     public String getUserLimit(String postAmount) {
         logger.info("Welcome to get user limit call");
         try {
@@ -228,6 +182,7 @@ public class CpController implements Constants {
                             return cpCusMailErrMsg;
                         } else {
                             Commons.setFields(ifr, new String[]{cpCustomerEmailLocal, cpCustomerNameLocal, cpCustomerSolLocal}, new String[]{email, name, sol});
+                            Commons.disableFields(ifr, new String[]{cpCustomerEmailLocal});
                         }
                     } else if (isFailed(status)) {
                         String errCode = xmlParser.getValueOf("ErrorCode");
@@ -249,11 +204,8 @@ public class CpController implements Constants {
             outputXml = Api.executeCall(fetchLienServiceName, RequestXml.fetchLienRequestXml(Commons.getCpAcctNo(ifr).trim()));
             logger.info("outputXml-- " + outputXml);
             if (!Commons.isEmpty(outputXml)) {
-
                 xmlParser.setInputXML(outputXml);
-
                 String status = xmlParser.getValueOf(apiStatus);
-
                 if (isSuccess(status)) {
                     String lienId = xmlParser.getValueOf("LienId");
                     logger.info("lienId: " + lienId);
@@ -271,10 +223,8 @@ public class CpController implements Constants {
                     logger.info("errType: " + errType);
                     if (isNotLien(errCode, errDesc, errType))
                         Commons.setFields(ifr, cpLienStatusLocal, no);
-
                     else
                         return "Error Code: " + errCode + " Error Description: " + errDesc + " Error Type: " + errType + ".";
-
                 }
             } else return apiNoResponse;
         } catch (Exception e ){
@@ -325,7 +275,6 @@ public class CpController implements Constants {
         String errCodeActual = "005";
         return errCode.equalsIgnoreCase(errCodeActual) && errMsg.equalsIgnoreCase(errMsgActual) && errType.equalsIgnoreCase(errTypeActual);
     }
-
     private boolean isValidationSuccess(String data){
         return data.equalsIgnoreCase(True);
     }

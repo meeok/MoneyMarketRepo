@@ -1,10 +1,10 @@
 package com.newgen.worksteps;
 
+import com.newgen.api.customService.CpServiceHandler;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.controller.CpController;
 import com.newgen.utils.*;
 
 import org.apache.log4j.Logger;
@@ -37,9 +37,14 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     @Override
     public String executeServerEvent(IFormReference ifr, String controlName, String eventName, String data) {
         try {
-        	logger.info("ControlName>>" +controlName);
-        	logger.info("eventName>>" +eventName);
             switch (eventName){
+                case cpApiCallEvent:{
+                    switch (controlName) {
+                        case cpTokenEvent: return new CpServiceHandler(ifr).validateTokenTest();
+                        case cpPostEvent: return new CpServiceHandler(ifr).postTransactionTest();
+                    }
+                    break;
+                }
                 case formLoad:{}
                 break;
                 case onLoad:{}
@@ -61,13 +66,6 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                     }
                 }
                 break;
-                case cpApiCallEvent:{
-                    switch (controlName) {
-                        case cpTokenEvent: return CpController.tokenController(ifr);
-                        case cpPostEvent: return CpController.postTranController(ifr);
-                    }
-                    break;
-                }
                 case onChange:{}
                 break;
                 case custom:{}
@@ -80,12 +78,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 		tbUpDateLndingMsgFlg(ifr);
                 		}
                 	break;
-                	
                 	/*** Treasury end****/
-                	
                 	}
-                	
-                	
                 }
                 break;
                 case decisionHistory:{
@@ -165,7 +159,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                     setVisible(ifr,new String[]{cpBranchSecSection,cpCustomerDetailsSection,cpDecisionSection,landMsgLabelLocal,
                             cpSmMaturityDateBrLocal,cpPostSection,cpTokenLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal, (getCpSmConcessionRateValue(ifr).equalsIgnoreCase(empty)) ? empty : cpSmConcessionRateValueLocal});
                     setInvisible(ifr, new String[]{cpAcctValidateBtn,cpApplyBtn,cpSmInvestmentBrTbl});
-                    disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal,cpSmInstructionTypeLocal});
+                    disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal, cpSmInvestmentTypeLocal});
                     setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
                     enableFields(ifr,new String[]{cpTokenLocal});
                 }

@@ -16,7 +16,7 @@ public class LoadProp implements  Constants {
         try {
             logger.info("Start loading properties file");
             Properties properties = new Properties();
-            InputStream in = new FileInputStream(configPath);
+            InputStream in = new FileInputStream(configPath2);
             properties.load(in);
 
             processDefId = properties.getProperty(processDefIdField);

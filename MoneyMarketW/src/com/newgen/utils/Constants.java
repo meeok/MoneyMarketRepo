@@ -57,8 +57,6 @@ public interface Constants {
 	String downloadFlagLocal ="downloadFlag";
 	String branchNameLocal = "g_branchName";
 
-
-
 	// cp sections
 	String cpBranchPriSection = "cp_branchPm_section";
 	String cpBranchSecSection = "cp_BranchSec_section";
@@ -81,7 +79,6 @@ public interface Constants {
 	String cpMandateTypeSection = "cp_mandatetypesection";
 	String cpLienSection = "cpLienSection";
 	String cpServiceSection = "cpServiceSection";
-
     // end of cp sections
 
 	// commercial Paper process ids
@@ -168,7 +165,7 @@ public interface Constants {
 	String cpSmIFrameLocal = "cp_downloadBid_frame";
 	String cpSmCustIdLocal = "cp_sec_custId";
 	String cpSmMaturityDateBrLocal ="cp_sec_maturityDate";
-	String cpSmInstructionTypeLocal = "cp_sec_instructionType";
+	String cpSmInvestmentTypeLocal = "cp_sec_investmentType";
 	String cpSmConcessionRateLocal ="cp_sec_concessionRate";
 	String cpSmConcessionRateValueLocal ="cp_sec_concessionValue";
 	String cpApplyBtn = "apply_btn";
@@ -403,6 +400,7 @@ public interface Constants {
 	String cpFetchMandateEvent = "cpFetchMandate";
 	String cpValidateAcctEvent = "cpValidateAcct";
 	String cpValidateLienEvent = "cpValidateLien";
+	String cpPmProcessSuccessBidsEvent = "cpPmProcessSuccessBids";
 
 
 	//config

@@ -1,7 +1,6 @@
 package com.newgen.worksteps;
 
 import com.newgen.api.customService.CpServiceHandler;
-import com.newgen.controller.CpController;
 import com.newgen.utils.*;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
@@ -40,9 +39,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                 case onLoad:
                 case cpApiCallEvent:{
                     switch (control) {
-                        case cpValidateAcctEvent: return new CpServiceHandler(ifr).validateAccount();
+                        case cpValidateAcctEvent: return new CpServiceHandler(ifr).validateAccountTest();
                         case cpFetchMandateEvent: return getCpAcctNo(ifr);
-                        case cpValidateLienEvent: return new CpServiceHandler(ifr).validateLien();
+                        case cpValidateLienEvent: return new CpServiceHandler(ifr).validateLienTest();
                     }
                 }
                 case onClick:{
@@ -308,8 +307,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                     }
                     else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
                         setVisible(ifr,new String[]{cpBranchSecSection,landMsgLabelLocal});
-                        enableFields(ifr,new String[]{cpApplyBtn,cpSmInstructionTypeLocal});
-                        setMandatory(ifr,new String[]{cpSmInstructionTypeLocal});
+                        enableFields(ifr,new String[]{cpApplyBtn, cpSmInvestmentTypeLocal});
+                        setMandatory(ifr,new String[]{cpSmInvestmentTypeLocal});
                         setCpSmWindowDetails(ifr);
                         setCpSmInvestmentGrid(ifr);
                     }
@@ -351,10 +350,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         clearFields(ifr,new String[]{cpCustomerAcctNoLocal,cpCustomerNameLocal,cpCustomerEmailLocal,cpLienStatusLocal,cpSmInvestmentIdLocal,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal});
         String id = ifr.getTableCellValue(cpSmInvestmentBrTbl,rowIndex,0);
         setFields(ifr, new String[]{cpSmInvestmentIdLocal},new String[]{id});
-        setVisible(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal});
+        setVisible(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpServiceSection});
         setMandatory(ifr,new String[]{cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal});
-        enableField(ifr,cpCustomerAcctNoLocal);
-
+        enableFields(ifr,new String []{cpCustomerAcctNoLocal,cpAcctValidateBtn});
     }
     private void cpSmSetConcessionRate(IFormReference ifr){
         clearFields(ifr,cpSmConcessionRateValueLocal);

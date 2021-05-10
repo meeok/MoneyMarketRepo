@@ -18,6 +18,7 @@ import java.util.Random;
 public class Commons implements Constants {
     private static final Logger logger = LogGen.getLoggerInstance(Commons.class);
     public static List<List<String>> resultSet;
+    public static int validate;
 
     /************************* COMMERCIAL PAPER CODE BEGINS **************************/
     private String getTat (String entryDate, String exitDate){
@@ -267,7 +268,7 @@ public class Commons implements Constants {
         return getFieldValue(ifr,cpSmWinRefLocal);
     }
     public String getCpPmCusRefNo(IFormReference ifr){return getFieldValue(ifr,cpPmCustomerIdLocal);}
-    public String getCpSmCusRefNo(IFormReference ifr){
+    public static String getCpSmCusRefNo(IFormReference ifr){
         return getFieldValue(ifr,cpSmCustIdLocal);
     }
     public String getCpLandingMsg (IFormReference ifr){return getFieldValue(ifr,cpLandMsgLocal);}
@@ -331,19 +332,39 @@ public class Commons implements Constants {
         return Integer.parseInt(new DbConnect(ifr,Query.getCheckActiveWindowByIdQuery(id)).getData().get(0).get(0)) > 0;
     }
     public String setupCpSmBid(IFormReference ifr){
+        logger.info("Setup Cp Secondary Market Bid Method");
         resultSet = new DbConnect(ifr,new Query().getCpSmInvestmentsSelectQuery(getSelectedCpSmInvestmentId(ifr))).getData();
         String tenor = resultSet.get(0).get(0);
+        logger.info("tenor-- "+tenor);
         String rate = resultSet.get(0).get(1);
-        int validate = new DbConnect(ifr,new Query().getSetupCpSmBidQuery(getCurrentDateTime(),getCpSmCusRefNo(ifr), getCpSmWinRefNoBr(ifr),
-                getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getCpAcctNo(ifr),getCpAcctName(ifr),getCpAcctEmail(ifr),getCpSmPrincipalBr(ifr),
-                tenor,rate,getCpSmMaturityDate(ifr))).saveQuery();
+        logger.info("rate-- "+rate);
+        String maturityDate = getCpSmMaturityDate(ifr);
+        logger.info("maturityDate-- "+maturityDate);
+        String principal = getCpSmPrincipalBr(ifr);
+        logger.info("principal-- "+principal);
+
+
+        String interest = String.valueOf(((Double.parseDouble(principal) * Double.parseDouble(tenor) * getPercentageValue(rate)) / 365) * 100);
+        if (isLeapYear(maturityDate))
+            interest = String.valueOf(Double.parseDouble(interest) + (Double.parseDouble(tenor) / 366));
+
+        String principalAtMaturity = String.valueOf(Double.parseDouble(principal) * (Double.parseDouble(interest) + (getPercentageValue(rate) * Double.parseDouble(tenor))));
+
+        logger.info("interest-- "+interest);
+        logger.info("principalAtMaturity-- "+principalAtMaturity);
+        int validate = new DbConnect(ifr,new Query().getSetupCpSmBidQuery(
+                getCurrentDateTime(),getCpSmCusRefNo(ifr), getCpSmWinRefNoBr(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),
+                getCpAcctNo(ifr),getCpAcctName(ifr),getCpAcctEmail(ifr),principal,
+                tenor,rate,maturityDate,getCpSmInvestmentType(ifr),interest,principalAtMaturity)).saveQuery();
 
         logger.info("is saved -- "+ validate);
-
         if (validate >= 0){
-            double availableAmount =   Double.parseDouble(resultSet.get(0).get(2)) - Double.parseDouble(getCpSmPrincipalBr(ifr)) ;
-            double totalAmountSold = Double.parseDouble(resultSet.get(0).get(3)) + Double.parseDouble(getCpSmPrincipalBr(ifr));
+            double availableAmount =   Double.parseDouble(resultSet.get(0).get(2)) - Double.parseDouble(principal) ;
+            logger.info("availableAmount-- "+availableAmount);
+            double totalAmountSold = Double.parseDouble(resultSet.get(0).get(3)) + Double.parseDouble(principal);
+            logger.info("totalAmountSold-- "+totalAmountSold);
             int mandates = Integer.parseInt(resultSet.get(0).get(4)) + 1;
+            logger.info("mandates-- "+mandates);
             new DbConnect(ifr,new Query().getCpSmInvestmentsUpdateQuery(getSelectedCpSmInvestmentId(ifr),String.valueOf(availableAmount),String.valueOf(totalAmountSold),String.valueOf(mandates))).saveQuery();
             disableField(ifr,cpInvestBtn);
             return "Customer Bid has been invested, Thank You.";
@@ -404,7 +425,7 @@ public class Commons implements Constants {
     private String getCpSmInvestmentId(){
         return cpSmIdInvestmentLabel+getCpRandomId();
     }
-    public String getSelectedCpSmInvestmentId(IFormReference ifr){
+    public static String  getSelectedCpSmInvestmentId(IFormReference ifr){
         return getFieldValue(ifr,cpSmInvestmentIdLocal);
     }
     private void setCpSmCloseDate(IFormReference ifr){
@@ -439,7 +460,7 @@ public class Commons implements Constants {
     public void clearTable(IFormReference ifr, String tableLocal){
         ifr.clearTable(tableLocal);
     }
-    public String getCpSmPrincipalBr(IFormReference ifr){
+    public static String getCpSmPrincipalBr(IFormReference ifr){
         return getFieldValue(ifr,cpSmPrincipalBrLocal);
     }
     public String getCpSmWindowMinPrincipal(IFormReference ifr){
@@ -494,7 +515,7 @@ public class Commons implements Constants {
         return getFieldValue(ifr, cpLienMandateIdLocal);
     }
     public static boolean doesCpIdExist(IFormReference ifr, String id, String marketType){
-        return Integer.parseInt(new DbConnect(ifr,Query.getCpCustIdExistQuery(id,marketType)).getData().get(0).get(0)) > 0;
+        return Integer.parseInt(new DbConnect(ifr,Query.getCpCusIdExistQuery(id,marketType)).getData().get(0).get(0)) > 0;
     }
     public  static String getCpPoiMandate(IFormReference ifr){
         return getFieldValue(ifr,cpPoiMandateLocal);
@@ -505,6 +526,9 @@ public class Commons implements Constants {
     public static String getCpTermRate(IFormReference ifr){return getFieldValue(ifr,cpTermRateLocal);}
     public static String getCpTermBoDate(IFormReference ifr){return getFieldValue(ifr,cpTermBoDateLocal);}
     public static String getCpOtp(IFormReference ifr){return  getFieldValue(ifr,cpTokenLocal);}
+    public static  String getCpPmInvestmentType(IFormReference ifr){return  getFieldValue(ifr,cpPmInvestmentTypeLocal);}
+    public static String getCpSmInvestmentType (IFormReference ifr){return getFieldValue(ifr,cpSmInvestmentTypeLocal);}
+
 
 
 
@@ -600,7 +624,7 @@ public class Commons implements Constants {
     }
     //get refid from active window
     public static String getTbActiveWindowwithRefid(IFormReference ifr){
-    	String qry = new Query().getCheckActiveWindowQueryRefid(treasuryProcessName,getTbMarket(ifr));
+    	String qry = new Query().getCheckActiveWindowQueryRefId(treasuryProcessName,getTbMarket(ifr));
         logger.info("check tb window query --"+ qry);
         try{
         	return new DbConnect(ifr,qry).getData().get(0).get(0); 

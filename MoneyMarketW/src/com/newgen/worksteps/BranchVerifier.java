@@ -5,7 +5,6 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.controller.CpController;
 import com.newgen.utils.*;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -39,14 +38,14 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
             switch (event){
                 case cpApiCallEvent:{
                     switch (control) {
-                        case cpTokenEvent: return new CpServiceHandler(ifr).validateToken();
+                        case cpTokenEvent: return new CpServiceHandler(ifr).validateTokenTest();
                         case cpPostEvent:{
                             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                                if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                                if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr))) return new CpServiceHandler(ifr).postTransactionTest();
                                 else return cpValidateWindowErrorMsg;
                             }
                             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
-                                if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                                if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return new CpServiceHandler(ifr).postTransactionTest();
                                 else return cpValidateWindowErrorMsg;
                             }
                         }
@@ -173,7 +172,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 setVisible(ifr,new String[]{cpBranchSecSection,cpCustomerDetailsSection,cpDecisionSection,landMsgLabelLocal,
                         cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal, (getCpSmConcessionRateValue(ifr).equalsIgnoreCase(empty)) ? empty : cpSmConcessionRateValueLocal});
                 setInvisible(ifr, new String[]{cpAcctValidateBtn,cpApplyBtn});
-                disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal,cpSmInstructionTypeLocal});
+                disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal, cpSmInvestmentTypeLocal});
                 setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
                 if (getCpSmConcessionRate(ifr).equalsIgnoreCase(no)){
                     enableFields(ifr,new String[]{cpTokenLocal});
@@ -206,10 +205,10 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     public void cpSetDecision(IFormReference ifr) {
         setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReject});
     }
-    public void setupCpPmBid(IFormReference ifr){
-        new DbConnect(ifr,Query.getSetupBidQuery(
-                        getCurrentDateTime(),getCpPmCusRefNo(ifr), getCpPmWinRefNoBr(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),
-                        getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty
+    private void setupCpPmBid(IFormReference ifr){
+        String rate =  getCpPmRateType(ifr).equalsIgnoreCase(rateTypePersonal) ? getFieldValue(ifr,cpPmPersonalRateLocal) : empty;
+        new DbConnect(ifr,Query.getSetupCpPmBidQuery(
+                getCurrentDateTime(),getCpPmCusRefNo(ifr), getCpPmWinRefNoBr(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),rate,getCpPmInvestmentType(ifr)
                 )).saveQuery();
     }
     

@@ -1,5 +1,6 @@
 package com.newgen.worksteps;
 
+import com.newgen.api.customService.CpServiceHandler;
 import com.newgen.controller.CpController;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
@@ -40,14 +41,14 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
             switch (event){
                 case cpApiCallEvent:{
                     switch (control) {
-                        case cpTokenEvent: return CpController.tokenController(ifr);
+                        case cpTokenEvent: return new CpServiceHandler(ifr).validateTokenTest();
                         case cpPostEvent:{
                             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                                if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                                if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr))) return new CpServiceHandler(ifr).postTransactionTest();
                                 else return cpValidateWindowErrorMsg;
                             }
                             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
-                                if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                                if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return new CpServiceHandler(ifr).postTransactionTest();
                                 else return cpValidateWindowErrorMsg;
                             }
                         }

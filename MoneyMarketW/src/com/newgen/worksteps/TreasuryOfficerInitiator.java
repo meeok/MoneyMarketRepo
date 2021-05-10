@@ -68,6 +68,8 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                         case cpOnSelectMarket:{
                             if (isCpWindowActive(ifr)){
                                 disableCpSections(ifr);
+                                setFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal},new String[]{decDiscard,windowActiveErrMessage});
+                                disableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
                                 return windowActiveErrMessage;
                             }
                         }

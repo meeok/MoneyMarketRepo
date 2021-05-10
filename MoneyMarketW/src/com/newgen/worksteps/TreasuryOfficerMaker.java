@@ -113,7 +113,11 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 case onDone:{
                 	switch (controlName){
                         case cpSmCpUpdateEvent:{return updateCpSmDetails(ifr,Integer.parseInt(data));}
-                	
+                        case cpPmProcessSuccessBidsEvent:{
+                            updateCpPmSuccessBids(ifr);
+                            break;
+                        }
+
 	                /**** Treasury onDOne Start ****/
                 	case tbOnDone:{
                 		return tbOnDone(ifr);
@@ -258,7 +262,6 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         clearFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
         setDecision(ifr,cpDecisionLocal,new String [] {decSubmit,decDiscard});
     }
-
     private String cpSetupWindow(IFormReference ifr){
         if (isEmpty(getSetupFlag(ifr))){
             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
@@ -352,7 +355,6 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             }
         }
     }
-
     private void viewReport(IFormReference ifr){
         resultSet = new DbConnect(ifr,new Query().getCpPmSummaryBidsQuery(getWorkItemNumber(ifr))).getData();
         for (List<String> result : resultSet){
@@ -376,7 +378,6 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         setVisible(ifr,new String[]{cpAllocSummaryTbl,cpDownloadBtn});
         setInvisible(ifr,new String[]{cpViewReportBtn});
     }
-
     private String getCpPmBidGrid(IFormReference ifr, int rowCount){
         StringBuilder output = new StringBuilder(empty);
         for (int i = 0; i < rowCount; i++){
@@ -391,7 +392,6 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         logger.info("output from grid: "+output.toString());
         return output.toString().trim();
     }
-
     private void viewCpGroupBids(IFormReference ifr, int rowIndex){
         ifr.clearTable(cpBidReportTbl);
         String groupIndex = ifr.getTableCellValue(cpAllocSummaryTbl,rowIndex,6);
@@ -409,7 +409,6 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         }
         setVisible(ifr,new String[]{cpBidReportTbl,cpUpdateBtn});
     }
-
     private void updateCpPmBids(IFormReference ifr, int rowIndex){
         String bankRate = getFieldValue(ifr,cpAllocBankRateLocal);
         String personalRate = empty;
@@ -452,7 +451,6 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             }
         }
     }
-
     private String updateCpSmDetails (IFormReference ifr, int rowCount){
 
         for (int i= 0; i< rowCount; i++){
@@ -478,7 +476,6 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         setFields(ifr,new String[]{cpSmWinRefLocal}, new String[]{generateCpWinRefNo(cpSmLabel)});
         return empty;
     }
-
     private void cpSmInvestmentSetup(IFormReference ifr){
         disableFields(ifr,cpSmSetupLocal);
         if (getCpSmInvestmentSetupType(ifr).equalsIgnoreCase(smSetupNew)){
@@ -495,6 +492,25 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         else {
             setInvisible(ifr,new String[]{cpUploadExcelBtn,cpFileNameLocal,cpSmCpBidTbl});
         }
+    }
+    private void updateCpPmSuccessBids(IFormReference ifr){
+       validate =  new DbConnect(ifr,Query.getCpUpdatePmSuccessBidQuery(getWorkItemNumber(ifr))).saveQuery();
+       if (validate >= 0){
+          resultSet = new DbConnect(ifr,Query.getCpPmAllocatedBids(getWorkItemNumber(ifr))).getData();
+          for (List<String> result : resultSet){
+              String id = result.get(0);
+              String principal = result.get(1);
+              String tenor = result.get(2);
+              String rate = result.get(3);
+              String maturityDate = result.get(4);
+              String interest = String.valueOf(((Double.parseDouble(principal) * Double.parseDouble(tenor) * getPercentageValue(rate)) / 365) * 100);
+              if (isLeapYear(maturityDate))
+                  interest = String.valueOf(Double.parseDouble(interest) + (Double.parseDouble(tenor) / 366));
+
+              String principalAtMaturity = String.valueOf(Double.parseDouble(principal) * (Double.parseDouble(interest) + (getPercentageValue(rate) * Double.parseDouble(tenor))));
+              new DbConnect(ifr, Query.getCpPmUpdateAllocatedBids(interest,principalAtMaturity,id)).saveQuery();
+          }
+       }
     }
 
 
