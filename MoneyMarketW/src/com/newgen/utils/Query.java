@@ -73,10 +73,10 @@ public class Query {
     public String getCustomerRefIdQuery(String cusRefId) {
         return "select * from MONEYMARKET_EXT where upper(refid) = upper('" + cusRefId + "')";
     }
-    public String getCpPmBidsToProcessQuery () {
+    public static String getCpPmBidsToProcessQuery () {
         return "select custrefid, tenor, rate, ratetype from mm_bid_tbl where process = 'Commercial Paper' and markettype= 'primary' and processflag ='N' and groupindexflag = 'N'";
     }
-    public String getCpPmUpdateBidsQuery (String id, String utilityWiName, String groupIndex){
+    public static String getCpPmUpdateBidsQuery (String id, String utilityWiName, String groupIndex){
         return "update mm_bid_tbl set utilitywiname = '" + utilityWiName + "', groupindex = '" + groupIndex + "', groupindexflag = 'Y' , processflag = 'Y' where custrefid = '" + id + "'";
     }
     public String getCpPmSummaryBidsQuery(String utilityWiName){

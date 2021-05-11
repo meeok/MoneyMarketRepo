@@ -64,7 +64,7 @@ public class UtilityTemp extends Commons implements IFormServerEventHandler , Co
         try {
             String wiName = getWorkItemNumber(ifr);
 
-            List<List<String>> resultSet = new DbConnect(ifr, new Query().getCpPmBidsToProcessQuery()).getData();
+            List<List<String>> resultSet = new DbConnect(ifr, Query.getCpPmBidsToProcessQuery()).getData();
             for (List<String> result : resultSet) {
                 String id = result.get(0);
                 logger.info("id-- " + id);
@@ -75,7 +75,7 @@ public class UtilityTemp extends Commons implements IFormServerEventHandler , Co
                 String rateType = result.get(3);
                 logger.info("rateType-- " + rateType);
                 String groupIndex = getCpGroupIndex(wiName, tenor, rateType, rate);
-                new DbConnect(ifr, new Query().getCpPmUpdateBidsQuery(id, wiName, groupIndex)).saveQuery();
+                new DbConnect(ifr, Query.getCpPmUpdateBidsQuery(id, wiName, groupIndex)).saveQuery();
             }
         } catch (Exception e){
             logger.info("Exception occurred in fetching details --"+ e.getMessage());
