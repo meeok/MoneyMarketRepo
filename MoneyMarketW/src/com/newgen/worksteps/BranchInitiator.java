@@ -257,7 +257,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 
     private void cpBackToDashboard(IFormReference ifr) {
         undoMandatory(ifr,new String [] {cpSelectMarketLocal,cpDecisionLocal,cpRemarksLocal});
-        clearFields(ifr,new String [] {cpSelectMarketLocal,cpLandMsgLocal,cpDecisionLocal,cpRemarksLocal});
+        clearFields(ifr,new String [] {cpSelectMarketLocal,landMsgLabelLocal,cpLandMsgLocal,cpDecisionLocal,cpRemarksLocal});
     }
 
     @Override

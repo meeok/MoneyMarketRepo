@@ -93,8 +93,12 @@ public class UtilityTemp extends Commons implements IFormServerEventHandler , Co
         logger.info("tenor-- "+ tenor);
         logger.info("rateType-- "+ rateType);
         logger.info("rate-- "+ rate);
+        String groupIndex;
 
-        String groupIndex = groupLabel + wiNameTrim + tenor + (isPRate(rateType) ? pRateLabel : bRateLabel) + (isPRate(rateType) ? rate : "");
+        if (isPRate(rateType))
+             groupIndex = groupLabel + wiNameTrim + tenor + pRateLabel + rate;
+        else
+            groupIndex = groupLabel + wiNameTrim + tenor + bRateLabel;
         logger.info("groupIndex-- "+ groupIndex);
         return groupIndex;
     }
