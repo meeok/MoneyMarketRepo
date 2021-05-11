@@ -245,8 +245,8 @@ public class CpController implements Constants {
                 logger.info("token status-- "+status);
                 if (isValidationSuccess(status)) {
                     Commons.disableFields(ifr,new String[]{cpTokenLocal});
-                    Commons.setVisible(ifr,new String[]{cpDebitPrincipalBtn});
-                    Commons.enableFields(ifr,new String[]{cpDebitPrincipalBtn});
+                    Commons.setVisible(ifr,new String[]{cpPostBtn});
+                    Commons.enableFields(ifr,new String[]{cpPostBtn});
                 }
                 else if (isValidationFailed(status)){
                     logger.info("token errMgs-- "+ xmlParser.getValueOf("a:Message"));

@@ -124,7 +124,7 @@ public interface Constants {
 	String cpPmReqFreshValue ="freshMandate";
 	String cpAcctValidateBtn ="cp_acctValidateBtn";
 	String cpTxnIdLocal ="cp_tsnId";
-	String cpDebitPrincipalBtn ="cp_debitPrincipal_btn";
+	String cpPostBtn ="cp_post_btn";
 	String cpTokenLocal ="cp_token";
 	String cpAllocSummaryTbl ="table88";
 	String cpAllocationReqTbl ="table89";
@@ -401,6 +401,7 @@ public interface Constants {
 	String cpValidateAcctEvent = "cpValidateAcct";
 	String cpValidateLienEvent = "cpValidateLien";
 	String cpPmProcessSuccessBidsEvent = "cpPmProcessSuccessBids";
+	String cpCheckDecisionEvent = "cpCheckDecision";
 
 
 	//config

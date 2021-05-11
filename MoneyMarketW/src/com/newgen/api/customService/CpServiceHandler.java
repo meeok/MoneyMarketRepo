@@ -40,15 +40,15 @@ public class CpServiceHandler implements Constants {
 
     public String validateTokenTest(){
         Commons.disableFields(ifr,new String[]{cpTokenLocal});
-        Commons.setVisible(ifr,new String[]{cpDebitPrincipalBtn});
-        Commons.enableFields(ifr,new String[]{cpDebitPrincipalBtn});
+        Commons.setVisible(ifr,new String[]{cpPostBtn});
+        Commons.enableFields(ifr,new String[]{cpPostBtn});
         return null;
     }
 
     public String postTransactionTest(){
         Commons.setVisible(ifr,new String[]{cpTxnIdLocal});
         Commons.setFields(ifr, new String[]{cpTxnIdLocal, cpDecisionLocal,cpPostFlag}, new String[]{"M20", decApprove,flag});
-        Commons.disableFields(ifr, new String[]{cpDecisionLocal,cpDebitPrincipalBtn,cpTxnIdLocal});
+        Commons.disableFields(ifr, new String[]{cpDecisionLocal, cpPostBtn,cpTxnIdLocal});
         if (Commons.getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
             Commons.setVisible(ifr,new String[]{cpSetupSection,cpInvestBtn});
         return null;

@@ -291,9 +291,8 @@ public class Commons implements Constants {
         return ifr.getActivityName();
     }
     public boolean isCpWindowActive(IFormReference ifr){
-        logger.info("check window query --"+ new Query().getCheckActiveWindowQuery(commercialProcessName,getCpMarket(ifr)));
         return Integer.parseInt(new DbConnect(ifr,
-                new Query().getCheckActiveWindowQuery(commercialProcessName,getCpMarket(ifr))).getData().get(0).get(0)) > 0;
+                Query.getCheckActiveWindowQuery(commercialProcessName,getCpMarket(ifr))).getData().get(0).get(0)) > 0;
     }
     public void setCpPmWindowDetails (IFormReference ifr){
         DbConnect dbConnect = new DbConnect(ifr,new Query().getActiveWindowDetailsQuery(commercialProcessName,getCpMarket(ifr)));

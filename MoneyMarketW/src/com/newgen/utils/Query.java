@@ -52,7 +52,7 @@ public class Query {
         return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,OPENDATE,CLOSEDATE)" +
                 "values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','" + openDate + "','" + closeDate + "')";
     }
-    public String getCheckActiveWindowQuery(String process, String marketType) {
+    public static String getCheckActiveWindowQuery(String process, String marketType) {
         return "select count(*) from mm_setup_tbl where process = '" + process + "' and markettype ='" + marketType + "' and  closeflag = 'N'";
     }
     public String getCheckActiveWindowQueryRefId(String process, String marketType) {
@@ -68,7 +68,7 @@ public class Query {
         return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rateType,rate,investmenttype) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rateType + "','" + rate + "','"+investmentType+"')";
     }
     public String getSetupCpSmBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rate,String maturityDate, String investmentType, String interest, String principalAtMaturity) {
-        return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rate,maturitydate,investmentType,interest,principatatmaturity) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rate + "', '"+maturityDate+"','"+investmentType+"','"+interest+"','"+principalAtMaturity+"')";
+        return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rate,maturitydate,investmentType,interest,principalatmaturity) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rate + "', '"+maturityDate+"','"+investmentType+"','"+interest+"','"+principalAtMaturity+"')";
     }
     public String getCustomerRefIdQuery(String cusRefId) {
         return "select * from MONEYMARKET_EXT where upper(refid) = upper('" + cusRefId + "')";

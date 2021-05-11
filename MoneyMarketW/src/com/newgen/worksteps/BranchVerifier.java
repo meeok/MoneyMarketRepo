@@ -64,7 +64,15 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         }
                     }
                 }
-                case onChange:
+                case onChange:{
+                    switch (control){
+                        case cpCheckDecisionEvent:{
+                            cpCheckDecision(ifr);
+                            break;
+                        }
+                    }
+                }
+                break;
                 case custom:
                 case onDone:{
                     switch (control){
@@ -210,6 +218,18 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         new DbConnect(ifr,Query.getSetupCpPmBidQuery(
                 getCurrentDateTime(),getCpPmCusRefNo(ifr), getCpPmWinRefNoBr(ifr),getWorkItemNumber(ifr),commercialProcessName,getCpMarket(ifr),getFieldValue(ifr,cpCustomerAcctNoLocal),getFieldValue(ifr,cpCustomerNameLocal),getFieldValue(ifr,cpCustomerEmailLocal),String.valueOf(getCpPmCustomerPrincipal(ifr)),getFieldValue(ifr,cpPmTenorLocal),getCpPmRateType(ifr),rate,getCpPmInvestmentType(ifr)
                 )).saveQuery();
+    }
+    private void cpCheckDecision(IFormReference ifr){
+        String decision = getCpDecision(ifr);
+
+        if (decision.equalsIgnoreCase(decReturn)){
+            disableFields(ifr,new String[]{cpTokenLocal,cpPostBtn});
+            undoMandatory(ifr,new String[]{cpTokenLocal,cpPostBtn});
+        }
+        else {
+            enableFields(ifr,new String[]{cpTokenLocal,cpPostBtn});
+            setMandatory(ifr,new String[]{cpTokenLocal,cpPostBtn});
+        }
     }
     
     /*********************************  Treasury Starts here ****************/

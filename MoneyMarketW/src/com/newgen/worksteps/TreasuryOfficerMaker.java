@@ -265,7 +265,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     private String cpSetupPmWindow(IFormReference ifr){
         if (isEmpty(getWindowSetupFlag(ifr))){
             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
-                if (!compareDate(getCpOpenDate(ifr),getCpCloseDate(ifr))) return cpSetupPrimaryMarketWindow(ifr);
+                if (compareDate(getCpOpenDate(ifr),getCpCloseDate(ifr))) return cpSetupPrimaryMarketWindow(ifr);
                 else return "Close date cannot be before Open date.";
             }
         }
@@ -273,16 +273,15 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     }
     private void cpUpdateLandingMsg(IFormReference ifr){
         if (getCpUpdateMsg(ifr).equalsIgnoreCase(True)){
-            cpSetDecisionValue(ifr,decSubmit);
-            ifr.setValue(cpRemarksLocal,"Kindly approve landing message update.");
-            setInvisible(ifr, new String[]{cpSetupSection,cpDecisionSection});
+           setFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal},new String[]{decSubmit,"Kindly approve landing message update."});
+           disableFields(ifr, new String[]{cpDecisionLocal,cpRemarksLocal});
+            setInvisible(ifr, new String[]{cpSetupSection});
             undoMandatory(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
             setMandatory(ifr,new String[]{cpLandMsgLocal});
-            enableFields(ifr,new String[]{cpLandMsgLocal,cpLandingMsgSubmitBtn});
-            setVisible(ifr,new String[]{cpLandingMsgSubmitBtn});
+            enableFields(ifr,new String[]{cpLandMsgLocal});
         }
         else {
-            clearFields(ifr, new String[]{cpDecisionLocal,cpRemarksLocal,cpLandMsgLocal});
+            clearFields(ifr, new String[]{cpDecisionLocal,cpRemarksLocal});
             setVisible(ifr, new String[]{cpSetupSection,cpDecisionSection});
             setMandatory(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
             undoMandatory(ifr,new String[]{cpLandMsgLocal});
@@ -401,6 +400,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
             String tenor = result.get(3);
             String rate = result.get(4);
             String principal = result.get(5);
+            float principal1 = Float.parseFloat(principal);
+            principal = String.format("%.2f",principal1);
+            logger.info("principal: "+ principal);
             setTableGridData(ifr,cpBidReportTbl,new String[]{cpBidCustIdCol,cpBidAcctNoCol,cpBidAcctNameCol,cpBidTenorCol,cpBidPersonalRateCol,cpBidTotalAmountCol,cpBidStatusCol,cpBidDefAllocCol},
                     new String[]{id,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation});
         }

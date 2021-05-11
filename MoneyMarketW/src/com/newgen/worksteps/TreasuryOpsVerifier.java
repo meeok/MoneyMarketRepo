@@ -44,8 +44,7 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
                         case cpTokenEvent: return new CpServiceHandler(ifr).validateTokenTest();
                         case cpPostEvent:{
                             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                                if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr))) return new CpServiceHandler(ifr).postTransactionTest();
-                                else return cpValidateWindowErrorMsg;
+                               return new CpServiceHandler(ifr).postTransactionTest();
                             }
                             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
                                 if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return new CpServiceHandler(ifr).postTransactionTest();

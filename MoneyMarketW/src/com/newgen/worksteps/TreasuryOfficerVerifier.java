@@ -128,7 +128,10 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         }
         else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerMaker)){
             if (isEmpty(getWindowSetupFlag(ifr))){
-                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){}
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
+                    setVisible(ifr, new String[]{cpLandingMsgSection, cpDecisionSection, cpMarketSection});
+                    setMandatory(ifr,new String[] {cpDecisionLocal,cpRemarksLocal});
+                }
                 else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
                     setVisible(ifr, new String[]{cpLandingMsgSection,cpDecisionSection,cpMarketSection,cpTreasurySecSection,cpCutOffTimeSection,cpSmCutOffTimeLocal,cpSetupSection,cpSetupWindowBtn,cpSmCpBidTbl});
                     setInvisible(ifr,new String[]{cpOpenDateLocal,cpCloseDateLocal});
