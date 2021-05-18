@@ -260,7 +260,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) {
         	if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
 	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBranchSecSection,
-	        			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbPostSection});//tbBrnchCusotmerDetails
+	        			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbPostSection,tbBrnchCusotmerDetails});//tbBrnchCusotmerDetails
 	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchSecSection});
 	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
 	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});

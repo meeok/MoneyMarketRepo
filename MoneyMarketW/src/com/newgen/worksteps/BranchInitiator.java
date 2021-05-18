@@ -136,6 +136,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         	}
                         	
                         }
+                        case tbSpecialRateClicked:{
+                        	tbSpecialRateClicked(ifr);
+                        }
+                        break;
                        
                         //****************Treasurry Ends here *********************//
                     }
@@ -242,7 +246,6 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         //****************Treasurry Ends here *********************//
     	              
                     }
-                    
                     
                 }
                 break;
@@ -853,7 +856,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     			logger.info(isTbWindowOpen(ifr,getTbBrnchSmWindownUnqNo(ifr)));
     			 if(isTbWindowOpen(ifr,getTbBrnchSmWindownUnqNo(ifr))){//check if market is open for bidding
     				 logger.info("market is open");
-		    		setVisible(ifr, new String[] {tbBranchSecSection,tbDecisionSection});//tbBrnchCusotmerDetails
+		    		setVisible(ifr, new String[] {tbBranchSecSection,tbDecisionSection,tbBrnchCusotmerDetails});//
 		    		disableFields(ifr,new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
 		    		setMandatory(ifr, new String[] {tbSmBidAmount,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
 		    		hideFields(ifr, new String[] {tbSmPrincipalAtMaturity,tbSmIntstMaturityNonLpYr,tbSmIntrsyMaturityLpYr,tbSmResidualIntrst});
@@ -937,32 +940,29 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     private String tbValidatePrincipalAmt(IFormReference ifr){
     	//setTbBrnchInitRetMsg("");
     	String retMsg ="";
-    	logger.info("tbValidatePrincipalAmt");
-    	logger.info("getTbBrcnhPriRateTypedd(ifr)>>>" +getTbBrcnhPriRateTypedd(ifr));
-    	logger.info("tbBrnchPriRtPersonal>>>" +tbBrnchPriRtPersonal);
-    	logger.info("Principal Amoun>>>" +tbPrsnlMinPrincipalAmt);
-    	logger.info("Principal Amount>>>"+getTbBrnchPriPrncplAmt(ifr));
-    	logger.info("check if empty>>>"+(!isEmpty(getTbBrnchPriPrncplAmt(ifr))));
-    	if(getTbBrcnhPriRateTypedd(ifr).equalsIgnoreCase(tbBrnchPriRtPersonal)){
-    		if(!isEmpty(getTbBrnchPriPrncplAmt(ifr))) {
-    			logger.info("getTbBrnchPriPrncplAmt>>>>"+Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)));
-    			try {
-    				retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbPrsnlMinPrincipalAmt ? "Principal Amount must be minimum of "+String.format("%.0f",tbPrsnlMinPrincipalAmt):"";
-    			}
-    			catch(Exception ex) {retMsg ="Invalid Principal amount";}
+    	if(!isEmpty(getTbBrnchPriPrncplAmt(ifr))) {
+    		//check if number is in thousands
+    		try {
+				long amt = Long.parseLong(getTbBrnchPriPrncplAmt(ifr));
+				logger.info("getTbBrnchPriPrncplAmt>>>>"+ amt);
+    		if(amt%1000 >0) {
+    			retMsg ="Amount must be in thousands";
     		}
-    	}
-    	else if(getTbBrcnhPriRateTypedd(ifr).equalsIgnoreCase(tbBrnchPriRtBanKRate)) {
-    		if(!isEmpty(getTbBrnchPriPrncplAmt(ifr))) {
-    			logger.info("getTbBrnchPriPrncplAmt>>>>"+Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)));
-	    		try {
-					retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbBnkMinPrincipalAmt ? "Principal Amount must be minimum of "+String.format("%.0f",tbBnkMinPrincipalAmt) :"";
+    		else if(getTbBrcnhPriRateTypedd(ifr).equalsIgnoreCase(tbBrnchPriRtPersonal)){
+    			retMsg = ((amt<tbPrsnlMinPrincipalAmt || amt>tbPrsnlMaxPrincipalAmt)? "Principal Amount must be between "+String.format("%.0f",tbPrsnlMinPrincipalAmt)+" and "+String.format("%.0f",tbPrsnlMaxPrincipalAmt):"");
+	    	}
+	    	else if(getTbBrcnhPriRateTypedd(ifr).equalsIgnoreCase(tbBrnchPriRtBanKRate)) {
+	    		retMsg = (Double.parseDouble(getTbBrnchPriPrncplAmt(ifr)))<tbBnkMinPrincipalAmt ? "Principal Amount must be minimum of "+String.format("%.0f",tbBnkMinPrincipalAmt) :"";
+				
 				}
-				catch(Exception ex) {retMsg ="Invalid Principal amount";}
+    		}
+			catch(Exception ex) {
+				retMsg ="Invalid Principal amount";
 			}
-    	}
-    	if(!isEmpty(retMsg))
-    		clearFields(ifr,tbBrnchPriPrncplAmt);
+	    	
+	    	if(!isEmpty(retMsg))
+	    		clearFields(ifr,tbBrnchPriPrncplAmt);
+	    	}
    
     	return retMsg;
     }
@@ -973,10 +973,15 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     private String tbOnDone(IFormReference ifr) {
     	logger.info("tbOnDone>>");
     	String retMsg="";
+    	int tenor = Integer.parseInt(getFieldValue(ifr,tbBrnchPriTenordd));
+    	logger.info("tenor>>" + tenor);
     	//if(getTbDecision(ifr).equalsIgnoreCase(decSubmit)) {
     	 if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
     		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid) ){//generate customer unique ref
     			setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
+    			setFields(ifr,new String[] {tbCustUniquerefId,tbBidRequestDte,tbMaturityDte}, new String[] {getTbBrnchCustPriRefNo(ifr),getCurrentDate(),getMaturityDate(tenor)});
+    			logger.info(getTbBrnchCustPriRefNo(ifr)+", "+getCurrentDate()+", "+getMaturityDate(tenor));
+    			logger.info(getFieldValue(ifr,tbCustUniquerefId)+", "+getFieldValue(ifr,tbBidRequestDte)+", "+getFieldValue(ifr,tbMaturityDte));
 	    	}
     	}
     	 if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
@@ -1086,7 +1091,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                  String custid = ls.get(7);
                  String winRefId =ls.get(8);
                  try {
-                	 daystoMaturity =  String.valueOf(getDaysToMaturity(maturityDte));
+                	 daystoMaturity =  String.valueOf(getDaysToMaturity(maturityDte.substring(0,maturityDte.indexOf(" "))));
                  }
                  catch(Exception ex) {
                 	 logger.info("Maturity date may be null contact Admin");
@@ -1262,14 +1267,14 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
      */
     private void tbTerminateTypeChanged(IFormReference ifr) {
     	//
-		if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(cpTerminationTypeFull)) {
+		if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(tbTerminationTypeFull)) {
 			setVisible(ifr, new String[] {tbTermbtn});
 			hideFields(ifr, new String[] {tbTermVal,tbTermCashValue});
 			undoMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
 		}
-		else if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(cpTerminationTypePartial)) {
-			setVisible(ifr, new String[] {tbTermVal,tbTermCashValue,tbTermbtn});
-			setMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
+		else if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(tbTerminationTypePartial)) {
+			setVisible(ifr, new String[] {tbTermCashValue,tbTermbtn});
+			setMandatory(ifr, new String[] {tbTermCashValue});
 		}
 		else {
 			hideFields(ifr, new String[] {tbTermVal,tbTermCashValue,tbTermbtn});
@@ -1343,6 +1348,18 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 	}
 	
 	private void getCustRediscountRate(String tenor) {
+		
+	}
+	private void tbSpecialRateClicked(IFormReference ifr) {
+		if(getFieldValue(ifr,tbSpecialRate).equalsIgnoreCase("true")) {
+			setVisible(ifr,tbSpecialRateValue);
+			setMandatory(ifr,tbSpecialRateValue);
+		}
+		else {
+			hideField(ifr,tbSpecialRateValue);
+			undoMandatory(ifr,tbSpecialRateValue);
+		}
+			
 		
 	}
 

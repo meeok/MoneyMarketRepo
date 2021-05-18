@@ -219,7 +219,7 @@ public class Query {
      */
     public String getUpdateRdRateQuery(String refid, String winame,String tb90, String tb180, String tb270, String tb364){
         return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+tb90+"', REDISCOUNTRATELESS180 = '"+tb180+"',"
-        		+ "REDISCOUNTRATELESS270 = '"+tb270+"', REDISCOUNTRATELESS364 = '"+tb364+"', where refid = '"+refid+"' and winame ='"+winame+"'";
+        		+ "REDISCOUNTRATELESS270 = '"+tb270+"', REDISCOUNTRATELESS364 = '"+tb364+"' where refid = '"+refid+"' and winame ='"+winame+"'";
     }
     //update minimum principal
     public String getUpdateminPrincipalQuery(String refid, String minPrincipal){
@@ -253,13 +253,13 @@ public class Query {
         		+ " tb_sec_maturityDte, tb_sec_pm, tb_sec_intMaturity, tb_sec_maturityDate,tb_SmInvestmentId, tb_sec_tnor,tb_sec_rate,"
         		+ "tbMarketUniqueRefId from MONEYMARKET_EXT "
         		+ "where upper(g_select_market) =upper('tb_market') and upper(tb_select_market) = upper('"+marketType+"') and "
-        				+ "upper(tb_pm_custId) = upper('"+custId+"')";	
+        				+ "tb_pm_custId = '"+custId+"'";	
     }
     //get details of a customers mandate using the customer unique id
-    public static String getTbCustMandate(String marketType, String data){
-        return "select tb_bidRequestDte,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_principalAmt,tb_bidStatus,TB_MATURITY_DATE,tb_pm_custId,tb_uniqueNum from MONEYMARKET_EXT "
+    public static String getTbCustMandate(String marketType, String data){// general principal amt tb_principalAmt
+        return "select tb_bidRequestDte,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_pm_mpBr,tb_bidStatus,TB_MATURITY_DATE,tb_pm_custId,tb_uniqueNum from MONEYMARKET_EXT "
         		+ "where upper(g_select_market) =upper('tb_market') and upper(tb_select_market) = upper('"+marketType+"') "
-        				+ "and (upper(tb_pm_custId) = upper('"+data+"') or upper(tb_custAcctNum) = upper('"+data+"'))";	
+        				+ "and (upper(tb_pm_custId) = upper('"+data+"') or tb_custAcctNum = '"+data+"')";	
     }
     //
    

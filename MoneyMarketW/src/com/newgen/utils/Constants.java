@@ -313,7 +313,7 @@ public interface Constants {
 	String smDefaultCutOffTime = "2 PM";
 	String smMinPrincipal = "1000000";
 	String smSetupNew = "New";
-	String smSetupUpdate = "Update";
+	String smSetupUpdate = "UpDate";
 	String smStatusOpen= "Open";
 	String smStatusClosed= "Closed";
 	String smStatusMature= "Matured";
@@ -443,6 +443,7 @@ public interface Constants {
 	String tbTerminateTypeChanged ="tbTerminateTypeChanged";
 	String tbTerminate = "tbTerminate";
 	String tbUnLienCustFaceValue ="tbUnLienCustFaceValue";
+	String tbSpecialRateClicked ="tbSpecialRateClicked";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -590,7 +591,8 @@ public interface Constants {
 	
 	//other constants
 	double tbBnkMinPrincipalAmt = 100000;
-	double tbPrsnlMinPrincipalAmt = 50000000;
+	double tbPrsnlMinPrincipalAmt = 100000;//50000000;
+	double tbPrsnlMaxPrincipalAmt = 50000000;
 	String tbSuccess ="success";
 	
 	//assigndd
@@ -732,6 +734,8 @@ public interface Constants {
 	String tbTermbtn = "tb_terminate_btn";
 	String tbTermCustUniqId = "tb_termCustUniqId";//will get this from the populated customer field
 	String tbTermRediscountRate ="tb_termRediscountRate";
+	String tbSpecialRateValue = "tb_special_rate_val";
+	String tbSpecialRate = "tb_special_rate";
 	
 	
 	//Document names
@@ -755,7 +759,8 @@ public interface Constants {
 	String tbUnlienBtn ="UnLienPrincipal";
 	String tbPostbtn="tb_post_btn";
 	
-	
+	String tbTerminationTypeFull = "fullTerm";
+	String tbTerminationTypePartial = "partTerm";
 	//tbPost
 	/*String minPrincipalErrorMsg ="Customer principal cannot be less and window minimum principal";
 	String tenorErrorMsg ="Tenor must be between 7 to 270 days. Please enter a valid number";

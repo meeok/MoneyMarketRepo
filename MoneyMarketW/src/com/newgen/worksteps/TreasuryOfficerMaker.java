@@ -676,12 +676,13 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                 setFields(ifr,tbCategorydd,tbCategorySetup);
                 tbSetupCatSelected(ifr);
         	}
-        	else if(getTbSetUpFlg(ifr).equalsIgnoreCase(flag)){// Market is set. Can perform rediscount rate etc
+        	else if(getTbSetUpFlg(ifr).equalsIgnoreCase(flag)){// Market is set. Can perform rediscount rate and modifications etc
+        		logger.info("market is set for secondary");
         		setVisible(ifr,new String [] {tbMarketSection,tbLandingMsgSection,tbDecisionSection,tbCategorydd,tbUpdateLandingMsgcbx});
         		enableFields(ifr,new String[]{tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {tbCategorydd,tbDecisiondd,tbRemarkstbx,tbCategorydd});
                 disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketTypedd,tbMarketUniqueRefId});
-                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup},new String[]{tbCategorySetup,tbCategoryReDiscountRate,tbCategoryCutOff});
+                setDropDown(ifr,tbCategorydd,new String[]{tbCategorySetup,tbCategoryReDiscountRate,tbCategoryCutOff},new String[]{tbCategorySetup,tbCategoryReDiscountRate,tbCategoryCutOff});
         	}
         	/*else if (getTbLandingMsgApprovedFlg(ifr).equalsIgnoreCase(yesFlag)) {//landing msg is approved
         		clearDropDown(ifr,tbCategorydd);
@@ -775,7 +776,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)){
         			//check if market is set
         			//setDropDown(ifr,tbSmSetupdd,new String[]{smSetupUpdate,smSetupNew});
-        			if(isTbWindowOpen(ifr)) {
+        			//if(isTbWindowOpen(ifr)) { // enable this to check if market is still open for modifications or order ....
+        			 if((getTbSetUpFlg(ifr).equalsIgnoreCase(flag))){//maket is set up and window is open
+        				logger.info(isTbWindowOpen(ifr));
         				logger.info("update bid");
                 		/*setTbMarketUniqueRefId(ifr,generateTbUniqueReference(ifr)); //set the unique reference
                     	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
@@ -786,8 +789,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         				//logger.info("getTbActiveWindowwithRefid(ifr).equalsIgnoreCase(getFieldValue(ifr,tbSecUniqueReftbx))>>>>>>>>>>>"+getTbActiveWindowwithRefid(ifr).equalsIgnoreCase(getFieldValue(ifr,tbSecUniqueReftbx)));
                     	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
                     	setFields(ifr,new String[] {tbSmSetupdd,tbDecisiondd}, new String[] {smSetupUpdate,decSubmit});
-                		setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection});
-                		enableFields(ifr,new String[]{tbVerificationAmtttbx,tbUpdteSmMatDte,tbUpdteSmRate,tbUpdteSmTBillsAmt,tbUpdateSmIssuedBidsbtn});
+                		setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbUpdteSmMatDte,tbUpdteSmRate,tbUpdteSmTBillsAmt,tbUpdateSmIssuedBidsbtn});
+                		enableFields(ifr,new String[]{tbMarketSection,tbDecisionSection,tbVerificationAmtttbx,tbUpdteSmMatDte,tbUpdteSmRate,tbUpdteSmTBillsAmt,tbUpdateSmIssuedBidsbtn});
                 		setMandatory(ifr,new String [] {tbVerificationAmtttbx});
                         disableFields(ifr, new String[]{tbSmIssuedTBillTbl,tbLandingMsgSection,tbSecUniqueReftbx,tbDecisionSection,tbMarketUniqueRefId});
                      

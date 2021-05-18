@@ -646,10 +646,12 @@ public class Commons implements Constants {
         if(dbr.size()>0) {
         	closedte = dbr.get(0).get(0);
         	logger.info("isTbWindowOpen CloseDTe>>>"+closedte);
-        	return tbConvertStringToDate(closedte).compareTo(new Date())>0 ? true:false;
+        	logger.info("isTbWindowOpen Date()>>>"+new Date());
+        	return tbConvertStringToDate(closedte).compareTo(tbConvertStringToDate(getCurrentDateTime()))>0 ? true:false;
         }
         return false;
     }
+    
     
     /*
      * return true is window is set and open
@@ -911,7 +913,7 @@ public class Commons implements Constants {
 	
 	 //check if cutoff time has elapsed //change to use flag with utility is working
 	 public static boolean isTbWinValid(IFormReference ifr){
-    	String qry = new Query().getWinCloseDateByIdQuery(getTbPriWindownUnqNo(ifr));
+    	String qry = new Query().getWinCloseDateByIdQuery(getTbMarketUniqueRefId(ifr));
         logger.info("check tb window query --"+ qry);
         Date closeDte = null;
         List<List<String>> ls = new DbConnect(ifr,qry).getData();
@@ -1044,14 +1046,14 @@ public class Commons implements Constants {
 	    }
     }
     
-    public String tbGetRediscountRate(IFormReference ifr, int tenor) {
-    	if(tenor<=90)
+    public String tbGetRediscountRate(IFormReference ifr, int daysToMat) {
+    	if(daysToMat<=90)
     		return  getFieldValue(ifr,tbRdrlessEqualto90tbx);
-    	else if(tenor<=180)
+    	else if(daysToMat<=180)
     		return getFieldValue(ifr,tbRdr91to180);
-    	else if(tenor<=270)
+    	else if(daysToMat<=270)
     		return getFieldValue(ifr,tbRdr181to270);
-    	else if(tenor<=180)
+    	else if(daysToMat<=180)
     		return getFieldValue(ifr,tbRdr271to364days);
     	else return"";
     }

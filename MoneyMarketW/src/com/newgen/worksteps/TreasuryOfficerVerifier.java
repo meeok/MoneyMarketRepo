@@ -265,15 +265,14 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	            hideFields(ifr,new String[]{tbMarketUniqueRefId});
 	        }
 	      
-	        else if(getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){  //bid has been approved by branch verifier and customer's account has been liened.assign to utility or verifier
+	        else if(getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){  //bid has been approved by branch verifier and customer's account has been liened.assign to verifier
 	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchPriSection,
-	        	tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbPostSection}); 
+	        	tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbPostSection,tbUnlienBtn}); 
 	        	enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn,tbFetchMandatebtn,tbPostSection});
 	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbTranID});
 	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
 	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd,tbtoken});//setInvisible(ifr, new String[]{});
-	        	hideField(ifr,tbPostbtn);
-	        	setVisible(ifr,tbUnlienBtn);
+	        	hideFields(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
 	          //  disableFields(ifr, new String[] {});
 	           
 	        }
@@ -358,6 +357,17 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 
         		 tbUpDateLndingMsgFlg(ifr);
     		 }
+    		 else if(getPrevWs(ifr).equalsIgnoreCase(branchVerifier)) { //customers principal has been liened pending treasury verifiers approval
+	    		 if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
+	    			 setFields(ifr,tbBidRStatus,statusAwaitingTreasury);
+	    			 logger.info(getFieldValue(ifr,tbBidRStatus));
+	    		 }
+	    		 else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {//discard workflow and unlien account
+	    			 //todo ....
+	    			 //unlien customer account before moving to exit
+	    		 }
+	    	    }
+    		 
     	}
     	 
     	 //secondary Market
@@ -449,7 +459,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     	setTb_BrnchPri_LienID(ifr,"L244");
     	setFields(ifr,tbCustAcctLienStatus,"No");
     	hideField(ifr,tbUnlienBtn);
-    	setVisible(ifr,tbPostbtn);
+    	setVisible(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
     	return "Customer Principal unliened Succesfully";
     	
   	}
