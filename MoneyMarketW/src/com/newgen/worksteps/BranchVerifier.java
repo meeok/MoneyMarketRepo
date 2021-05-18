@@ -145,6 +145,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         hideShowLandingMessageLabel(ifr,False);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
+        setVisible(ifr,cpMarketSection);
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
                 setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});

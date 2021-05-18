@@ -110,14 +110,15 @@ public class RpcVerifier extends Commons implements IFormServerEventHandler, Con
         hideShowLandingMessageLabel(ifr,False);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
-
+        setVisible(ifr,cpMarketSection);
         if (getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
             if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
                 setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
                 enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
-                setVisible(ifr,new String[]{cpLienSection});
+                setVisible(ifr,new String[]{cpLienSection,cpDecisionSection});
             }
         }
+        cpSetDecision(ifr);
     }
 
     @Override

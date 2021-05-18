@@ -408,7 +408,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
             setMandatory(ifr,new String[]{cpPoiSearchBtn,cpPoiMandateLocal});
             setInvisible(ifr,new String[]{cpTerminationSection,cpLienSection});
         }
-        else if ( getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
+        else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
             setVisible(ifr,new String[]{cpLienSection});
             enableFields(ifr, new String[]{cpLienTypeLocal, cpLienMandateIdLocal});
             setMandatory(ifr, new String[]{cpLienTypeLocal, cpLienMandateIdLocal});
