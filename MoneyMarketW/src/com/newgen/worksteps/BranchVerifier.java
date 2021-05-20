@@ -100,7 +100,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                         setTbDecisionHistory(ifr);
                 }
                 break;
-                case sendMail:
+                case sendMail:{}
             }
         }
         catch (Exception e){
@@ -136,7 +136,47 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
 
     @Override
     public void cpSendMail(IFormReference ifr) {
+        if (getPrevWs(ifr).equalsIgnoreCase(branchInitiator) || getPrevWs(ifr).equalsIgnoreCase(branchException)){
+            if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
+                if (getCpDecision(ifr).equalsIgnoreCase(decApprove)){
+                    if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
+                        message = "We wish to inform you that your primary market  commercial paper  bid of " + getCpPmCusRefNo(ifr) + " has been debited for the principal sum. <br>" +
+                                " Thank you for choosing FirstBank.<br> ";
+                        new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                    }
+                }
+                else if (getCpDecision(ifr).equalsIgnoreCase(decReturn)){
+                        message = "A request for "+getCpMarket(ifr)+" Market Commercial paper with unique reference number "+getCpPmCusRefNo(ifr)+" has been rejected by Money_Market_Branch_Verifier due to "+getCpRemarks(ifr)+". ";
+                        new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                }
+            }
+            else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryMandate)){
+                if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+                    if (getCpDecision(ifr).equalsIgnoreCase(decApprove)) {
+                        if (getCpTermIsSpecialRate(ifr))
+                            message = "A Termination request for "+getCpMarket(ifr)+" Market Commercial Paper with number "+getCpTermCusId(ifr)+" has been  approved by Money_Market_Branch_Verifier and is now pending in your queue for approval of special rate: "+getCpTermSpecialRateValue(ifr)+". Workitem No. "+getWorkItemNumber(ifr)+".";
+                         else
+                            message = "A Termination request for "+getCpMarket(ifr)+" Market Commercial Paper with number "+getCpTermCusId(ifr)+" has been  approved by Money_Market_Branch_Verifier and is now pending in your queue for approval. Workitem No. "+getWorkItemNumber(ifr)+".";
 
+                        new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                    }
+                    else if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
+                        message = "A Termination request for Commercial paper with number "+getCpTermCusId(ifr)+" has been rejected by Money_Market_Branch_Verifier and is now pending in your queue. Workitem No. "+getWorkItemNumber(ifr)+".";
+                        new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                    }
+                }
+                else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)){
+                    if (getCpDecision(ifr).equalsIgnoreCase(decApprove)){
+                        message = "A lien setup or removal request for "+getCpMarket(ifr)+" Market Commercial Paper with number "+getCpLienMandateId(ifr)+" has been  approved by Money_Market_Branch_Verifier and is now pending in your queue for approval. Workitem No. "+getWorkItemNumber(ifr)+".";
+                        new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                    }
+                   else if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
+                        message = "A lien setup or removal request for "+getCpMarket(ifr)+" Market Commercial Paper with number "+getCpLienMandateId(ifr)+" has been  rejected by Money_Market_Branch_Verifier and is now pending in your queue. Workitem No. "+getWorkItemNumber(ifr)+".";
+                        new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                    }
+                }
+            }
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ public class Commons implements Constants {
     private static final Logger logger = LogGen.getLoggerInstance(Commons.class);
     public static List<List<String>> resultSet;
     public static int validate;
+    public static String message;
 
     /************************* COMMERCIAL PAPER CODE BEGINS **************************/
     private String getTat (String entryDate, String exitDate){
@@ -279,6 +280,8 @@ public class Commons implements Constants {
        if (validate >= 0) {
            setFields(ifr,new String[]{cpPmWinRefNoLocal,windowSetupFlagLocal},new String[]{winRefNo,flag});
            disableFields(ifr, new String[]{cpTreasuryPriSection,cpCutOffTimeSection,cpMarketSection,cpSetupSection});
+            message = "Window for Commercial Paper primary market has been setup, bidding can commence. <br> Cut-Off time: "+getCpCloseDate(ifr)+".";
+            new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
            return apiSuccess;
        }
        else return "Unable to setup window. Kindly contact iBPS support.";
@@ -523,6 +526,7 @@ public class Commons implements Constants {
     public static String getCpOtp(IFormReference ifr){return  getFieldValue(ifr,cpTokenLocal);}
     public static  String getCpPmInvestmentType(IFormReference ifr){return  getFieldValue(ifr,cpPmInvestmentTypeLocal);}
     public static String getCpSmInvestmentType (IFormReference ifr){return getFieldValue(ifr,cpSmInvestmentTypeLocal);}
+    public static String getCpRemarks(IFormReference ifr){return getFieldValue(ifr,cpRemarksLocal);}
 
 
 

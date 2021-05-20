@@ -193,8 +193,7 @@ public interface Constants {
 	String cpMandateTypeTerminate = "Termination";
 	String cpMandateTypePoi = "POI";
 	String cpMandateTypeLien = "Lien";
-	String cpMandateTypeRemoveLien = "Remove Lien";
-	String cpTermMandateLocal = "CP_TERMMANDATE";
+    String cpTermMandateLocal = "CP_TERMMANDATE";
 	String cpTermMandateDateCol = "Date";
 	String cpTermMandateRefNoCol = "Reference Number";
 	String cpTermMandateAmountCol = "Amount";

@@ -111,6 +111,13 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
 
     @Override
     public void cpSendMail(IFormReference ifr) {
+        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier) || getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
+            if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+                if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
+                    message = "A request for Commercial Paper with number "+getCpTermCusId(ifr)+"  was not approved by Money_Market_TreasuryOps_Verifier  and discarded. Workitem No. "+getWorkItemNumber(ifr)+".";
+                }
+            }
+        }
 
     }
 

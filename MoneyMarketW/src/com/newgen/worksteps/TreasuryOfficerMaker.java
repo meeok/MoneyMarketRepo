@@ -170,8 +170,17 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     }
 
     @Override
-    public void cpSendMail(IFormReference iFormReference) {
-
+    public void cpSendMail(IFormReference ifr) {
+        if (!isEmpty(getWindowSetupFlag(ifr))){
+                if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryModifyCutOffTime)){
+                    message = "Commercial Paper time for "+getCpMarket(ifr)+" market has now been modified and requires your approval.";
+                    new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                }
+                else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryReDiscountRate)){
+                    message = "Commercial Paper re-discount rate for "+getCpMarket(ifr)+" market has now been set and requires your approval.";
+                    new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                }
+        }
     }
     @Override
     public void cpFormLoadActivity(IFormReference ifr) {

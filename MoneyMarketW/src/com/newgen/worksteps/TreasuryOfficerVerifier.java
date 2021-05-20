@@ -102,7 +102,6 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 
 	@Override
     public void cpSendMail(IFormReference ifr) {
-        String message;
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)){
             if (getCpDecision(ifr).equalsIgnoreCase(decApprove)) {
                 message = "Landing Message has been approved by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to setup market.";
@@ -112,7 +111,31 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 message = "Landing Message has been rejected by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to make necessary corrections.";
                 new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
             }
-    }
+        }
+        else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerMaker)){
+                if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryModifyCutOffTime)){
+                  if (getCpDecision(ifr).equalsIgnoreCase(decApprove)){
+                      message = "Cutoff time has now been updated.";
+                      new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
+                  }
+                  else if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
+                      message = "Cutoff time was rejected.";
+                      new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
+                  }
+                }
+        }
+        else if (getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
+            if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+                if (getCpDecision(ifr).equalsIgnoreCase(decApprove)){
+                    message = "A Termination request for "+getCpMarket(ifr)+" Market Commercial Paper with number "+getCpTermCusId(ifr)+" has been  approved by Money_Market_Branch_Verifier and is now pending in your queue for approval. Workitem No. "+getWorkItemNumber(ifr)+".";
+                    new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                }
+                else if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
+                    message = "A Termination request for Commercial paper with number "+getCpTermCusId(ifr)+" has been rejected by Money_Market_Treasury_Verifier and is now pending in your queue. Workitem No. "+getWorkItemNumber(ifr)+".";
+                    new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                }
+            }
+        }
     }
     @Override
     public void cpFormLoadActivity(IFormReference ifr){
@@ -217,6 +240,37 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         if (validate >=0 ) {
             setFields(ifr,cpDecisionLocal,decApprove);
             disableFields(ifr,new String[]{cpDecisionLocal,cpSetReDiscountRateBtn});
+
+            String table = "<table>" +
+                    "<tr>" +
+                    "<th>Days to Maturity</th>" +
+                    "<th>Re-discount rate</th>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td><= 90 days</td>" +
+                    "<td>"+reDiscount90+"</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td>91 - 180 days</td>" +
+                    "<td>"+reDiscount91180+"</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td>181 – 270 days</td>" +
+                    "<td>"+reDiscount181270+"</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td>271 – 364 days</td>" +
+                    "<td>"+reDiscount271364+"</td>" +
+                    "</tr>" +
+                    "</table><br> ";
+
+            if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
+                message = "A commercial paper re-discount for primary market has now been updated with the below details.<br> ";
+            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
+                message = "A commercial paper re-discount for secondary market has now been updated with the below details.<br> ";
+
+            message += table;
+            new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
             return "Re-discount Rate updated successfully. Kindly submit workitem";
         }
         return "Unable to update Re-discount Rate. Contact iBPS support";

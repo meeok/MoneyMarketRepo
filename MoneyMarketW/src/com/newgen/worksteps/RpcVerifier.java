@@ -101,7 +101,13 @@ public class RpcVerifier extends Commons implements IFormServerEventHandler, Con
 
     @Override
     public void cpSendMail(IFormReference ifr) {
+        if (getCpDecision(ifr).equalsIgnoreCase(decApprove))
+            message = "A request to "+getCpLienType(ifr)+" a lien on commercial paper with workItem No. "+getWorkItemNumber(ifr)+" has been activated";
 
+        else if (getCpDecision(ifr).equalsIgnoreCase(decReject))
+            message = "A request to "+getCpLienType(ifr)+" a lien on commercial paper with workItem No. "+getWorkItemNumber(ifr)+" has been rejected";
+
+        new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
     }
 
     @Override

@@ -262,7 +262,20 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 
     @Override
     public void cpSendMail(IFormReference ifr) {
-
+        if (getCpDecision(ifr).equalsIgnoreCase(decSubmit)) {
+            if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
+                    message = "A request for Commercial paper (" + getCpMarket(ifr) + " market) with Workitem No. " + getWorkItemNumber(ifr) + " has been initiated and is now pending in your queue for approval.";
+                    new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
+            } else if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryMandate)) {
+                if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)) {
+                    message = "A request for Commercial Paper with WorkItem No. " + getWorkItemNumber(ifr) + " termination request was initiated and is now pending in your queue for approval";
+                    new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
+                } else if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeLien)) {
+                    message = "A request to " + getCpLienType(ifr) + " lien on " + getCpMarket(ifr) + " market Commercial paper with WorkItem No. " + getWorkItemNumber(ifr) + " has been initiated and request is now pending in your queue for approval.";
+                    new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
+                }
+            }
+        }
     }
     public void beforeFormLoadActivity(IFormReference ifr){
         hideProcess(ifr);
