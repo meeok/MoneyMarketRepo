@@ -256,6 +256,23 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
             	hideFields(ifr, new String[] {tbBidRequestDte,tbBidRStatus});
                 enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
             }
+            //populate table with the customer details ...
+            else  if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)) { 
+            	if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(terminationVal)) {
+            	}
+            			
+            
+            	
+            	/*
+            	 * if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(proofofinvestmentVal)) {
+                        		return tbGetCustDetailsForPoi(ifr);
+                        	}
+                        	else if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(terminationVal)) {
+                        		return tbGetCustDetailsForTermination(ifr);
+                        	}
+            	 */
+            	
+            }
         } 
         else if (getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)) {
         	if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {

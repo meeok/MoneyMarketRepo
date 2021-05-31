@@ -259,7 +259,9 @@ public class Query {
     public static String getTbCustMandate(String marketType, String data){// general principal amt tb_principalAmt
         return "select tb_bidRequestDte,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_pm_mpBr,tb_bidStatus,TB_MATURITY_DATE,tb_pm_custId,tb_uniqueNum from MONEYMARKET_EXT "
         		+ "where upper(g_select_market) =upper('tb_market') and upper(tb_select_market) = upper('"+marketType+"') "
-        				+ "and (upper(tb_pm_custId) = upper('"+data+"') or tb_custAcctNum = '"+data+"')";	
+        				+ "and (upper(tb_pm_custId) = upper('"+data+"') or tb_custAcctNum = '"+data+"') and"
+        						+ " tb_uniqueNum in (select refid from mm_setup_tbl where REDISCOUNTRATELESS90 is not null and REDISCOUNTRATELESS180 is not null"
+        						+ " and  REDISCOUNTRATELESS270 is not null and REDISCOUNTRATELESS364 is not null) ";	
     }
     //
    

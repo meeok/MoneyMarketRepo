@@ -1083,6 +1083,16 @@ public class Commons implements Constants {
     	//return "";
     }
     
+    //return only date part of a string
+    public String getDateOnly(String dte) {
+    	return dte.substring(0,dte.indexOf(" "));
+    }
+    //round double to two decimal places
+    public double roundTo2dp(double val) {
+    	return Math.round(val*100.0)/100.0;
+    	
+    }
+    
     
     /******************  TREASURY BILL CODE ENDS ***********************************/
 }

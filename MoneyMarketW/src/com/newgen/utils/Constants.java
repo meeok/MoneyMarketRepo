@@ -463,6 +463,8 @@ public interface Constants {
 	String terminationVal = "Termination";
 	String proofofinvestmentVal ="POI";
 	String proofofinvestmentLbl ="Proof of Investment";
+	String tbMandateTypeLien = "Lien";
+
 	
 	//tbLandingMsgSection- Setup Landing Message
 	String tbLandMsgtbx = "tb_landingMsg";
@@ -507,6 +509,10 @@ public interface Constants {
 	String tbBrnchPriWindownUnqNo="tb_uniqueNum";
 	String tbBrnchPriRqsttype ="tb_request_type";
 	String tbBrnchPriPrncplAmt ="tb_pm_mpBr";
+	
+	//lien activities
+	String tbLienType="tb_lienType";
+	String tbLiencustRefId ="";
 	
 	//Post section --tb_post_section
 	String tbtoken = "tb_token";
@@ -557,6 +563,8 @@ public interface Constants {
 	String tbRediscountRate ="tb_rediscount_section";
 	String tbCustBidSection ="tb_cust_bid_section";
 	String tbUtilityFailedPostingSection ="tb_utilityFailedPosting_section";
+	String tbLienSection ="tbLienSection";
+	String tbPBCustDetailsSection = "tbPBCustDetailsSection";
 	
 	//String tbBranchPriSection = "tb_pm_br_section";
 	//String tbBranchSecSection = "tb_BranchSec_section";
@@ -628,6 +636,7 @@ public interface Constants {
 	String tbStausCol ="Status";
 	String tbBidStausCol ="BidStatus";
 	String tbBidWorkItemNoCol ="WorkItemNo";
+	String tbPmTotalAllocationAmt="tb_pmTotalAllocationAmt";
 	
 	
 	//Secondary bid Setup
@@ -667,10 +676,6 @@ public interface Constants {
 	String tbSmIntrestAtMaturity ="tb_intMaturity";//""tb_sec_interestAtMaturity";
 	String tbSmResidualIntrst ="tb_sec_residual_int";
 	
-	
-	
-	
-	
 	//table85 ( Customer Request ) column names
 	//tbBidMaturityDteCol, tbBidRateCol,tbBidTenorCol,tbStausCol from table 67
 	String tbTBillAmountCol ="TBillAmount";
@@ -680,6 +685,7 @@ public interface Constants {
 	String tbBidSmInvestmentIDCol ="SmInvestmentId";
 	String tbDaysToMaturityCol = "DaysToMaturity";
 	String tbSmInvestmentIdCol = "SmInvestmentId";
+	String tbMaturityDteCol ="Maturity Date";
 	
 	//Primary re discount rate
 	String tbRdrlessEqualto90tbx = "tb_less90";
@@ -717,9 +723,10 @@ public interface Constants {
 	String tbInvestmentIdCol ="InvestmentId";
 	String tbTenorCol ="tenor";
 	String tbRateCol ="rate";
-	String tbMarketWinRefIDCol ="Market Window RefId";
+	String tbMarketWinRefIDCol ="MarketRefId";
 	String tbMarketUniqueIdCol ="MarketUniqueId";
 	String tbPrincipalAtMaturityCol ="PrincipalAtMaturity";
+	String tbMaturityDtCol ="Maturity Date";
 //	String tbDaysToMaturityCol ="DaysToMaturity";
 	//tb_sec_maturityDte, tb_sec_pm, tb_sec_maturityDate,tb_SmInvestmentId, tb_sec_tnor,tb_sec_rate
 	
@@ -733,9 +740,14 @@ public interface Constants {
 	String tbTermCashValue ="tb_termCashValue";
 	String tbTermbtn = "tb_terminate_btn";
 	String tbTermCustUniqId = "tb_termCustUniqId";//will get this from the populated customer field
-	String tbTermRediscountRate ="tb_termRediscountRate";
+	String tbTermRediscountRate ="tb_rediscount_rate";
 	String tbSpecialRateValue = "tb_special_rate_val";
 	String tbSpecialRate = "tb_special_rate";
+	String termCustRefId ="tb_TermCustomerRefID";
+	
+	//private banking Beneficiary details section 
+	String tbPBCustAcctNo = "tb_PBCustAcctNo";
+	String tbPBCustAcctName ="tb_PBCustAcctName";
 	
 	
 	//Document names
@@ -784,7 +796,7 @@ public interface Constants {
 	
 	String[] allTbSections = {tbUtilityFailedPostingSection,tbSearchCustSection,tbSearchCustSection,tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
-			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection};
+			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection,tbPBCustDetailsSection};
 	
 	/*************TREASURY BILLS ENDS HERE********************/
 
