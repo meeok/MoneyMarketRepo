@@ -55,6 +55,10 @@ public class RpcVerifier extends Commons implements IFormServerEventHandler, Con
                                  cpProcessLien(ifr);
                         break;
                         }
+                        case tbOnDone:{
+                        	tbOndone(ifr);
+                        }
+                        break;
                     }
                 }
                 break;
@@ -133,4 +137,40 @@ public class RpcVerifier extends Commons implements IFormServerEventHandler, Con
             new DbConnect(ifr, Query.getCpLienProcessQuery(getCpLienMandateId(ifr),getCpMarket(ifr),cpLienSetFlag)).saveQuery();
         }
     }
+    
+    /******************treasury Process Starts here****************/
+    public void tbFormLoadActivity(IFormReference ifr) {
+        hideTbSections(ifr);
+        disableTbSections(ifr);
+        hideShowLandingMessageLabel(ifr,False);
+        hideShowBackToDashboard(ifr,False);
+        
+        clearFields(ifr,new String[]{tbRemarkstbx,tbDecisiondd}); 
+        setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbDecisionSection}); 
+        enableFields(ifr, new String[] {tbDecisionSection});
+        setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});
+    	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReject}, new String[]{decApprove,decReject});
+
+        
+        if (getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
+        	 if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(tbMandateTypeLien)) {
+        		setVisible(ifr, new String[] {tbLienSection});
+         		//disableFields(ifr, new String[] {tbLienSection});
+            }
+        }
+    }
+    
+    //process lien based on decision
+    private void tbOndone(IFormReference ifr) {
+    	 if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(tbMandateTypeLien)) {
+    		 if (getTbDecision(ifr).equalsIgnoreCase(decApprove)) {
+	    		 if(getFieldValue(ifr,tbLienType).equalsIgnoreCase(tbLienTypeRemove)) 
+	    			 setFields(ifr,tbLienStatus,yes);
+	    		 else if(getFieldValue(ifr,tbLienType).equalsIgnoreCase(tbLienTypeSet)) 
+	    			 setFields(ifr,tbLienStatus,no);
+    		 }
+    	 }
+    }
+
+    /******************treasury Process ends here****************/
 }

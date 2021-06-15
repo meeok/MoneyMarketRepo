@@ -1093,6 +1093,48 @@ public class Commons implements Constants {
     	
     }
     
+    public boolean isPBStaff(IFormReference ifr,String solid) {
+    	String qry = new Query().getPBSolQuery(solid);
+    	logger.info("getPBSol>>>"+qry);
+    	List<List<String>> dbr = new DbConnect(ifr,qry).getData();
+    	logger.info("getPBSol db result>>>"+dbr);
+    	
+    	if(dbr.size()>0)
+    		return true;
+    	else return false;
+    }
+    
+    public void setTbPBApprovalCntrls(IFormReference ifr) {
+    	if(isPBStaff(ifr,getFieldValue(ifr,solLocal))) {
+			setVisible(ifr, new String[] {tbPBCustDetailsSection,tbPBCustAcctNo,tbPBCustAcctName});
+			disableFields(ifr, new String[] {tbPBCustDetailsSection});
+		}
+		else {
+			hideFields(ifr, new String[] {tbPBCustDetailsSection});
+		}
+    }
+    
+    public String tbDBDteFormat(String dte) {
+    	SimpleDateFormat sdf = new SimpleDateFormat(dbDteFormat);
+    	try {
+			return sdf.format(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dte+" 00:00:00"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
+    }
+    /*
+     *non leap year = Amount * Rediscount rate *Date to maturity/366
+     *leap year = Principal *REDISCOUNT RATE(*Number of days due in the year/365 +Days to Maturity /366)
+     */
+    public double getTbPenaltyCharge(double amt,int rdr, int dtm) {
+    	if(isLeapYear()) 
+    		return (amt*rdr*(dtm/366.00));
+    	else
+    		return(amt*rdr*((dtm/365)+(dtm/366.00)));
+    	
+    }
     
     /******************  TREASURY BILL CODE ENDS ***********************************/
 }

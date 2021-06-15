@@ -444,6 +444,7 @@ public interface Constants {
 	String tbTerminate = "tbTerminate";
 	String tbUnLienCustFaceValue ="tbUnLienCustFaceValue";
 	String tbSpecialRateClicked ="tbSpecialRateClicked";
+	String tbLienTypeChange="tbLienTypeChange";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -484,7 +485,7 @@ public interface Constants {
 	String tbCustAcctNo ="tb_custAcctNum";
 	String tbCustAcctEmail ="tb_custAcctEmail";
 	String tbCustAcctName ="tb_custAcctName";
-	String tbCustAcctLienStatus ="tb_lien_status";
+	String tbCustAcctLienStatus ="tb_CustAcctLienStatus";
 	String tbCustSchemeCode ="tb_schemecode";
 	String tbValidatebtn ="tb_validate_btn";
 	String tbFetchMandatebtn ="tb_fetchmandate_btn";
@@ -511,8 +512,11 @@ public interface Constants {
 	String tbBrnchPriPrncplAmt ="tb_pm_mpBr";
 	
 	//lien activities
-	String tbLienType="tb_lienType";
-	String tbLiencustRefId ="";
+	String tbLienType="TBLIENTYPE";
+	String tbLiencustRefId ="TBLIENMANDATEID";
+	String tbLienStatus ="tb_lien_status"; //lien on customer treasury bills
+	String tbLienTypeSet="Set";
+	String tbLienTypeRemove ="Remove";
 	
 	//Post section --tb_post_section
 	String tbtoken = "tb_token";
@@ -538,6 +542,7 @@ public interface Constants {
 	//String tbPriBidBlkDefaultAll ="tb_bulk_default_all";
 	String tbPriBidBlkNewAll ="tb_bulk_new_all";
 	//String tbPriBidApprovebtn ="tb_allocation_btn";
+	String tbPmTotalAllocationAmt ="tb_pmTotalAllocationAmt";
 	
 	
 	
@@ -625,7 +630,7 @@ public interface Constants {
 	String tbBidTenorCol ="Tenor";
 	String tbBidRateCol ="tbRate";
 	String tbBidRateTypeCol ="RateType";
-	String tbBidCBNRateCol="CBNRtae";
+	String tbBidCBNRateCol="CBNRate";
 	String tbCidBankRateCol ="BankRate";
 	String tbBidPersonalRateCol ="PersonalRate";
 	String tbBidPrincipalCol ="Principal";
@@ -636,7 +641,7 @@ public interface Constants {
 	String tbStausCol ="Status";
 	String tbBidStausCol ="BidStatus";
 	String tbBidWorkItemNoCol ="WorkItemNo";
-	String tbPmTotalAllocationAmt="tb_pmTotalAllocationAmt";
+
 	
 	
 	//Secondary bid Setup
@@ -744,6 +749,8 @@ public interface Constants {
 	String tbSpecialRateValue = "tb_special_rate_val";
 	String tbSpecialRate = "tb_special_rate";
 	String termCustRefId ="tb_TermCustomerRefID";
+	String tbTermPenaltyCharge ="tb_term_penalty_charge";
+	String tbTermDate = "tb_termination_date";
 	
 	//private banking Beneficiary details section 
 	String tbPBCustAcctNo = "tb_PBCustAcctNo";
@@ -755,6 +762,7 @@ public interface Constants {
 	
 	
 	//return messages
+	
 	
 	//hidden fields
 	String tbLandingMsgApprovedFlg ="tb_landingMsgApprovedFlg";
@@ -794,9 +802,11 @@ public interface Constants {
 	String tbBidRllovrMndtelbl ="Roll Over Mandate";
 	String tbBidRllovrMndte ="RollOverMandate";
 	
+	String dbDteFormat = "dd-MMM-yy";
+	
 	String[] allTbSections = {tbUtilityFailedPostingSection,tbSearchCustSection,tbSearchCustSection,tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
-			tbTreasuryOpsSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection,tbPBCustDetailsSection};
+			tbTreasuryOpsSection,tbLienSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection,tbPBCustDetailsSection};
 	
 	/*************TREASURY BILLS ENDS HERE********************/
 

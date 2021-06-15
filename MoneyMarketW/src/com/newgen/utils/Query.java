@@ -231,15 +231,15 @@ public class Query {
     }
     //get tb Secondary Available amt and status
     public String getSmAvailableAmtQuery(String invesmentid){
-        return "(select tbillAmt - totalamountsold ), Status, from TB_SMISSUEDBILLS_TBL where insertionorderid = '"+invesmentid+"'";
+        return "(select tbillAmt - totalamountsold ), Status, from TB_SM_ISSUED_BILLS where insertionorderid = '"+invesmentid+"'";
     }
     //get all colums in issued treasurybids workstep
     public String tbGetSmIssuedBidsQuery(String refid){
-        return "select MaturityDate,Tenor,tbStatus,TBillAmount,tbRate,Mandates,TOTALAMOUNTSOLD,insertionorderid from TB_SMISSUEDBILLS_TBL where upper(tbstatus) = upper('Open')  and winame in (select winame from  mm_setup_tbl where refid ='"+refid+"')";
+        return "select MaturityDate,Tenor,tbStatus,TBillAmount,tbRate,Mandates,TOTALAMOUNTSOLD,insertionorderid from TB_SM_ISSUED_BILLS where upper(tbstatus) = upper('Open')  and winame in (select winame from  mm_setup_tbl where refid ='"+refid+"')";
     }
     //update mandates
     public String updateTbIBMandateAndTAmt(String invesmentid,double bidAmt){
-        return "update TB_SMISSUEDBILLS_TBL set totalamountsold = totalamountsold + "+bidAmt+", mandate =mandate+1 where insertionorderid = '"+invesmentid+"'";
+        return "update TB_SM_ISSUED_BILLS set totalamountsold = totalamountsold + "+bidAmt+", mandate =mandate+1 where insertionorderid = '"+invesmentid+"'";
     }
     public static String getTbCustMandateDetailsQuery(String custId, String acctno,String marketType){
         return "select tb_bidRequestDte,tb_custAcctNum,tb_custUniquerefId, tb_custAcctNum, tb_custAcctName,tb_principalAmt,tb_bidStatus,"
@@ -263,7 +263,16 @@ public class Query {
         						+ " tb_uniqueNum in (select refid from mm_setup_tbl where REDISCOUNTRATELESS90 is not null and REDISCOUNTRATELESS180 is not null"
         						+ " and  REDISCOUNTRATELESS270 is not null and REDISCOUNTRATELESS364 is not null) ";	
     }
-    //
+    //get all solids 
+    public static String getPBSolQuery(String solid) {
+    	return "select sol_id from PRIVATEBANKING_SOL_TBL where sol_id ='"+solid+"'";
+    }
+    //get total bid allocation amount for a market window
+    public String getTbPmTotalAllctnAmtQuery(String refid){
+    	return "select sum(tb_pm_mpBr) as TotalAmount from moneymarket_ext where tb_pm_mpBr is not null and tb_uniqueNum in "
+    			+ "(select refid from mm_setup_tbl where closeflag ='Y' and refid='"+refid+"') and upper(tb_bidStatus) = upper('Successful')";
+      }
+    
    
   
     ////-----------------------treasury end -------------------------------------///////////////

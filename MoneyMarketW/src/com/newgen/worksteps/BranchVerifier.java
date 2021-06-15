@@ -246,23 +246,30 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
         //disableTbSections(ifr);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{tbRemarkstbx,tbDecisiondd}); 
+        setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbDecisionSection});
+        setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});
+        enableFields(ifr, new String[] {tbDecisionSection});
+    	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
+
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
             if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
-            	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchPriSection,
-            			tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbAssigndd,tbBrcnhPriPersonalRate});
+            	setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbAssigndd,tbBrcnhPriPersonalRate});
             	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbCustPrincipalAmount});
-            	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
-            	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd});//setInvisible(ifr, new String[]{});
+            	setInvisible(ifr, new String[]{});
             	hideFields(ifr, new String[] {tbBidRequestDte,tbBidRStatus});
                 enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});
+                
+                //set private banking control
+                setTbPBApprovalCntrls(ifr);
             }
             //populate table with the customer details ...
             else  if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)) { 
             	if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(terminationVal)) {
             	}
-            			
-            
-            	
+            	else if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(tbMandateTypeLien)) {
+            		setVisible(ifr, new String[] {tbLienSection});
+            		disableFields(ifr, new String[] {tbLienSection});
+            	}
             	/*
             	 * if(getFieldValue(ifr,tbMandateTypedd).equalsIgnoreCase(proofofinvestmentVal)) {
                         		return tbGetCustDetailsForPoi(ifr);

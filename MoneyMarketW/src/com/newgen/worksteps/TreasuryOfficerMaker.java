@@ -1084,8 +1084,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	            setTableGridData(ifr,tbPriBidReportTable,new String[]{tbBidRptRqstTypeCol,tbBidRptRateCol,tbBidRptTenorCol,tbBidRptRateTypeCol,tbBidRptTtlAmtCol,tbBidRptTxnCoutnCol,tbBidRptStatusCol},
 	                    new String[]{rqstType,personalrate,tenor,rateType,totalAmount,count, statusAwaitingTreasury});
 	        }
-	        setVisible(ifr,new String[]{tbPriBidReportTable,tbViewPriBidReportbtn,tbViewPriBidDwnldBidSmrybtn,tbPriBidViewCustRqstbtn});
-	        disableFields(ifr,new String[]{tbViewPriBidReportbtn});
+	        setVisible(ifr,new String[]{tbPriBidReportTable,tbViewPriBidReportbtn,tbViewPriBidDwnldBidSmrybtn,tbPriBidViewCustRqstbtn,tbPmTotalAllocationAmt});
+	        disableFields(ifr,new String[]{tbViewPriBidReportbtn,tbPmTotalAllocationAmt});
 	        enableFields(ifr,new String[]{tbViewPriBidDwnldBidSmrybtn,tbPriBidViewCustRqstbtn});
         }
         else {//return a message of no bids for this window
@@ -1125,17 +1125,19 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                  String wino = ls.get(8);
                  String defaultAllocation ="100";
                  String cbnRate = ls.get(10);
+                 logger.info("cbnRate>>>"+cbnRate);
                  String bankRate = ls.get(11);
                  String matDte = ls.get(12);
                  String newAll = ls.get(13);
                  String bidStatus = ls.get(14);
                  String status = ls.get(15);
-                 setTableGridData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidWorkItemNoCol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidPersonalRateCol,tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol,tbBidRateTypeCol,
-                		 tbBidCBNRateCol,tbCidBankRateCol,tbBidMaturityDteCol,tbBidNewAllCol, tbBidStausCol,tbStausCol},
+                 setTableGridData(ifr,tbPriBidCustRqstTable,new String[]{tbBidCustRefNocol,tbBidWorkItemNoCol,tbBidAcctNoCol, tbBidAcctNamecol ,tbBidTenorCol ,tbBidPersonalRateCol,
+                		 tbBidTotalAmtCol,tbBidStausCol,tbBidDefaultAllCol,tbBidRateTypeCol,tbBidCBNRateCol,tbCidBankRateCol,tbBidMaturityDteCol,tbBidNewAllCol, tbBidStausCol,tbStausCol},
                          new String[]{id,wino,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation,ratetype,
                         		 cbnRate,bankRate,matDte,newAll,bidStatus,status});
              }
-             setVisible(ifr,new String[]{tbPriBidCustRqstTable,tbPriBidUpdateCustBid,tbPriBidBulkAllbtn,tbPriBidBulkAllbtn,tbPriBidBlkCbnRate,tbPriBidBlkBankRate,tbPriBidBlkNewAll});
+             setVisible(ifr,new String[]{tbPriBidCustRqstTable,tbPriBidUpdateCustBid,tbPriBidBulkAllbtn,tbPriBidBulkAllbtn,tbPriBidBlkCbnRate,tbPriBidBlkBankRate});//tbPriBidBlkNewAll
+             setTbPmtotalBidAllAmount(ifr,refid);
         }    
     }
     //write general update without selecting index
@@ -1155,7 +1157,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         }
         else {
         	if(isEmpty(gridcbnRate))
-        		retMsg = "CBN rate aCannot be empty";
+        		retMsg = "CBN rate Cannot be empty";
         }
     	
         if(isEmpty(retMsg)) {
@@ -1190,10 +1192,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	    	logger.info("tenor>>>"+tenor);
 	    	//logger.info("tenor2>>>"+tenor.substring(0, tenor.indexOf(" ")));
 	    	
-	    
-	    	
-	    	//to do: get from db 
-	        
+	    	//update table and db
 	        logger.info("gridpersonalRate>>>"+gridpersonalRate);
 	        double personalRate = 0;
 	    	try{personalRate = Double.parseDouble(gridpersonalRate);}
@@ -1205,14 +1204,15 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	    	
 	       
 	       // String defaultAll =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,10);
-	        String maturityDate =getMaturityDate(Integer.parseInt(tenor));//.substring(0, tenor.indexOf(" "))));
+	        String maturityDate =tbDBDteFormat(getMaturityDate(Integer.parseInt(tenor)));//.substring(0, tenor.indexOf(" "))));
 	        logger.info("maturityDate>>>"+maturityDate);
 	        String rateType =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,15);
 	        logger.info("rateType>>>"+rateType);
+	        logger.info("(checkBidStatus(bankRate,cbnRate)>>>"+checkBidStatus(bankRate,cbnRate));
 	        
 	        if (rateType.equalsIgnoreCase(rateTypePersonal)) {
 	        	if (checkBidStatus(personalRate,cbnRate)) {
-	        		
+	        		logger.info(checkBidStatus(personalRate,cbnRate));
 	        		//update gridview
 	            	ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
 	               // ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
@@ -1221,13 +1221,16 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidSuccess);
 	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,statusAwaitingMaturity);
 	                
-	                //update table
+	                //update DB table
 	        		String qry = new Query().getTbPmBidUpdatePersonalQuery(wino, cbnRate, maturityDate, allocation, bidSuccess, statusAwaitingMaturity);
+	        		logger.info("getTbPmBidUpdatePersonalQuery>>"+qry);
 	        		int dbr = new DbConnect(ifr, qry).saveQuery();
 	                logger.info("getTbPmBidUpdatePersonalQuery save db result>>>"+dbr);
+	                
 	        	}
 	        	else {
 	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,"");
 	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed);
 	            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
 	                int dbr = new DbConnect(ifr, qry).saveQuery();
@@ -1239,7 +1242,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	        }
 	        else if (rateType.equalsIgnoreCase(rateTypeBank)){
 	            if (checkBidStatus(bankRate,cbnRate)){
-	            	
+	            	logger.info("1");
 	            	//update gridview
 	            	ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
 	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
@@ -1258,6 +1261,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	            }
 	            else {
 	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,"");
 	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed);
 	            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
 	                int dbr = new DbConnect(ifr, qry).saveQuery();
@@ -1267,6 +1271,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	            }
 	        }
         }
+        //get total bid...
+        //tbViewPriCustomerBids(ifr, rowIndex); // last resort if bid status is not updating.......
+        setTbPmtotalBidAllAmount(ifr,getTbMarketUniqueRefId(ifr));
         return retMsg;   
     }
     
@@ -1381,6 +1388,25 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         return retMsg;
     	
     }
+    
+    //get the total bid allocation amount
+    private double tbTotalBidAlltAmt(IFormReference ifr,String refid) {
+    	String tAlQry = new Query().getTbPmTotalAllctnAmtQuery(refid);
+    	logger.info("getTbPmTotalAllctnAmtQuery>>"+tAlQry);
+    	List<List<String>> tAlDbr = new DbConnect(ifr,tAlQry).getData();
+    	if(tAlDbr.size()>0) {
+    		return convertStringToDouble(tAlDbr.get(0).get(0));
+    	}
+    	return 0;
+    }
+    
+    //set primary total bid allocation amount
+    private void setTbPmtotalBidAllAmount(IFormReference ifr,String refid) {
+   	 Double totalBidAmt = tbTotalBidAlltAmt(ifr,refid);
+   	 logger.info("totalBidAmt>>>>"+totalBidAmt);
+        setFields(ifr,tbPmTotalAllocationAmt,String.valueOf(totalBidAmt));
+      
+   }
     
     /******************  TREASURY BILL CODE ENDS *********************************/
 }

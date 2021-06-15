@@ -259,7 +259,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	        //approving of landing message 
 	        logger.info("getTbUpdateLandingMsg>>"+getTbUpdateLandingMsg(ifr));
 	        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator) || getTbUpdateLandingMsg(ifr)) { // for approval of landing page
-	            setVisible(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbValidatebtn});
+	          
+	        	setVisible(ifr,new String[] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbValidatebtn});
 	            enableFields(ifr,new String[] {tbDecisionSection,tbValidatebtn});
 	            setMandatory(ifr, new String[]{tbDecisiondd,tbRemarkstbx});
 	            hideFields(ifr,new String[]{tbMarketUniqueRefId});
@@ -274,8 +275,17 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd,tbtoken});//setInvisible(ifr, new String[]{});
 	        	hideFields(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
 	          //  disableFields(ifr, new String[] {});
+	        	//set private banking control
+                setTbPBApprovalCntrls(ifr);
 	           
 	        }
+	        else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){// Approving rediscount rate
+	 	    	   logger.info("here");
+	 	    	   setVisible(ifr,new String [] {tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbRediscountRate});
+	               disableFields(ifr, new String[]{tbLandingMsgSection,tbMarketSection,tbRediscountRate});
+	               enableFields(ifr,new String[]{tbDecisionSection,tbDecisiondd,tbRemarkstbx});
+	               setMandatory(ifr,new String [] {tbDecisiondd,tbDecisiondd,tbRemarkstbx});
+	   		}
 	     	
 	        else {//Modification of Primary Market Cut-off Time 
 	        	
@@ -302,6 +312,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
  	    	   setMandatory(ifr,new String [] {tbVerificationAmtttbx});
    			}
  	       else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){// Approving rediscount rate
+ 	    	   logger.info("here");
  	    	   setVisible(ifr,new String [] {tbTreasurySecSection,tbLandingMsgSection,tbDecisionSection,tbMarketSection,tbRediscountRate});
                disableFields(ifr, new String[]{tbTreasurySecSection,tbLandingMsgSection,tbMarketSection,tbRediscountRate});
                enableFields(ifr,new String[]{tbDecisionSection,tbDecisiondd,tbRemarkstbx});
