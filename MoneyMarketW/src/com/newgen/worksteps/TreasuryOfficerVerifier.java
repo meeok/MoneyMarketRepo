@@ -1,10 +1,10 @@
 package com.newgen.worksteps;
 
+import com.newgen.api.customService.CpServiceHandler;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.controller.CpController;
 import com.newgen.utils.*;
 
 import org.apache.log4j.Logger;
@@ -37,9 +37,14 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     @Override
     public String executeServerEvent(IFormReference ifr, String controlName, String eventName, String data) {
         try {
-        	logger.info("ControlName>>" +controlName);
-        	logger.info("eventName>>" +eventName);
             switch (eventName){
+                case cpApiCallEvent:{
+                    switch (controlName) {
+                        case cpTokenEvent: return new CpServiceHandler(ifr).validateTokenTest();
+                        case cpPostEvent: return new CpServiceHandler(ifr).postTransactionTest();
+                    }
+                    break;
+                }
                 case formLoad:{}
                 break;
                 case onLoad:{}
@@ -48,7 +53,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 	logger.info("onclick>>22");
                     switch (controlName){
                         case cpSetupWindowEvent:{
-                          return cpSetupWindow(ifr, Integer.parseInt(data));
+                          return cpSetupSmWindow(ifr, Integer.parseInt(data));
                         }
                         case cpSmInvestEvent:{
                            return  setupCpSmBid(ifr);
@@ -71,13 +76,6 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                     }
                 }
                 break;
-                case cpApiCallEvent:{
-                    switch (controlName) {
-                        case cpTokenEvent: return CpController.tokenController(ifr);
-                        case cpPostEvent: return CpController.postTranController(ifr);
-                    }
-                    break;
-                }
                 case onChange:{}
                 break;
                 case custom:{}
@@ -92,12 +90,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 		tbUpDateLndingMsgFlg(ifr);
                 		}
                 	break;
-                	
                 	/*** Treasury end****/
-                	
                 	}
-                	
-                	
                 }
                 break;
                 case decisionHistory:{
@@ -120,7 +114,6 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 
 	@Override
     public void cpSendMail(IFormReference ifr) {
-        String message;
         if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerInitiator)){
             if (getCpDecision(ifr).equalsIgnoreCase(decApprove)) {
                 message = "Landing Message has been approved by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to setup market.";
@@ -130,7 +123,31 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 message = "Landing Message has been rejected by the treasury officer verifier with ref No. "+getWorkItemNumber(ifr)+". Login to make necessary corrections.";
                 new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
             }
-    }
+        }
+        else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerMaker)){
+                if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryModifyCutOffTime)){
+                  if (getCpDecision(ifr).equalsIgnoreCase(decApprove)){
+                      message = "Cutoff time has now been updated.";
+                      new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
+                  }
+                  else if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
+                      message = "Cutoff time was rejected.";
+                      new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
+                  }
+                }
+        }
+        else if (getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
+            if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+                if (getCpDecision(ifr).equalsIgnoreCase(decApprove)){
+                    message = "A Termination request for "+getCpMarket(ifr)+" Market Commercial Paper with number "+getCpTermCusId(ifr)+" has been  approved by Money_Market_Branch_Verifier and is now pending in your queue for approval. Workitem No. "+getWorkItemNumber(ifr)+".";
+                    new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                }
+                else if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
+                    message = "A Termination request for Commercial paper with number "+getCpTermCusId(ifr)+" has been rejected by Money_Market_Treasury_Verifier and is now pending in your queue. Workitem No. "+getWorkItemNumber(ifr)+".";
+                    new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+                }
+            }
+        }
     }
     @Override
     public void cpFormLoadActivity(IFormReference ifr){
@@ -146,7 +163,10 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         }
         else if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerMaker)){
             if (isEmpty(getWindowSetupFlag(ifr))){
-                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){}
+                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
+                    setVisible(ifr, new String[]{cpLandingMsgSection, cpDecisionSection, cpMarketSection});
+                    setMandatory(ifr,new String[] {cpDecisionLocal,cpRemarksLocal});
+                }
                 else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
                     setVisible(ifr, new String[]{cpLandingMsgSection,cpDecisionSection,cpMarketSection,cpTreasurySecSection,cpCutOffTimeSection,cpSmCutOffTimeLocal,cpSetupSection,cpSetupWindowBtn,cpSmCpBidTbl});
                     setInvisible(ifr,new String[]{cpOpenDateLocal,cpCloseDateLocal});
@@ -177,7 +197,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                     setVisible(ifr,new String[]{cpBranchSecSection,cpCustomerDetailsSection,cpDecisionSection,landMsgLabelLocal,
                             cpSmMaturityDateBrLocal,cpPostSection,cpTokenLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal, (getCpSmConcessionRateValue(ifr).equalsIgnoreCase(empty)) ? empty : cpSmConcessionRateValueLocal});
                     setInvisible(ifr, new String[]{cpAcctValidateBtn,cpApplyBtn,cpSmInvestmentBrTbl});
-                    disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal,cpSmInstructionTypeLocal});
+                    disableFields(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal, cpSmInvestmentTypeLocal});
                     setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
                     enableFields(ifr,new String[]{cpTokenLocal});
                 }
@@ -191,12 +211,9 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         setDecision(ifr, cpDecisionLocal,new String[]{decApprove,decReject});
     }
 
-    private String cpSetupWindow(IFormReference ifr, int rowCount){
+    private String cpSetupSmWindow(IFormReference ifr, int rowCount){
         if (isEmpty(getWindowSetupFlag(ifr))){
-            if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
-                return empty;
-            }
-            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
+             if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
                 return cpSetupSecondaryMarketWindow(ifr,rowCount);
             }
         }
@@ -221,20 +238,51 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     private String cpUpdateReDiscountRate(IFormReference ifr){
         String id = null;
 
-        String rediscount90 = getFieldValue(ifr,cpReDiscountRateLess90Local);
-        String rediscount91180 = getFieldValue(ifr, cpReDiscountRate91To180Local);
-        String rediscount181270 = getFieldValue(ifr,cpReDiscountRate181To270Local);
-        String rediscount271364 = getFieldValue(ifr,cpReDiscountRate271To364Local);
+        String reDiscount90 = getFieldValue(ifr,cpReDiscountRateLess90Local);
+        String reDiscount91180 = getFieldValue(ifr, cpReDiscountRate91To180Local);
+        String reDiscount181270 = getFieldValue(ifr,cpReDiscountRate181To270Local);
+        String reDiscount271364 = getFieldValue(ifr,cpReDiscountRate271To364Local);
 
         if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
             id = getCpPmWinRefNo(ifr);
         else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
             id = getCpSmWinRefNo(ifr);
 
-        int validate = new DbConnect(ifr,Query.getUpdateReDiscountRateQuery(id,rediscount90,rediscount91180,rediscount181270,rediscount271364)).saveQuery();
+        int validate = new DbConnect(ifr,Query.getUpdateReDiscountRateQuery(id,reDiscount90,reDiscount91180,reDiscount181270,reDiscount271364)).saveQuery();
         if (validate >=0 ) {
             setFields(ifr,cpDecisionLocal,decApprove);
             disableFields(ifr,new String[]{cpDecisionLocal,cpSetReDiscountRateBtn});
+
+            String table = "<table>" +
+                    "<tr>" +
+                    "<th>Days to Maturity</th>" +
+                    "<th>Re-discount rate</th>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td><= 90 days</td>" +
+                    "<td>"+reDiscount90+"</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td>91 - 180 days</td>" +
+                    "<td>"+reDiscount91180+"</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td>181 – 270 days</td>" +
+                    "<td>"+reDiscount181270+"</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td>271 – 364 days</td>" +
+                    "<td>"+reDiscount271364+"</td>" +
+                    "</tr>" +
+                    "</table><br> ";
+
+            if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
+                message = "A commercial paper re-discount for primary market has now been updated with the below details.<br> ";
+            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
+                message = "A commercial paper re-discount for secondary market has now been updated with the below details.<br> ";
+
+            message += table;
+            new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
             return "Re-discount Rate updated successfully. Kindly submit workitem";
         }
         return "Unable to update Re-discount Rate. Contact iBPS support";

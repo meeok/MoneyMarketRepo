@@ -5,9 +5,9 @@ import org.apache.log4j.Logger;
 import java.util.List;
 
 public class DbConnect {
-    private static Logger logger = LogGen.getLoggerInstance(DbConnect.class);
-    private IFormReference ifr;
-    private String query;
+    private static final Logger logger = LogGen.getLoggerInstance(DbConnect.class);
+    private final IFormReference ifr;
+    private final String query;
     public DbConnect(IFormReference ifr, String query){ this.ifr = ifr; this.query = query; }
 
     public List<List<String>> getData (){

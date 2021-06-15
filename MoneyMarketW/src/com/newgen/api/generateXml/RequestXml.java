@@ -3,7 +3,7 @@ package com.newgen.api.generateXml;
 public class RequestXml {
 
     public static String getUserLimitXml (String user){
-        return "<USERID>"+user+"</USERID>";
+        return "<USERID>"+user.toUpperCase()+"</USERID>";
     }
     public static String searchRequestXml (String startDate, String endDate, String acctNo, String amount, String debitCredit, String transParts){
 

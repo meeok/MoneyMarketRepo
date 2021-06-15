@@ -55,8 +55,7 @@ public interface Constants {
 	String wiNameFormLocal ="winame";
 	String utilityFlagLocal = "cp_utilityFlag";
 	String downloadFlagLocal ="downloadFlag";
-
-
+	String branchNameLocal = "g_branchName";
 
 	// cp sections
 	String cpBranchPriSection = "cp_branchPm_section";
@@ -65,6 +64,7 @@ public interface Constants {
 	String cpMarketSection = "cp_market_section";
 	String cpPrimaryBidSection = "cp_primaryBid_section";
 	String cpTerminationSection = "cp_termination_section";
+	String cpTerminationDetailsSection = "cp_terminationdetails_section";
 	String cpProofOfInvestSection = "cp_poi_section";
 	String cpDecisionSection = "cp_dec_section";
 	String cpTreasuryPriSection = "cp_pmTreasury_section";
@@ -78,7 +78,7 @@ public interface Constants {
 	String cpReDiscountRateSection = "rediscountratesection";
 	String cpMandateTypeSection = "cp_mandatetypesection";
 	String cpLienSection = "cpLienSection";
-
+	String cpServiceSection = "cpServiceSection";
     // end of cp sections
 
 	// commercial Paper process ids
@@ -111,7 +111,7 @@ public interface Constants {
 	String cpCustomerNameLocal ="cp_custAcctName";
 	String cpCustomerAcctNoLocal ="cp_custAcctNum";
 	String cpCustomerEmailLocal = "cp_custAcctEmail";
-	String cpCustomerSolLocal = "";
+	String cpCustomerSolLocal = "CPCUSTSOL";
 	String cpLienStatusLocal ="cp_lien_status";
 	String cpPmRateTypeLocal = "cp_rate_type";
 	String cpPmPersonalRateLocal ="cp_personal_rate";
@@ -124,7 +124,7 @@ public interface Constants {
 	String cpPmReqFreshValue ="freshMandate";
 	String cpAcctValidateBtn ="cp_acctValidateBtn";
 	String cpTxnIdLocal ="cp_tsnId";
-	String cpDebitPrincipalBtn ="cp_debitPrincipal_btn";
+	String cpPostBtn ="cp_post_btn";
 	String cpTokenLocal ="cp_token";
 	String cpAllocSummaryTbl ="table88";
 	String cpAllocationReqTbl ="table89";
@@ -165,7 +165,7 @@ public interface Constants {
 	String cpSmIFrameLocal = "cp_downloadBid_frame";
 	String cpSmCustIdLocal = "cp_sec_custId";
 	String cpSmMaturityDateBrLocal ="cp_sec_maturityDate";
-	String cpSmInstructionTypeLocal = "cp_sec_instructionType";
+	String cpSmInvestmentTypeLocal = "cp_sec_investmentType";
 	String cpSmConcessionRateLocal ="cp_sec_concessionRate";
 	String cpSmConcessionRateValueLocal ="cp_sec_concessionValue";
 	String cpApplyBtn = "apply_btn";
@@ -193,8 +193,7 @@ public interface Constants {
 	String cpMandateTypeTerminate = "Termination";
 	String cpMandateTypePoi = "POI";
 	String cpMandateTypeLien = "Lien";
-	String cpMandateTypeRemoveLien = "Remove Lien";
-	String cpTermMandateLocal = "CP_TERMMANDATE";
+    String cpTermMandateLocal = "CP_TERMMANDATE";
 	String cpTermMandateDateCol = "Date";
 	String cpTermMandateRefNoCol = "Reference Number";
 	String cpTermMandateAmountCol = "Amount";
@@ -244,6 +243,17 @@ public interface Constants {
 	String cpPoiAcctNoCol = "Account Number";
 	String cpPoiAcctNameCol = "Customer Name";
 	String cpPoiStatusCol = "Status";
+	String cpTermIssueDateLocal = "CPTERMISSUEDATE";
+	String cpTermBoDateLocal = "CPTERMBODATE";
+	String cpTermTenorLocal = "CPTERMTENOR";
+	String cpTermMaturityDateLocal = "CPTERMMATURITYDATE";
+	String cpTermNoDaysDueLocal = "CPTERMNODAYSDUE";
+	String cpTermPenaltyChargeLocal = "CPTERMPCHARGE";
+	String cpTermRateLocal ="CPTERMRATE";
+	String cpUploadExcelBtn = "cpUploadExcelBtn";
+	String cpFileNameLocal = "CPFILENAME";
+	String cpFetchMandateBtn = "cpFetchMandateBtn";
+	String cpCheckLienBtn = "cpCheckLienBtn";
 
 	//common variables
 	String omoProcess = "omo_market";
@@ -282,6 +292,7 @@ public interface Constants {
 	String windowOpen = "opened";
 	String windowClosed = "closed";
 	String windowInactiveMessage = "No Window is currently open, Try again later";
+	String windowActiveErrMessage = "A Window for this market is currently open, Kindly wait till it elapse to open a new window";
 	String invalidSchemeCode1 = "SA231";
 	String invalidSchemeCode2 = "SA310";
 	String invalidSchemeCode3 = "SA340";
@@ -300,6 +311,7 @@ public interface Constants {
 	String cpPostSuccessMsg = "Posting Done Successfully";
 	String currencyNgn ="NGN";
 	//String apiSuccess ="success";
+	String cpCusMailErrMsg ="Update email of customer on account maintenance workflow";
 	String cpApiLimitErrorMsg ="Transaction above your limit to Post. Kindly enhance your limit";
 	String exceptionMsg ="Exception occurred contact IBPS support";
 	String statusAwaitingTreasury = "Awaiting Treasury";
@@ -333,6 +345,7 @@ public interface Constants {
 	String transSubTypeC = "CI";
 	String transSubTypeB = "BI";
 	String apiNoResponse = "No Response Found";
+	String apiLimitErrMsg = "This transaction is above your limit to Post. Kindly increase your limit and try again";
 
 
 
@@ -383,6 +396,11 @@ public interface Constants {
 	String generateTemplateEvent = "TemplateGeneration";
 	String cpPoiSearchEvent="poiSearch";
 	String cpPoiProcessEvent="poiProcess";
+	String cpFetchMandateEvent = "cpFetchMandate";
+	String cpValidateAcctEvent = "cpValidateAcct";
+	String cpValidateLienEvent = "cpValidateLien";
+	String cpPmProcessSuccessBidsEvent = "cpPmProcessSuccessBids";
+	String cpCheckDecisionEvent = "cpCheckDecision";
 
 
 	//config

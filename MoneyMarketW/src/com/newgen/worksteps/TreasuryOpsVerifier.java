@@ -1,14 +1,12 @@
 package com.newgen.worksteps;
 
+import com.newgen.api.customService.CpServiceHandler;
 import com.newgen.controller.CpController;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
-import com.newgen.utils.Commons;
-import com.newgen.utils.CommonsI;
-import com.newgen.utils.Constants;
-import com.newgen.utils.LogGen;
+import com.newgen.utils.*;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 
@@ -43,14 +41,13 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
             switch (event){
                 case cpApiCallEvent:{
                     switch (control) {
-                        case cpTokenEvent: return CpController.tokenController(ifr);
+                        case cpTokenEvent: return new CpServiceHandler(ifr).validateTokenTest();
                         case cpPostEvent:{
                             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                                if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
-                                else return cpValidateWindowErrorMsg;
+                               return new CpServiceHandler(ifr).postTransactionTest();
                             }
                             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
-                                if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return CpController.postTranController(ifr);
+                                if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr))) return new CpServiceHandler(ifr).postTransactionTest();
                                 else return cpValidateWindowErrorMsg;
                             }
                         }
@@ -114,6 +111,13 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
 
     @Override
     public void cpSendMail(IFormReference ifr) {
+        if (getPrevWs(ifr).equalsIgnoreCase(treasuryOfficerVerifier) || getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
+            if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
+                if (getCpDecision(ifr).equalsIgnoreCase(decReject)){
+                    message = "A request for Commercial Paper with number "+getCpTermCusId(ifr)+"  was not approved by Money_Market_TreasuryOps_Verifier  and discarded. Workitem No. "+getWorkItemNumber(ifr)+".";
+                }
+            }
+        }
 
     }
 
@@ -128,21 +132,44 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
           if (getCpMandateType(ifr).equalsIgnoreCase(cpMandateTypeTerminate)){
               setMandatory(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
               enableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal,cpTokenLocal});
-              setVisible(ifr,new String[]{cpMandateTypeSection,cpSetupSection,cpTerminateBtn,cpPostSection,cpDecisionSection,cpTerminationSection,cpTermMandateTbl,cpTermSpecialRateLocal, getCpTermIsSpecialRate(ifr) ? cpTermSpecialRateValueLocal : cpTermSpecialRateLocal});
-              if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypeFull)){
-                  setVisible(ifr,new String[]{cpTermAmountDueLocal});
-              }
-              else if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)){
+              setVisible(ifr,new String[]{cpMandateTypeSection,cpTerminationDetailsSection,cpPostSection,cpDecisionSection,cpTerminationSection,cpTermMandateTbl,cpTermSpecialRateLocal, getCpTermIsSpecialRate(ifr) ? cpTermSpecialRateValueLocal : cpTermSpecialRateLocal});
+              if (getCpTerminationType(ifr).equalsIgnoreCase(cpTerminationTypePartial)){
                   setVisible(ifr,new String[]{cpTermAmountDueLocal,cpTermAdjustedPrincipalLocal,cpTermPartialOptionLocal,cpTermPartialAmountLocal,cpTermPartialOptionLocal});
               }
+              setTerminationDetails(ifr);
           }
         }
-
         cpSetDecision(ifr);
     }
 
     @Override
     public void cpSetDecision(IFormReference ifr) {
         setDecision(ifr,cpDecisionLocal,new String[]{decApprove,decReject});
+    }
+
+    private void setTerminationDetails(IFormReference ifr){
+        resultSet = new DbConnect(ifr,Query.getCpTermDetailsQuery(getCpTermCusId(ifr))).getData();
+        logger.info("resultSet-- "+resultSet);
+        double penaltyCharge;
+
+        if (!isEmpty(resultSet)){
+            String tenor = resultSet.get(0).get(0);
+            logger.info("tenor-- "+tenor);
+            String maturityDate = resultSet.get(0).get(1);
+            logger.info("maturityDate-- "+maturityDate);
+            String principal = resultSet.get(0).get(2);
+            logger.info("principal-- "+principal);
+            long daysDue = getDaysBetweenTwoDates(getCpTermBoDate(ifr),maturityDate);
+            logger.info("daysDue-- "+daysDue);
+
+            if (isLeapYear())
+                penaltyCharge = Double.parseDouble(principal) *  getPercentageValue(getCpTermRate(ifr)) * ((double) daysDue / 365 + (double) daysDue / 366);
+            else
+                penaltyCharge = Double.parseDouble(principal) * getPercentageValue(getCpTermRate(ifr)) * ((double) daysDue / 366);
+
+            logger.info("penaltyCharge-- "+penaltyCharge);
+
+            setFields(ifr,new String[]{cpTermTenorLocal,cpTermMaturityDateLocal,cpTermPenaltyChargeLocal,cpTermNoDaysDueLocal},new String[]{tenor,maturityDate,String.valueOf(penaltyCharge),String.valueOf(daysDue)});
+        }
     }
 }

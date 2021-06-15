@@ -65,6 +65,14 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                             	tbFormLoad(ifr);
                             break;
                         }
+                        case cpOnSelectMarket:{
+                            if (isCpWindowActive(ifr)){
+                                disableCpSections(ifr);
+                                setFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal},new String[]{decDiscard,windowActiveErrMessage});
+                                disableFields(ifr,new String[]{cpDecisionLocal,cpRemarksLocal});
+                                return windowActiveErrMessage;
+                            }
+                        }
                     }
                 }
                 break;
@@ -98,8 +106,10 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
 
     @Override
     public void cpSendMail(IFormReference ifr){
-        String message = "A window open request for Commercial Paper has been Initiated with ref number "+getWorkItemNumber(ifr)+".";
-        new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+        if (getCpDecision(ifr).equalsIgnoreCase(decSubmit)) {
+            message = "A window open request for Commercial Paper has been Initiated with ref number " + getWorkItemNumber(ifr) + ".";
+            new MailSetup(ifr, getWorkItemNumber(ifr), getUsersMailsInGroup(ifr, groupName), empty, mailSubject, message);
+        }
     }
     @Override
     public void cpFormLoadActivity(IFormReference ifr){

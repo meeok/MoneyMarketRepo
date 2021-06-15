@@ -4,20 +4,23 @@ import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
+import com.newgen.utils.Commons;
+import com.newgen.utils.CommonsI;
+import com.newgen.utils.Constants;
 import org.json.simple.JSONArray;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class TreasuryOpsFailed implements IFormServerEventHandler {
+public class TreasuryOpsFailed extends Commons implements IFormServerEventHandler, Constants, CommonsI {
     @Override
-    public void beforeFormLoad(FormDef formDef, IFormReference iFormReference) {
+    public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
 
     }
 
     @Override
     public String setMaskedValue(String s, String s1) {
-        return null;
+        return s1;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class TreasuryOpsFailed implements IFormServerEventHandler {
     }
 
     @Override
-    public String executeServerEvent(IFormReference iFormReference, String s, String s1, String s2) {
+    public String executeServerEvent(IFormReference iFormReference, String control, String event, String data) {
         return null;
     }
 
@@ -53,5 +56,20 @@ public class TreasuryOpsFailed implements IFormServerEventHandler {
     @Override
     public String introduceWorkItemInWorkFlow(IFormReference iFormReference, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         return null;
+    }
+
+    @Override
+    public void cpSendMail(IFormReference ifr) {
+
+    }
+
+    @Override
+    public void cpFormLoadActivity(IFormReference ifr) {
+
+    }
+
+    @Override
+    public void cpSetDecision(IFormReference ifr) {
+
     }
 }
