@@ -139,13 +139,10 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                     switch (controlName){
                         case cpOnSelectCategory:{cpSelectCategory(ifr);}
                         break;
-                       /* case cpSmSetupEvent:{
-                            if (getCpSmSetup(ifr).equalsIgnoreCase(smSetupNew) || getCpSmSetup(ifr).equalsIgnoreCase(smSetupUpdate))
-                                setVisible(ifr,new String[]{cpSmCpBidTbl, cpSmIFrameLocal});
-                            else setInvisible(ifr,new String[]{cpSmCpBidTbl, cpSmIFrameLocal});
-                            cpSmInvestmentSetup(ifr);
+                        	case cpSmSetupEvent:{
+                        		cpSmInvestmentSetup(ifr);
                             break;
-                        }*/
+                        }
 
                         /**** Treasury Onchange Start ****/
                         case tbCategoryddChange:{
@@ -1244,7 +1241,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	        double personalRate = 0;
 	    	try{personalRate = Double.parseDouble(gridpersonalRate);}
 	    	catch(Exception ex) {
-	    		retMsg = "parsing Bank error:>>>"+ ex.toString();
+	    		retMsg = "parsing personal rate  error:>>>"+ ex.toString();
 	    		logger.info(retMsg);
 	    	}
 	    	logger.info("personalRate>>>"+personalRate);
@@ -1255,7 +1252,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	        logger.info("maturityDate>>>"+maturityDate);
 	        String rateType =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,15);
 	        logger.info("rateType>>>"+rateType);
-	        logger.info("(checkBidStatus(bankRate,cbnRate)>>>"+checkBidStatus(bankRate,cbnRate));
+	        //logger.info("(checkBidStatus(bankRate,cbnRate)>>>"+checkBidStatus(bankRate,cbnRate));
 	        
 	        if (rateType.equalsIgnoreCase(rateTypePersonal)) {
 	        	if (checkBidStatus(personalRate,cbnRate)) {
@@ -1278,7 +1275,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	        	else {
 	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
 	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,"");
-	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed);
+	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed,cbnRate);
 	            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
 	                int dbr = new DbConnect(ifr, qry).saveQuery();
 	                logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);
@@ -1309,7 +1306,12 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	            else {
 	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
 	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,"");
-	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,11,maturityDate);
+	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,9,newallocation);
+	                
+	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed,cbnRate,bankRate);
 	            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
 	                int dbr = new DbConnect(ifr, qry).saveQuery();
 	                logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);

@@ -347,8 +347,6 @@ public interface Constants {
 	String apiNoResponse = "No Response Found";
 	String apiLimitErrMsg = "This transaction is above your limit to Post. Kindly increase your limit and try again";
 
-
-
 	//eventName/controlName
 	String formLoad = "formLoad";
 	String onClick = "onClick";
@@ -463,6 +461,7 @@ public interface Constants {
 	String tbUnLienCustFaceValue ="tbUnLienCustFaceValue";
 	String tbSpecialRateClicked ="tbSpecialRateClicked";
 	String tbLienTypeChange="tbLienTypeChange";
+	String tbGetMaturityDte= "tbGetMaturityDte";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -505,6 +504,7 @@ public interface Constants {
 	String tbCustAcctName ="tb_custAcctName";
 	String tbCustAcctLienStatus ="tb_CustAcctLienStatus";
 	String tbCustSchemeCode ="tb_schemecode";
+	String tbCustSolid ="tb_custSolid";
 	String tbValidatebtn ="tb_validate_btn";
 	String tbFetchMandatebtn ="tb_fetchmandate_btn";
 	String tbLienPrincipalbtn ="tb_LienPrincipal";
@@ -551,7 +551,7 @@ public interface Constants {
 	//String tbPriBidAllocationbtn ="tb_allocation_btn";
 	String tbPriBidAllocatebtn ="tb_allocate_btn";
 	String tbPriBidApprovebtn ="tb_allocation_btn";
-	String tbPriBidCustRqstTable ="table67";
+	String tbPriBidCustRqstTable = "table67";//"table105";//
 	String tbPriBidViewCustRqstbtn="tb_viewCustPriBids";
 	String tbPriBidUpdateCustBid ="tb_updateCustPriBids";
 	String tbPriBidBulkAllbtn ="tb_allocation_btn";

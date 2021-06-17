@@ -6,6 +6,7 @@ import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.controller.CpController;
+import com.newgen.controller.TbApiController;
 import com.newgen.utils.Commons;
 import com.newgen.utils.CommonsI;
 import com.newgen.utils.DbConnect;
@@ -78,8 +79,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
 	                	}
 	                	 //****************Treasurry Starts here *********************//
                         case tbValidateCustomer:{
-                        	return tbValidateCustomer(ifr);
-                            
+                        	return new TbApiController(ifr).fetchAcctDetails();
                         }
                         case tbPostFaceValue:{
                         	return tbPost(ifr);  

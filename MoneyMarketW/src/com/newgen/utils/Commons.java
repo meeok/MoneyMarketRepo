@@ -1,5 +1,6 @@
 package com.newgen.utils;
 
+import com.newgen.controller.TbApiController;
 import com.newgen.iforms.custom.IFormReference;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -722,37 +723,7 @@ public class Commons implements Constants {
         catch(Exception ex){return ""; }
     }
     
-    //primary branch validations
-    /*
-     * validate Account Schemecode
-     * Secondary Market where private banking investment account with scheme code PB2010), system must bring out an additional field for ‘Remark’. This field must be a compulsory field.
-     */
-    public static String tbValidateCustomer(IFormReference ifr) {
-    	tbFetchAccountDetails(ifr);
-    	String retMsg = (getTbCustSchemeCode(ifr).equalsIgnoreCase(SA231) || getTbCustSchemeCode(ifr).equalsIgnoreCase(SA310) ||
-    			getTbCustSchemeCode(ifr).equalsIgnoreCase(SA340) ||getTbCustSchemeCode(ifr).equalsIgnoreCase(SA327)) ?
-    			"This account is not valid for TB processing":"";	
-    	logger.info("retMsg1>>"+ retMsg);
-    	if (isEmpty(retMsg))
-    		retMsg = isEmpty(getTbCustAcctEmail(ifr)) ? "Update email of customer on account maintenance workflow":"";
-    	logger.info("retMsg1>>"+ retMsg);
-    	
-    	setVisible(ifr, tbFetchMandatebtn);
-    	//scheme code PB2010
-    	if(getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
-    		if(getTbCustSchemeCode(ifr).equalsIgnoreCase(PB2010)) {
-    			setVisible(ifr, tb_SmCustBidRemark);
-    			setMandatory(ifr, tb_SmCustBidRemark);
-    		}
-    		else {
-    			clearFields(ifr, tb_SmCustBidRemark);
-    			hideField(ifr,tb_SmCustBidRemark);
-    			undoMandatory(ifr, tb_SmCustBidRemark);
-    		}	
-    		
-    	}
-    	return retMsg;
-    }
+   
     
     public static void tbFetchAccountDetails(IFormReference ifr) {
     	if(getTbCustAcctNo(ifr).equalsIgnoreCase("3094925864")){
@@ -863,6 +834,8 @@ public class Commons implements Constants {
 	public static String getTbSmResidualIntrst(IFormReference ifr) {return (String) ifr.getValue(tbSmResidualIntrst);}
 	public static void setTbSmIntrestAtMaturity(IFormReference ifr, String value) {ifr.setValue(tbSmIntrestAtMaturity,value);}
 	public static String getTbSmIntrestAtMaturity(IFormReference ifr) {return (String) ifr.getValue(tbSmIntrestAtMaturity);}
+	//public static String getTbCustAcctNo(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctNo);}
+	//public static void setTbCustAcctNo(IFormReference ifr, String value) {ifr.setValue(tbCustAcctNo,value);}
 	
 	//public static void setTbPoolManager(IFormReference ifr, String value) {ifr.setValue(tbPoolManager,value);}
 	//public static String getTbPoolManager(IFormReference ifr) {return (String) ifr.getValue(tbPoolManager);}

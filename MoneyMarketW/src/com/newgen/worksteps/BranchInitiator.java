@@ -12,6 +12,7 @@ import org.json.simple.JSONArray;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import com.newgen.controller.TbApiController;
 
 public class BranchInitiator extends Commons implements IFormServerEventHandler, CommonsI {
      private static final Logger logger = LogGen.getLoggerInstance(BranchInitiator.class);
@@ -85,7 +86,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         }
                         //****************Treasurry Starts here *********************//
                         case tbValidateCustomer:{
-                        	return tbValidateCustomer(ifr);
+                        	return  new TbApiController(ifr).fetchAcctDetails();
                         }
                         case tbSmApplyBid:{
                         	try {
@@ -245,6 +246,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	                break;
     	                case tbLienTypeChange:{
     	                	return tbLienTypeChange(ifr);
+    	                }
+    	                case tbGetMaturityDte:{
+    	                	tbGetMaturityDte(ifr);
     	                }
     	              
                         //****************Treasurry Ends here *********************//
@@ -1000,6 +1004,16 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	return retMsg;
     }
     
+    //get maturity date when tenor changes
+    private void tbGetMaturityDte(IFormReference ifr) {
+    	if(!isEmpty(getFieldValue(ifr,tbBrnchPriTenordd))) {
+    		int tenor = Integer.parseInt(getFieldValue(ifr,tbBrnchPriTenordd));
+    		logger.info("tenor>>"+tenor);
+    		String matDte =getMaturityDate(tenor);
+    		logger.info("Maturity Date>>>."+matDte);
+    		setFields(ifr,new String[] {tbMaturityDte}, new String[] {matDte});
+    	}
+    }
     /*
      * generate customer unique ref for bid
      */
