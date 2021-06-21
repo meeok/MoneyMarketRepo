@@ -782,7 +782,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		enableFields(ifr,new String[]{tbViewPriBidReportbtn,tbPrimaryBidSection,tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {});
                 disableFields(ifr, new String[]{tbAssigndd,tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd,tbMarketUniqueRefId});
-                hideFields(ifr, new String[] {tbPriBidAllocationTable,tbPriBidCustRqstTable,tbPriBidReportTable});
+                hideFields(ifr, new String[] {tbSettlementDte,tbCalculateMaturityDtebtn,tbPriBidAllocationTable,tbPriBidCustRqstTable,tbPriBidReportTable});
             }
             else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){
     			setDropDown(ifr,tbDecisiondd,new String[]{decSubmit});
@@ -1017,8 +1017,13 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	    				retMsg = setUpTbMarketWindow(ifr,getTbMarketUniqueRefId(ifr),getTbPriOpenDate(ifr),getTbPriCloseDate(ifr),"");// set market
     		}
     		else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){
-    		//	check if all bids are set --- get bdStatus
-    			retMsg =tbCheckUnallocatedBids(ifr);
+    			//check if maturity date is calculated in summary grid and update all customer's maturity date
+    			retMsg = tbUpdateCustMaturityDte(ifr);
+    			if(isEmpty(retMsg)) {
+    				//check if all bids are set --- get bdStatus
+    				retMsg =tbCheckUnallocatedBids(ifr);
+    				retMsg = "testing ,,,,,";
+    			}
     		}
     		else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){
         		//update the database with rediscount rates
@@ -1036,6 +1041,51 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     	logger.info("Ondone Validate retMsg>>"+retMsg);
     	return retMsg;
     }
+    /*
+     * check if maturity date is calculated in summary 
+     * grid and update all customer's maturity date
+     */
+    private String tbUpdateCustMaturityDte(IFormReference ifr) {
+    	String retMsg ="";
+    	String settlementDte = getFieldValue(ifr,tbSettlementDte);
+    	logger.info("settlementDte>>>."+settlementDte);
+    	String matDte91 = tbDBDteFormat(getMaturityDate(settlementDte,91));
+    	logger.info("matDte91>>>."+matDte91);
+    	String matDte182 = tbDBDteFormat(getMaturityDate(settlementDte,182));
+    	logger.info("matDte182>>>."+matDte182);
+    	String matDte364 = tbDBDteFormat(getMaturityDate(settlementDte,364));
+    	logger.info("matDte364>>>."+matDte364);
+    	
+    	String refid = getTbMarketUniqueRefId(ifr);
+    	//update maturity date of customers with succesful bids 
+    	String qry91 = new Query().getTbPmUpdateMaturityDteQuery(refid, bidSuccess,"91", matDte91);
+		logger.info("getTbPmCustRqstQuery91>>"+qry91);
+	    int dbr91 = new DbConnect(ifr,qry91).saveQuery();
+	    logger.info("dbr getTbPmCustRqstQuery91>>"+dbr91);
+	    if (dbr91< 0) 
+	    	retMsg = "Could not calculate maturity date for 91 days tenor";
+	    
+	    //update for 182days
+	    String qry182 = new Query().getTbPmUpdateMaturityDteQuery(refid, bidSuccess,"182", matDte182);
+		logger.info("getTbPmCustRqstQuery182>>"+qry182);
+	    int dbr182 = new DbConnect(ifr,qry182).saveQuery();
+	    logger.info("dbr getTbPmCustRqstQuery182>>"+dbr182);
+	    if (dbr182< 0) 
+	    	retMsg = "Could not calculate maturity date for 182 days tenor";
+	    
+	    //update for 364days
+	    String qry364 = new Query().getTbPmUpdateMaturityDteQuery(refid, bidSuccess,"364", matDte364);
+		logger.info("getTbPmCustRqstQuery364>>"+qry364);
+	    int dbr364 = new DbConnect(ifr,qry364).saveQuery();
+	    logger.info("dbr getTbPmCustRqstQuery364>>"+dbr364);
+	    if (dbr364< 0) 
+	    	retMsg = "Could not calculate maturity date for 364 days tenor";
+		 
+	     
+    	return retMsg;
+    }
+    
+    
     
     /*
      * setup - save redicount rate into setup table
@@ -1136,7 +1186,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         	}
      }
     
-    //view 
+    //view customer request details
     private void tbViewPriCustomerBids(IFormReference ifr, int rowIndex){
         ifr.clearTable(tbPriBidCustRqstTable);
         String refid = getTbMarketUniqueRefId(ifr);
@@ -1180,8 +1230,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                          new String[]{id,wino,acctNo,acctName,tenor,rate,principal,statusAwaitingTreasury,defaultAllocation,ratetype,
                         		 cbnRate,bankRate,matDte,newAll,bidStatus,status});
              }
-             setVisible(ifr,new String[]{tbPriBidCustRqstTable,tbPriBidUpdateCustBid,tbPriBidBulkAllbtn,tbPriBidBulkAllbtn,tbPriBidBlkCbnRate,tbPriBidBlkBankRate});//tbPriBidBlkNewAll
+             setVisible(ifr,new String[]{tbSettlementDte,tbCalculateMaturityDtebtn,tbPriBidCustRqstTable,tbPriBidUpdateCustBid,tbPriBidBulkAllbtn,tbPriBidBulkAllbtn,tbPriBidBlkCbnRate,tbPriBidBlkBankRate});//tbPriBidBlkNewAll
              setTbPmtotalBidAllAmount(ifr,refid);
+             setMandatory(ifr,new String[]{tbSettlementDte});
         }    
     }
     //write general update without selecting index

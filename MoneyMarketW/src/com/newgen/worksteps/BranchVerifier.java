@@ -365,6 +365,8 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
 	    		disableFields(ifr,new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
 	    		setMandatory(ifr, new String[] {tbSmBidAmount,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});	
 	    		setFields(ifr,new String[] {tbSmIntrestAtMaturity,tbSmPrincipalAtMaturity}, new String[] {getSmInterestAtMat(ifr),tbGetSmPrincipalAtMat(ifr)});
+	    		
+	    		//display bid details
         	 }
         }
        
@@ -433,7 +435,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     	setTbDecisiondd(ifr,decApprove);
     	disableFields(ifr, new String[] {tbLienPrincipalbtn,tbDecisiondd});
     	undoMandatory(ifr,tbRemarkstbx);
-    	setTb_BrnchPri_LienID(ifr,"L234");
+    	setTb_BrnchPri_LienID(ifr,"01784");
     	setFields(ifr,tbCustAcctLienStatus,"Yes");
     	return "Customer Principal liened Succesfully";
   	}

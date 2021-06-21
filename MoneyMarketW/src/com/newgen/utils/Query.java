@@ -176,6 +176,17 @@ public class Query {
     			+ " and tb_pm_tenor ='"+tenor+"' and tb_rate_type='"+rateType+"' order by tb_pm_mpBr desc";
       }
     
+    //get all workitems with this ref id
+    public String getTbPmCustRqstQuery(String refid, String bidStatus){
+    	return "select  winame, tb_pm_tenor,tb_bidStatus from moneymarket_ext " + 
+    	"where tb_request_type is not null and tb_bidStatus='"+bidStatus+"' and tb_uniqueNum ='"+refid+"'";
+      }
+    //update customer details with maturity date from settlement date
+    public String getTbPmUpdateMaturityDteQuery(String refid, String bidStatus, String tenor, String maturityDate){
+        return "update moneymarket_ext set tb_maturity_date = '"+maturityDate+"' where and tb_bidStatus='"+bidStatus+"'"
+        		+ " and tb_uniqueNum ='"+refid+"' and tenor = '"+tenor+"' ";
+    }
+    
     public String getTbPmBidUpdateBankQuery(String wino, double cbnRate,double bankRate,String maturityDate, double allocation, String bidStatus, String status){
         return "update moneymarket_ext set tb_cbnRate = '"+cbnRate+"', tb_bankRate = '"+bankRate+"', tb_maturity_date = '"+maturityDate+"', tb_allocation_p = '"+allocation+"'"
         		+ ", tb_bidStatus = '"+bidStatus+"', tb_status = '"+status+"' where winame = '"+wino+"' ";
@@ -231,7 +242,7 @@ public class Query {
     }
     //get minimum principal
     public String getSmMinPrincipalQuery(String refid){
-        return "select MINPRINCIPALAMOUNT from moneymarket_ext where refid = '"+refid+"'";
+        return "select MINPRINCIPALAMOUNT from MM_SETUP_TBL where refid = '"+refid+"'";
     }
     //get tb Secondary Available amt and status
     public String getSmAvailableAmtQuery(String invesmentid){

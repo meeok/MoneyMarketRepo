@@ -401,6 +401,9 @@ public class Commons implements Constants {
     public static String getMaturityDate(int tenor){
         return LocalDate.now().plusDays(tenor).toString();
     }
+    public static String getMaturityDate(String startdte,int tenor){
+        return LocalDate.now().plusDays(tenor).toString();
+    }
     public static boolean isLeapYear (){
         return LocalDate.now().isLeapYear();
     }
@@ -409,6 +412,8 @@ public class Commons implements Constants {
     }
     public static String getCpSmInvestmentSetupType(IFormReference ifr){return getFieldValue(ifr,cpSmSetupLocal);}
     public static long getDaysToMaturity(String maturityDate){
+    	logger.info("getDaysToMaturity");
+    	logger.info("LocalDate.parse(maturityDate)>>>"+LocalDate.parse(maturityDate));
         return ChronoUnit.DAYS.between(LocalDate.now(),LocalDate.parse(maturityDate));
     }
     public static long getDaysBetweenTwoDates(String startDate, String endDate){

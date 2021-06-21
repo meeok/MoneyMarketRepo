@@ -561,7 +561,9 @@ public interface Constants {
 	String tbPriBidBlkNewAll ="tb_bulk_new_all";
 	//String tbPriBidApprovebtn ="tb_allocation_btn";
 	String tbPmTotalAllocationAmt ="tb_pmTotalAllocationAmt";
-	
+	String tbCalculateMaturityDtebtn="tb_calc_maturityDte";
+	String tbSettlementDte = "tb_settlement_dte";
+
 	
 	
 	//sections
@@ -588,6 +590,7 @@ public interface Constants {
 	String tbUtilityFailedPostingSection ="tb_utilityFailedPosting_section";
 	String tbLienSection ="tbLienSection";
 	String tbPBCustDetailsSection = "tbPBCustDetailsSection";
+	String tbUpdatePriMaturityDte ="tbUpdatePriMaturityDte";
 	
 	//String tbBranchPriSection = "tb_pm_br_section";
 	//String tbBranchSecSection = "tb_BranchSec_section";
@@ -685,7 +688,7 @@ public interface Constants {
 	String tbSmBidAmount = "tb_sec_pa";
 	String tbBrnchSmWindownUnqNo="tb_sec_id";
 	String tbSmInvestmentId = "tb_SmInvestmentId";
-	String tbSmMinPriAmt = "tb_mp_amount";
+	String tbSmMinPriAmt = "tb_mp_amount";  //--------------to be deleted
 	String tbSmtenor = "tb_sec_tenor";
 	String tbSmRate = "tb_sec_rate";
 	String tbSmMaturityDte = "tb_sec_maturityDate";
@@ -698,6 +701,7 @@ public interface Constants {
 	String tbSmIntrsyMaturityLpYr ="tb_sec_intMaturityLpYr";  //del
 	String tbSmIntrestAtMaturity ="tb_intMaturity";//""tb_sec_interestAtMaturity";
 	String tbSmResidualIntrst ="tb_sec_residual_int";
+	String tbSmdaysMaturity ="tb_sec_daysMaturity";
 	
 	//table85 ( Customer Request ) column names
 	//tbBidMaturityDteCol, tbBidRateCol,tbBidTenorCol,tbStausCol from table 67

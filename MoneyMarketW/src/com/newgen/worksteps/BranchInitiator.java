@@ -891,9 +891,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     			 if(isTbWindowOpen(ifr,getTbBrnchSmWindownUnqNo(ifr))){//check if market is open for bidding
     				 logger.info("market is open");
 		    		setVisible(ifr, new String[] {tbBranchSecSection,tbDecisionSection,tbBrnchCusotmerDetails});//
-		    		disableFields(ifr,new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+		    		enableFields(ifr, new String[] {tbCustAcctNo,tbValidatebtn});
+		    		disableFields(ifr,new String[] {tbSmtenor,tbSmRate,tbSmInvestmentId,tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbBidRequestDte});
 		    		setMandatory(ifr, new String[] {tbSmBidAmount,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
-		    		hideFields(ifr, new String[] {tbSmPrincipalAtMaturity,tbSmIntstMaturityNonLpYr,tbSmIntrsyMaturityLpYr,tbSmResidualIntrst});
+		    		hideFields(ifr, new String[] {tbSmIntrestAtMaturity,tbSmPrincipalAtMaturity,tbSmIntstMaturityNonLpYr,tbSmIntrsyMaturityLpYr,tbSmResidualIntrst});
 		    		//get issued bids and insert into the openbid table
 		    		retMsg =tbPorpulateSmOpenBidTbl(ifr);
     			 }
@@ -948,10 +949,11 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         List<List<String>> dbr = new DbConnect(ifr, qry).getData();
         logger.info("getTbPmBidUpdateBankQuery save db result>>>"+dbr);
         int dbrSize = dbr.size();
+        String daystoMaturity="";
         if(dbrSize>0) {
         	for(List<String> ls : dbr)
         	{
-        		String MaturityDate = ls.get(0);
+        		String maturityDte = ls.get(0);
         		String Tenor = ls.get(1);
         		String Status = ls.get(2);
         		String TBillAmount = ls.get(3);
@@ -959,11 +961,19 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         		String Mandates = ls.get(5);
         		String totalAmountSold = ls.get(6);
         		String insertionorderid = ls.get(7);
-        		String DaysToMaturity = String.valueOf(getDaysToMaturity(MaturityDate)); 
+        		logger.info("MaturityDate>>"+maturityDte);
+        		try {
+               	 daystoMaturity =  String.valueOf(getDaysToMaturity(maturityDte.substring(0,maturityDte.indexOf(" "))));
+                }
+                catch(Exception ex) {
+               	 logger.info("Maturity date may be null contact Admin");
+                }
+        		//String DaysToMaturity = String.valueOf(getDaysToMaturity(MaturityDate)); 
+        		logger.info("daystoMaturity>>>"+daystoMaturity);
         		String AvailableAmount = convertDoubleToString(convertStringToDouble(TBillAmount) - convertStringToDouble(totalAmountSold));
         		
                 setTableGridData(ifr,tbSmOpenBidsTbl,new String[]{tbBidMaturityDteCol,tbBidTenorCol,tbStausCol,tbTBillAmountCol,tbBidRateCol,tbMandatesCol,tbAvailableAmountCol,tbSmInvestmentIdCol,tbDaysToMaturityCol},
-                        new String[]{MaturityDate,Tenor,Status,TBillAmount,tbRate,Mandates,AvailableAmount,insertionorderid,DaysToMaturity});
+                        new String[]{maturityDte,Tenor,Status,TBillAmount,tbRate,Mandates,AvailableAmount,insertionorderid,daystoMaturity});
         	}
         }
         else
@@ -1077,7 +1087,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         List<List<String>> minPdbr = new DbConnect(ifr, minPqry).getData();
         logger.info("getSmMinPrincipalQuery get db result>>>"+minPdbr);
         if(minPdbr.size()>0) 
-        	setFields(ifr,tbSmMinPriAmt,minPdbr.get(0).get(0));
+        	setFields(ifr,tbSmMinimumPrincipal,minPdbr.get(0).get(0));
     	String retMsg ="";
     	String maturityDte = ifr.getTableCellValue(tbSmOpenBidsTbl,rowIndex,0);
     	logger.info("maturityDte>>>" + maturityDte);
@@ -1095,19 +1105,20 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	logger.info("SmInvestmentId>>>" + SmInvestmentId);
     	
     	//change to array
-    	setFields(ifr,tbSmtenor,tenor);
-    	setFields(ifr,tbSmRate,rate);
-    	setFields(ifr,tbSmMaturityDte,maturityDte);
-    	setFields(ifr,tbSmInvestmentId,SmInvestmentId);
+    	setFields(ifr,new String[] {tbSmtenor,tbSmRate,tbSmMaturityDte,tbSmInvestmentId,}, new String[] {tenor,rate,maturityDte,SmInvestmentId});
+    	
 	}
     
     /*
      * 
      */
 	private String tbValidateSmBidAmount(IFormReference ifr) {
-		return convertStringToDouble(tbSmBidAmount) < convertStringToDouble(tbSmMinimumPrincipal) ? "BID amount cannot be less than "+tbSmMinimumPrincipal:"";
-	
-		
+		logger.info("tbSmBidAmount>>>"+tbSmBidAmount);
+		logger.info("tbSmMinimumPrincipal>>>"+tbSmMinimumPrincipal);
+		boolean isValidAmt = convertStringToDouble(tbSmBidAmount) < convertStringToDouble(tbSmMinimumPrincipal);
+		logger.info("isValidAmt>>>"+isValidAmt);
+		return convertStringToDouble(tbSmBidAmount) < convertStringToDouble(tbSmMinimumPrincipal) ? 
+				"BID amount cannot be less than "+tbSmMinimumPrincipal:"NO";
 	}
 	private void tbConcesionaryRateClicked(IFormReference ifr) {
 		if(getTbSmConcessionRate(ifr).equalsIgnoreCase(yes)) {
@@ -1139,10 +1150,12 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                  String principalamt = ls.get(4);
                  String status = ls.get(5);
                  String maturityDte = ls.get(6);
+                 logger.info("maturityDte>>"+maturityDte);
                  String custid = ls.get(7);
                  String winRefId =ls.get(8);
                  try {
                 	 daystoMaturity =  String.valueOf(getDaysToMaturity(maturityDte.substring(0,maturityDte.indexOf(" "))));
+                	 logger.info("maturityDte>>"+maturityDte);
                  }
                  catch(Exception ex) {
                 	 logger.info("Maturity date may be null contact Admin");
