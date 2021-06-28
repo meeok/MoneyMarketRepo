@@ -402,7 +402,7 @@ public class Commons implements Constants {
         return LocalDate.now().plusDays(tenor).toString();
     }
     public static String getMaturityDate(String startdte,int tenor){
-        return LocalDate.now().plusDays(tenor).toString();
+        return LocalDate.parse(startdte).plusDays(tenor).toString();
     }
     public static boolean isLeapYear (){
         return LocalDate.now().isLeapYear();
@@ -1112,6 +1112,7 @@ public class Commons implements Constants {
 		}
     }
     
+    //datetime format
     public String tbDBDteFormat(String dte) {
     	SimpleDateFormat sdf = new SimpleDateFormat(dbDteFormat);
     	try {
@@ -1132,6 +1133,15 @@ public class Commons implements Constants {
     	else
     		return(amt*rdr*((dtm/365)+(dtm/366.00)));
     	
+    }
+    
+    //remove exponential from doubles
+    public String formatExponentials(String str) {
+    	return String.format("%.0f",str);
+    }
+    //remove exponential from doubles
+    public double getResidualAmt(double amt) {
+    	return amt%1000;
     }
     
     /******************  TREASURY BILL CODE ENDS ***********************************/

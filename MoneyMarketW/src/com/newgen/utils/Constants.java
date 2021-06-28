@@ -438,7 +438,8 @@ public interface Constants {
 	String tbBrnchPriPrncplAmtChange = "tbBrnchPriPrncplAmtChange";
 	String tbTokenChange ="tbTokenChange";
 	String tbPostFaceValue ="tbPostFaceValue";
-//	String tbOndone ="tbOndone";
+	String tbSetBidAllocationCloseFlg ="tbSetBidAllocationCloseFlg";
+	String tbApplyNSCustodyFee = "tbApplyNSCustodyFee";
 	String tbLienCustFaceValue = "tbLienCustFaceValue";
 	String tbViewPriBidSmryReport ="tbViewPriBidSmryReport";
 	String tbDownloadPriBidSmryReport ="tbDownloadPriBidSmryReport";
@@ -548,6 +549,7 @@ public interface Constants {
 	String tbViewPriBidDwnldBidSmrybtn="tb_downloadBidSmry_btn";
 	String tbPriBidReportTable ="table69"; //cmplx tb name =  tb_bidReport 
 	String tbPriBidAllocationTable ="table68";
+	
 	//String tbPriBidAllocationbtn ="tb_allocation_btn";
 	String tbPriBidAllocatebtn ="tb_allocate_btn";
 	String tbPriBidApprovebtn ="tb_allocation_btn";
@@ -563,6 +565,7 @@ public interface Constants {
 	String tbPmTotalAllocationAmt ="tb_pmTotalAllocationAmt";
 	String tbCalculateMaturityDtebtn="tb_calc_maturityDte";
 	String tbSettlementDte = "tb_settlement_dte";
+	String tbBidAllocationCloseFlg ="tb_bidAllocationCloseFlg";
 
 	
 	
@@ -583,7 +586,6 @@ public interface Constants {
 	String tbTreasuryOpsSection ="tb_treasuryOps_section";
 	String tbTreasurySecReportSection ="tb_secReport_section";
 	String tbPostSection = "tb_post_section";
-	//String tbSetupSection="tb_setup_section";
 	String tbCutOffTimeSection = "tb_cutoff_section";
 	String tbRediscountRate ="tb_rediscount_section";
 	String tbCustBidSection ="tb_cust_bid_section";
@@ -591,6 +593,7 @@ public interface Constants {
 	String tbLienSection ="tbLienSection";
 	String tbPBCustDetailsSection = "tbPBCustDetailsSection";
 	String tbUpdatePriMaturityDte ="tbUpdatePriMaturityDte";
+	String tbCustodyFeeSection = "tbCustodyFeeSection";
 	
 	//String tbBranchPriSection = "tb_pm_br_section";
 	//String tbBranchSecSection = "tb_BranchSec_section";
@@ -826,9 +829,26 @@ public interface Constants {
 	
 	String dbDteFormat = "dd-MMM-yy";
 	
-	String[] allTbSections = {tbUtilityFailedPostingSection,tbSearchCustSection,tbSearchCustSection,tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
+	String[] allTbSections = {tbCustodyFeeSection,tbUtilityFailedPostingSection,tbSearchCustSection,tbSearchCustSection,tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
 			tbTreasuryOpsSection,tbLienSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection,tbPBCustDetailsSection};
+	
+	//custody feee section
+	String tbApplyNSCustodyfeeRbtn="tb_applyNSCustodyfee";
+	String tbCustodyFeeRate="tb_custody_fee_rate";
+	String tbStandardCustodyRate="0.10";
+	
+	//accounting Enteries for tbills details for posting 
+	String actSol = "999";
+	String acctCurr="NGN";
+	String tbHOSuspenceAct ="99934389027101";
+	String tbCBNAct = "99910100000101";
+	String tbCommissionOnNTBAcct = "99955081000101";
+	String tbIncomeOnNTBSaleAcct  ="99955081000401";
+	String tbCusotdyTxnFeeSuspenceAcct ="99934206000501";
+	String tbStandardCustodyFee = "0.01";
+
+	
 	
 	/*************TREASURY BILLS ENDS HERE********************/
 

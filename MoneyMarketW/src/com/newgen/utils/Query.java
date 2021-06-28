@@ -183,8 +183,8 @@ public class Query {
       }
     //update customer details with maturity date from settlement date
     public String getTbPmUpdateMaturityDteQuery(String refid, String bidStatus, String tenor, String maturityDate){
-        return "update moneymarket_ext set tb_maturity_date = '"+maturityDate+"' where and tb_bidStatus='"+bidStatus+"'"
-        		+ " and tb_uniqueNum ='"+refid+"' and tenor = '"+tenor+"' ";
+        return "update moneymarket_ext set tb_maturity_date = '"+maturityDate+"' where tb_bidStatus='"+bidStatus+"'"
+        		+ " and tb_uniqueNum ='"+refid+"' and tb_pm_tenor = '"+tenor+"' ";
     }
     
     public String getTbPmBidUpdateBankQuery(String wino, double cbnRate,double bankRate,String maturityDate, double allocation, String bidStatus, String status){

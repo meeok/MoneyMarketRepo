@@ -250,6 +250,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	                case tbGetMaturityDte:{
     	                	tbGetMaturityDte(ifr);
     	                }
+    	                case tbApplyNSCustodyFee:{
+    	                	tbApplyNSCustodyFee(ifr);
+    	                }
     	              
                         //****************Treasurry Ends here *********************//
     	              
@@ -846,8 +849,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		}*/
     	if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
 	    	if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){		
-	    		 if(isTbWindowOpen(ifr,getTbPriWindownUnqNo(ifr))){//check if market is is open
-		    		setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection});
+	    		 if(isTbWindowOpen(ifr,getTbPriWindownUnqNo(ifr))){//check if market is open
+	    			 logger.info("testingngnngn");
+		    		setVisible(ifr, new String[] {tbCustodyFeeSection,tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection});
 		    		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
 		    		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
 		    		
@@ -860,6 +864,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		    			hideFields(ifr, new String[] {tbPBCustDetailsSection});
 		    			undoMandatory(ifr, new String[] {tbPBCustAcctNo,tbPBCustAcctName});
 
+		    		}
+		    		//set custody fee
+		    		if(getFieldValue(ifr,tbApplyNSCustodyfeeRbtn).equalsIgnoreCase(no)){
+		    			setFields(ifr,tbCustodyFeeRate,tbStandardCustodyRate);
 		    		}
 		    		
 		    		//tbGenerateCustRefNo(ifr, getTbMarket(ifr));)
@@ -876,7 +884,6 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 	    		//disableFields(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection});
 	    		enableFields(ifr,new String[] {tbMandateTypedd,tbDecisionSection});
 	    		setMandatory(ifr, new String[] {tbMandateTypedd});
-	    		
 	    	}
 	    	else {
 	    		clearFields(ifr, new String[] {tbMandateTypedd});
@@ -1513,6 +1520,19 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		}
 			
 		
+	}
+	
+	//settings when the non standared custody fee radio button changes
+	private void tbApplyNSCustodyFee(IFormReference ifr) {
+		
+		if(getFieldValue(ifr,tbApplyNSCustodyfeeRbtn).equalsIgnoreCase(no)) {
+			//setVisible(ifr,tbCustodyFeeRate);
+			setFields(ifr,tbCustodyFeeRate,tbStandardCustodyRate);
+		}
+		else {//yes
+			hideField(ifr,tbCustodyFeeRate);
+			clearFields(ifr,tbCustodyFeeRate);
+		}
 	}
 
     
