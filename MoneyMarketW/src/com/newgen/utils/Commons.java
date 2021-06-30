@@ -839,6 +839,7 @@ public class Commons implements Constants {
 	public static String getTbSmResidualIntrst(IFormReference ifr) {return (String) ifr.getValue(tbSmResidualIntrst);}
 	public static void setTbSmIntrestAtMaturity(IFormReference ifr, String value) {ifr.setValue(tbSmIntrestAtMaturity,value);}
 	public static String getTbSmIntrestAtMaturity(IFormReference ifr) {return (String) ifr.getValue(tbSmIntrestAtMaturity);}
+	public static String getTbCustAcctCurrency(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctCurrency);}
 	//public static String getTbCustAcctNo(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctNo);}
 	//public static void setTbCustAcctNo(IFormReference ifr, String value) {ifr.setValue(tbCustAcctNo,value);}
 	

@@ -93,7 +93,7 @@ public class RequestXml {
 
     }
 
-    public String placeLienRequestXml (String acctNumber, String amount, String currency, String startDate, String endDate, String remarks){
+    public static String placeLienRequestXml (String acctNumber, String amount, String currency, String startDate, String endDate, String remarks){
 
         return "<ngXmlRequest>"
                 +		"<AcctLienAddRequest>"
@@ -121,7 +121,7 @@ public class RequestXml {
 
     }
 
-    public String removeLienRequestXml (String acctNumber, String lienId, String amount, String currency, String startDate, String endDate, String remarks){
+    public static String removeLienRequestXml (String acctNumber, String lienId, String amount, String currency, String startDate, String endDate, String remarks){
         return "<ngXmlRequest>"
                 +		"<AcctLienModRequest>"
                 +			"<AcctLienModRq>"

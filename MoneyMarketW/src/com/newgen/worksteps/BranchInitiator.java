@@ -852,7 +852,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 	    		 if(isTbWindowOpen(ifr,getTbPriWindownUnqNo(ifr))){//check if market is open
 	    			 logger.info("testingngnngn");
 		    		setVisible(ifr, new String[] {tbCustodyFeeSection,tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection});
-		    		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo});
+		    		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo,
+		    				tbCustAcctName,tbCustSchemeCode,tbCustAcctLienStatus,tbCustSolid,tbCustAcctCurrency});
 		    		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
 		    		
 		    		if(isPBStaff(ifr,getFieldValue(ifr,solLocal))) {
@@ -865,8 +866,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		    			undoMandatory(ifr, new String[] {tbPBCustAcctNo,tbPBCustAcctName});
 
 		    		}
+		    		logger.info(getFieldValue(ifr,tbApplyNSCustodyfeeRbtn));
 		    		//set custody fee
 		    		if(getFieldValue(ifr,tbApplyNSCustodyfeeRbtn).equalsIgnoreCase(no)){
+		    			logger.info("true");
 		    			setFields(ifr,tbCustodyFeeRate,tbStandardCustodyRate);
 		    		}
 		    		
@@ -1518,19 +1521,20 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 			hideField(ifr,tbSpecialRateValue);
 			undoMandatory(ifr,tbSpecialRateValue);
 		}
-			
 		
 	}
 	
 	//settings when the non standared custody fee radio button changes
 	private void tbApplyNSCustodyFee(IFormReference ifr) {
-		
+		logger.info("yyyeyy");
 		if(getFieldValue(ifr,tbApplyNSCustodyfeeRbtn).equalsIgnoreCase(no)) {
-			//setVisible(ifr,tbCustodyFeeRate);
+			logger.info("yyyeyy2");
+			setVisible(ifr,tbCustodyFeeRate);
 			setFields(ifr,tbCustodyFeeRate,tbStandardCustodyRate);
 		}
 		else {//yes
-			hideField(ifr,tbCustodyFeeRate);
+			//hideField(ifr,tbCustodyFeeRate);
+			logger.info("yyyeyy3");
 			clearFields(ifr,tbCustodyFeeRate);
 		}
 	}

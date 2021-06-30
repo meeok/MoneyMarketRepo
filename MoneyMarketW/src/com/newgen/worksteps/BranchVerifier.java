@@ -75,7 +75,11 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
 	                        else return cpValidateWindowErrorMsg;
 	                    }
 	                	case tbLienCustFaceValue:{
-	                		return tbLienCustFaceValue(ifr);
+	                		//check if lien has been placed on account
+	                		/*if(getTbCustAcctLienSatatus(ifr).equalsIgnoreCase(yes))
+	                			return "There is already a Lien on this account. Kindly remove before placing another lien";
+	                		else*/
+	                			return  new TbApiController(ifr).placeLien();
 	                	}
 	                	 //****************Treasurry Starts here *********************//
                         case tbValidateCustomer:{
@@ -323,8 +327,8 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
 
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
             if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {
-            	setVisible(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbAssigndd,tbBrcnhPriPersonalRate});
-            	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbCustPrincipalAmount});
+            	setVisible(ifr, new String[] {tbCustodyFeeSection,tbBrnchCusotmerDetails,tbBranchPriSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbAssigndd,tbBrcnhPriPersonalRate});
+            	disableFields(ifr, new String[] {tbCustodyFeeSection,tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbCustPrincipalAmount});
             	setInvisible(ifr, new String[]{});
             	hideFields(ifr, new String[] {tbBidRequestDte,tbBidRStatus});
                 enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn});

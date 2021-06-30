@@ -421,6 +421,8 @@ public interface Constants {
 	String fetchLimitServiceName = "CIGETUSERLIMIT";
 	String searchTranServiceName = "CISEARCHTRANSACTION";
 	String tokenValidationServiceName = "TOKENVALIDATION";
+	String placeLienServiceName = "placeLien";
+	String removeLienServiceName = "removeLien";
 
 	
 	/*************TREASURY BILLS STARTS HERE********************/
@@ -511,6 +513,9 @@ public interface Constants {
 	String tbLienPrincipalbtn ="tb_LienPrincipal";
 	String tb_BrnchPri_LienID ="tb_BrnchPri_LienID";
 	String tb_SmCustBidRemark = "tb_custBidRemark";
+	String tbCustAcctCurrency = "tb_custAcctCurrency";
+	String tbLienRemarks ="TBills Principal Amount";
+	//String tbLienEndDte ="2099-12-31";
 	
 	String tbBidRequestDte ="tb_bidRequestDte";
 	String tbBidRStatus ="tb_bidStatus";
