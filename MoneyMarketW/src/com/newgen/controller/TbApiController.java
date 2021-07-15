@@ -57,72 +57,69 @@ public class TbApiController  extends Commons implements Constants{
 		String retMsg ="";  
 		String accountNumber = getTbCustAcctNo(ifr).trim();
 		logger.info("account Number-- "+ accountNumber );
-		if(accountNumber.length()<10) {
-	        try {
-	            logger.info("Fetch account details call");
-	          
-	            
-	            clearFields(ifr, new String[]{tbCustAcctEmail, tbCustAcctName, tbCustAcctLienStatus,tbCustSchemeCode,tbCustSolid,tbCustAcctCurrency});
-	            if (!accountNumber.isEmpty()) {
-	            	setFecthActDtlsInputXml(accountNumber);
-	                logger.info("fetch account outputXml-- " + outputXml);
-	
-	                if (!isEmpty(outputXml)) {
-	                    xmlParser.setInputXML(outputXml);
-	
-	                    String status = xmlParser.getValueOf(apiStatus);
-	
-	                    if (isSuccess(status)) {
-	                        String schemeCode = xmlParser.getValueOf("SchmCode");
-	                        logger.info("schemeCode- "+ schemeCode);
-	                        
-	                        if(!isValidSchemeCode(schemeCode)) {
-	                        	return "This account is not valid for TB processing";
-	                        }
-	                        String currency = xmlParser.getValueOf("currencyCode");
-	                        logger.info("currency- "+ currency);
-	                        String email = xmlParser.getValueOf("EmailAddr");
-	                        logger.info("email- "+ email);
-	                        String sol = xmlParser.getValueOf("SOL");
-	                        logger.info("sol- "+ sol);
-	                        String cusDetails = xmlParser.getValueOf("PersonName");
-	                        xmlParser.setInputXML(cusDetails);
-	                        String name = xmlParser.getValueOf("Name");
-	                        logger.info("name- "+ name);
-	                        if (isEmpty(email)) {
-	                            setFields(ifr, new String[]{tbCustAcctName,tbCustSchemeCode, tbCustSolid,tbCustAcctCurrency}, new String[]{name,schemeCode, sol,currency});
-	                            enableFields(ifr, new String[]{tbCustAcctEmail});
-	                            retMsg = "Update email of customer on account maintenance workflow";
-	                        } else {
-	                            setFields(ifr, new String[]{tbCustAcctEmail, tbCustAcctName,tbCustSchemeCode, tbCustSolid,tbCustAcctCurrency}, new String[]{email, name,schemeCode, sol,currency});
-	                            disableFields(ifr, new String[]{tbCustAcctEmail});
-	                        }
-	                        setVisible(ifr, tbFetchMandatebtn);
-	                        //scheme code PB2010
-	                        if(getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
-	                        	setSMPB2010Fields(schemeCode);
-	                        }
-	                        
-	                       //fetch lien status
-	                        fetchLien();
-	                        return retMsg;
-	                    } else if (isFailed(status)) {
-	                        String errCode = xmlParser.getValueOf("ErrorCode");
-	                        String errDesc = xmlParser.getValueOf("ErrorDesc");
-	                        String errType = xmlParser.getValueOf("ErrorType");
-	                        logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
-	                        return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
-	                    }
-	                } else return apiNoResponse;
-	            }
-	           
-	        } catch (Exception e){
-	            logger.info("exception occurred-- "+e.getMessage());
-	        }
-	        return "";
-		}
-		else
-			return "Invalid account number";
+        try {
+            logger.info("Fetch account details call");
+          
+            
+            clearFields(ifr, new String[]{tbCustAcctEmail, tbCustAcctName, tbCustAcctLienStatus,tbCustSchemeCode,tbCustSolid,tbCustAcctCurrency});
+            if (!accountNumber.isEmpty()) {
+            	setFecthActDtlsInputXml(accountNumber);
+                logger.info("fetch account outputXml-- " + outputXml);
+
+                if (!isEmpty(outputXml)) {
+                    xmlParser.setInputXML(outputXml);
+
+                    String status = xmlParser.getValueOf(apiStatus);
+
+                    if (isSuccess(status)) {
+                        String schemeCode = xmlParser.getValueOf("SchmCode");
+                        logger.info("schemeCode- "+ schemeCode);
+                        
+                        if(!isValidSchemeCode(schemeCode)) {
+                        	return "This account is not valid for TB processing";
+                        }
+                        String currency = xmlParser.getValueOf("currencyCode");
+                        logger.info("currency- "+ currency);
+                        String email = xmlParser.getValueOf("EmailAddr");
+                        logger.info("email- "+ email);
+                        String sol = xmlParser.getValueOf("SOL");
+                        logger.info("sol- "+ sol);
+                        String cusDetails = xmlParser.getValueOf("PersonName");
+                        xmlParser.setInputXML(cusDetails);
+                        String name = xmlParser.getValueOf("Name");
+                        logger.info("name- "+ name);
+                        if (isEmpty(email)) {
+                            setFields(ifr, new String[]{tbCustAcctName,tbCustSchemeCode, tbCustSolid,tbCustAcctCurrency}, new String[]{name,schemeCode, sol,currency});
+                            enableFields(ifr, new String[]{tbCustAcctEmail});
+                            retMsg = "Update email of customer on account maintenance workflow";
+                        } else {
+                            setFields(ifr, new String[]{tbCustAcctEmail, tbCustAcctName,tbCustSchemeCode, tbCustSolid,tbCustAcctCurrency}, new String[]{email, name,schemeCode, sol,currency});
+                            disableFields(ifr, new String[]{tbCustAcctEmail});
+                        }
+                        setVisible(ifr, tbFetchMandatebtn);
+                        //scheme code PB2010
+                        if(getTbMarket(ifr).equalsIgnoreCase(tbSecondaryMarket)){
+                        	setSMPB2010Fields(schemeCode);
+                        }
+                        
+                       //fetch lien status
+                        fetchLien();
+                        return retMsg;
+                    } else if (isFailed(status)) {
+                        String errCode = xmlParser.getValueOf("ErrorCode");
+                        String errDesc = xmlParser.getValueOf("ErrorDesc");
+                        String errType = xmlParser.getValueOf("ErrorType");
+                        logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
+                        return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
+                    }
+                } else return apiNoResponse;
+            }
+           
+        } catch (Exception e){
+            logger.info("exception occurred-- "+e.getMessage());
+        }
+        return "";
+		
 	    }
 		
 		public String fetchLien(){
@@ -243,7 +240,7 @@ public class TbApiController  extends Commons implements Constants{
                 xmlParser.setInputXML(outputXml);
                 if (isSuccess(status)) {
                 	String resplienId = xmlParser.getValueOf("LienId");
-                    logger.info("lienId: " + resplienId);
+                    logger.info("resplienId: " + resplienId);
                     if (!isEmpty(resplienId) && lienId.equalsIgnoreCase(resplienId)) {
                     	undoMandatory(ifr,tbRemarkstbx);
                     	setFields(ifr,tbCustAcctLienStatus,"No");

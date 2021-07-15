@@ -46,8 +46,8 @@ public class RequestXml {
                         "<TrnAmt>" +
                         "<amountValue>"+amount+"</amountValue><currencyCode>"+currency+"</currencyCode>" +
                         "</TrnAmt>" +
-                        "<TrnParticulars>"+transParticulars+"</TrnParticulars>" +
-                        "<PartTrnRmks>"+partTranRemarks+"</PartTrnRmks>" +
+                        "<TrnParticulars>"+transParticulars+"</TrnParticulars>" +  //narration
+                        "<PartTrnRmks>"+partTranRemarks+"</PartTrnRmks>" + //distinct
                         "<ValueDt>"+todayDateTime+"T00:00:00.000</ValueDt>" +
                         "</PartTrnRec>" +
                         "<PartTrnRec>" +

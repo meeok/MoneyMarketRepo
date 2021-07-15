@@ -422,7 +422,7 @@ public interface Constants {
 	String searchTranServiceName = "CISEARCHTRANSACTION";
 	String tokenValidationServiceName = "TOKENVALIDATION";
 	String placeLienServiceName = "placeLien";
-	String removeLienServiceName = "removeLien";
+	String removeLienServiceName = "REMOVELIEN";
 
 	
 	/*************TREASURY BILLS STARTS HERE********************/
@@ -834,9 +834,9 @@ public interface Constants {
 	
 	String dbDteFormat = "dd-MMM-yy";
 	
-	String[] allTbSections = {tbCustodyFeeSection,tbUtilityFailedPostingSection,tbSearchCustSection,tbSearchCustSection,tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
+	String[] allTbSections = {tbCustodyFeeSection,tbUtilityFailedPostingSection,tbSearchCustSection,tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
-			tbTreasuryOpsSection,tbLienSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbSearchCustSection,tbPBCustDetailsSection};
+			tbTreasuryOpsSection,tbLienSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbPBCustDetailsSection};
 	
 	//custody feee section
 	String tbApplyNSCustodyfeeRbtn="tb_applyNSCustodyfee";
@@ -856,5 +856,88 @@ public interface Constants {
 	
 	
 	/*************TREASURY BILLS ENDS HERE********************/
+	
+	
+	
+	
+	/*************OMO AUCTION STARTS HERE********************/
+	//sections
+	String omoMarketSection = "omo_market_section";
+	String omoCustDetailsSection ="omo_cust_details_section";
+	String omoBulkMandateSection ="omo_bulk_setup_section";
+	String omoDecisionSection="tb_dec_section";
+	String omoLienSection ="omo_lien_section";
+	
+	//events
+	String omoSetupTypeChange = "omoSetupTypeChange";
+	String omoMandateTypeChanged ="omoMandateTypeChanged";
+	String omoOnDone ="omoOnDone";
+	String omofetchAcctDetails ="omofetchAcctDetails";
+
+	
+	//MARKET SECTION
+	String omoMarketTypedd ="omo_select_market";
+	String omoCategorydd ="omo_category";
+	String omoMarketUniqueRefId="omo_marketUniqueRefId";
+	String omoMandateTypedd="omo_mandateTypedd";
+	String omoSetupType="omo_setup_type";
+	String omoSingleSetup ="Single";
+	String omoBulkSetup ="Bulk";
+	
+	//customer details section
+	String omoBankName="OMO_BANK_NAME";
+	String omoCustAcctNo ="OMO_CUST_ACCT_NO";
+	String omoCustName ="OMO_CUST_NAME";
+	String omoCustCif ="OMO_CUST_CIF";
+	String omoCustCurr ="OMO_CUST_CURR";
+	String omoCustRefId ="OMO_CUST_REFID";
+	String omoCustSolid ="OMO_CUST_SOLID";
+	String omoDealDate ="OMO_DEAL_DTE";
+	String omoFbnCustomer  ="OMO_FBN_CUSTOMER";
+	String omoInterest ="OMO_INTEREST";
+	String omoInterestAtMat ="OMO_INTEREST_AT_MATURITY";
+	String omoMaturityDte ="OMO_MATURITY_DTE";
+	String omoRate ="OMO_RATE";
+	String omoSettlementDte ="OMO_SETTLEMENT_DTE";
+	String omoSettlementValue="OMO_SETTLEMENT_VALUE";
+	String omoStatus="OMO_STATUS";
+	String omoFetchAcctDetailsBtn="omo_fetch_acct_details";
+	
+	//bulk setup section
+	String omoBulkMandateTbl = "table106";
+	String omoFetchBulkAcctDtlsBtn="omo_fetch_bulk_acct_dtls_btn";
+	String omoUploadMandateBtn = "omo_upload_mandate_btn";
+	//colums on table106
+	String omoCustRefNoCol = "CustRefNo";
+	String omoAcctNoCol= "ACNo";
+	String omoCustomerNameCol ="CustomerName";
+	String omoBankNameCol ="FBNCustomer";
+	String omoCustNameCol ="BankName";
+	String omoDealDteCol ="DealDate";
+	String omoSettlementDteCol ="SettlementDate";
+	String omoPrincipalCol ="Principal";
+	String omoRateCol = "Rate";
+	String omoSettlementValueCol ="SettlementValue";
+	String omoMaturityDteCol ="MaturityDte";
+	String omoInterestCol = "Interest";
+	String omoInterestAtMaturityCol ="InterestAtMaturity";
+	String omoDTMCol ="DTM";
+	String omoACDtlsFetchedFlgCol ="ACDtlsFetchedFlg";
+	String omoCustodyFeeRateCol ="CustodyFeeRate";
+	String omoCustSolidCol ="Solid";
+	String omoCustCifCol ="CIF";
+	String omoCustCurrCol ="Currency";
+	//String omoFetchAcctDtlsStatusCol ="FetchAcctDtlsStatus";
+	
+	//Decision
+	String omoDecisiondd = "omo_decision";
+	String omoRemarkstbx = "omo_remarks";
+	
+	//lien activities
+	String omoLienType="omo_lien_type";
+	String omoLiencustRefId ="omo_lien_cust_refid";
+	String omoLienStatus ="omo_lien_status";
+	
+	/*************OMO AUCTION ENDS HERE********************/
 
 }

@@ -1,6 +1,7 @@
 package com.newgen.worksteps;
 
 import com.newgen.api.customService.CpServiceHandler;
+import com.newgen.controller.TbApiController;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
@@ -70,7 +71,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                         	return tbPost(ifr);  
                         }
                         case tbUnLienCustFaceValue:{
-	                		return tbUnLienCustFaceValue(ifr);
+	                		//return tbUnLienCustFaceValue(ifr);
+                        	return new TbApiController(ifr).removeLien();
 	                	}
                         //****btreasury onclick End **********//	
                     }

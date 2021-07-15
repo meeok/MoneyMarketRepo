@@ -1146,4 +1146,31 @@ public class Commons implements Constants {
     }
     
     /******************  TREASURY BILL CODE ENDS ***********************************/
+    
+    /******************  OMO AUCTION STARTS ENDS ***********************************/
+    
+    //getters and setters
+    public static String getOmoSetupType(IFormReference ifr) {return (String) ifr.getValue(omoSetupType);}
+    public static String getOmoBankName(IFormReference ifr) {return (String) ifr.getValue(omoBankName);}
+    public static String getOmoCustAcctNo(IFormReference ifr) {return (String) ifr.getValue(omoCustAcctNo);}
+    public static String getOmoCustCif(IFormReference ifr) {return (String) ifr.getValue(omoCustCif);}
+    public static String getOmoCustCurr(IFormReference ifr) {return (String) ifr.getValue(omoCustCurr);}
+    public static String getOmoCustRefId(IFormReference ifr) {return (String) ifr.getValue(omoCustRefId);}
+    public static String getOmoCustSolid(IFormReference ifr) {return (String) ifr.getValue(omoCustSolid);}
+    public static String getOmoDealDate(IFormReference ifr) {return (String) ifr.getValue(omoDealDate);}
+    public static String getOmoFbnCustomer(IFormReference ifr) {return (String) ifr.getValue(omoFbnCustomer);}
+    public static String getOmoInterest(IFormReference ifr) {return (String) ifr.getValue(omoInterest);}
+    public static String getOmoMaturityDte(IFormReference ifr) {return (String) ifr.getValue(omoMaturityDte);}
+    public static String getOmoRate(IFormReference ifr) {return (String) ifr.getValue(omoRate);}
+    public static String getOmoSettlementDte(IFormReference ifr) {return (String) ifr.getValue(omoSettlementDte);}
+    public static String getOmoSettlementValue(IFormReference ifr) {return (String) ifr.getValue(omoSettlementValue);}
+    //public static String getOmoFbnCustomer(IFormReference ifr) {return (String) ifr.getValue(omoFbnCustomer);}
+   // public static String getOmoInterest(IFormReference ifr) {return (String) ifr.getValue(omoInterest);}
+
+    public void omoClearCustDtlsField(IFormReference ifr){
+    	clearFields(ifr, new String[] {omoBankName,omoCustAcctNo,omoCustCif,omoCustCurr,omoCustRefId,omoCustSolid,omoDealDate,omoFbnCustomer,omoInterest,omoInterestAtMat,omoMaturityDte,
+    			omoRate,omoSettlementDte,omoSettlementValue,omoStatus,omoFetchAcctDetailsBtn});
+    }
+    
+    /******************  OMO AUCTION ENDS ENDS ***********************************/
 }
