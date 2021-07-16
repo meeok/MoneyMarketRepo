@@ -22,6 +22,30 @@ public class RequestXml {
                 + "</executeFinacleScript_CustomData>"
                 + "</executeFinacleScriptRequest>";
     }
+    
+    /*
+     * new search api to be implemented
+     * https://ig-ffrprepjee1.nigeria.firstbank.local:9443/customFI/getReqDet?appCode=RTGSTRANSEARCH&FIData=
+     * <chalType>ALL</chalType><acctNum>2012050787</acctNum><fromDate>09-05-2021</fromDate><toDate>23-06-2021</toDate>
+     * <tranRMK>NEWGEN_FB-0000000000001533-FT</tranRMK><amount>100</amount><tranType>D</tranType>
+     */
+    public static String searchRequestXmlnew (String startDate, String endDate, String acctNo, String amount, String debitCredit, String transParts){
+    	//to do change to comments
+        return "<executeFinacleScriptRequest>"
+                + "<ExecuteFinacleScriptInputVO>"
+                + "<requestId>FI_tranSearch.scr</requestId>"
+                + "</ExecuteFinacleScriptInputVO>"
+                + "<executeFinacleScript_CustomData>"
+                + "<startDate>"+startDate+"</startDate>"
+                + "<acctNum>"+acctNo+"</acctNum>"
+                + "<amount>"+amount+"</amount>"
+                + "<endDate>"+endDate+"</endDate>"
+                + "<chalType>ALL</chalType>"
+                + "<tranType>"+debitCredit+"</tranType>"
+                + "<tranPart>"+transParts+"</tranPart>"
+                + "</executeFinacleScript_CustomData>"
+                + "</executeFinacleScriptRequest>";
+    }
 
     public static String postTransactionXml(
             String transType, String tranSubType,String acct1, String sol1, String Debit, String amount, String currency,String transParticulars,

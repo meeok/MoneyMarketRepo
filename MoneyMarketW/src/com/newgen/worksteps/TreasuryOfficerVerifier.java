@@ -11,6 +11,10 @@ import com.newgen.utils.*;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -68,7 +72,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                         //****btreasury onclick start **********//
                         case tbPostFaceValue:{
                         	logger.info("post");
-                        	return tbPost(ifr);  
+                        	return tbPostFaceValue(ifr);
+                        	//return tbPost(ifr);  
                         }
                         case tbUnLienCustFaceValue:{
 	                		//return tbUnLienCustFaceValue(ifr);
@@ -523,6 +528,42 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     	setVisible(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
     	return "Customer Principal unliened Succesfully";
     	
+  	}
+    
+    //post
+  	private String tbPostFaceValue(IFormReference ifr) throws Exception{
+  		//verify token  --todo
+  		//search txn  --todo
+  		String retMsg ="";
+  		String acct1 ="";
+  		String sol1 ="";
+  		
+  		Properties prop = new Properties();
+		InputStream is = new FileInputStream(tbConfigfileName);
+		prop.load(is);
+		
+		acct1 = prop.getProperty("tbHOSuspenceAct");
+		logger.info("debit account>>"+acct1);
+		sol1 = prop.getProperty("actSol");
+		logger.info("debit sol>>"+sol1);
+		
+  		String acct2 = getTbCustAcctNo(ifr);
+  		String sol2 = getTbCustSolid(ifr);
+  		String amount = getTbBrnchPriPrncplAmt(ifr);
+  		String transParticulars="NTB"+getTbBrnchPriTenordd(ifr)+getTbBrnchCustPriRefNo(ifr);;
+  		String partTranRemarks ="TB/"+ getWorkItemNumber(ifr).toUpperCase()+"/FaceValue";
+  		if(!(isEmpty(acct1)||isEmpty(sol1))) {
+  			retMsg = new TbApiController(ifr).getPostTxn(acct1, sol1, amount, transParticulars, partTranRemarks, acct2, sol2);
+  	  		if(retMsg.substring(0, retMsg.indexOf(":")).equalsIgnoreCase(apiSuccess)) {
+  	  			String tranid = retMsg.substring(retMsg.indexOf(":"))+1;
+  	  			logger.info("trandid >>>"+tranid);
+  	  			setFields(ifr,tbTranID,tranid);
+  	      		setTbDecisiondd(ifr,decApprove);
+  	      		disableFields(ifr,new String[] {tbDecisiondd,tbPostbtn});
+  	  		}
+  		}
+  		
+      	return retMsg;
   	}
     
     //set approval flags

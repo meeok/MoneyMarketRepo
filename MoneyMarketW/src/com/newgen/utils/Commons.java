@@ -130,7 +130,7 @@ public class Commons implements Constants {
             ifr.setTabStyle(processTabName, omoTab, visible, False);
         }
         else if (getProcess(ifr).equalsIgnoreCase(omoProcess)){
-            ifr.setTabStyle(processTabName,omoTab,visible,False);
+            ifr.setTabStyle(processTabName,omoTab,visible,True);
             ifr.setTabStyle(processTabName,commercialTab,visible,False);
             ifr.setTabStyle(processTabName,treasuryTab,visible,False);
         }
@@ -589,7 +589,8 @@ public class Commons implements Constants {
     public static String getTbCustSchemeCode(IFormReference ifr){return (String)ifr.getValue(tbCustSchemeCode);}
     public static void setTbBrnchPriPrncplAmt(IFormReference ifr,String value){ifr.setValue(tbBrnchPriPrncplAmt,value);}
     public static String getTbBrnchPriPrncplAmt(IFormReference ifr){return (String)ifr.getValue(tbBrnchPriPrncplAmt);}
-    
+    public static String getTbBrnchPriTenordd (IFormReference ifr){return (String)ifr.getValue(tbBrnchPriTenordd);}
+
     public static String getTbMarketUniqueRefId(IFormReference ifr){return (String)ifr.getValue(tbMarketUniqueRefId);}
     public static void setTbMarketUniqueRefId(IFormReference ifr,String value){
     	if(isEmpty(getTbMarketUniqueRefId(ifr)))
@@ -774,6 +775,8 @@ public class Commons implements Constants {
 */
     public static void setTbCustAcctNo(IFormReference ifr, String value) {ifr.setValue(tbCustAcctNo,value);}
 	public static String getTbCustAcctNo(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctNo);}
+	public static String getTbCustSolid(IFormReference ifr) {return (String) ifr.getValue(tbCustSolid);}
+
 	public static void setTbCustAcctName(IFormReference ifr, String value) {ifr.setValue(tbCustAcctName,value);}
 	public static String getTbCustAcctName(IFormReference ifr) {return (String) ifr.getValue(tbCustAcctName);}
 	public static void setTbCustAcctLienStatus(IFormReference ifr, String value) {ifr.setValue(tbCustAcctLienStatus,value);}
@@ -1148,8 +1151,9 @@ public class Commons implements Constants {
     /******************  TREASURY BILL CODE ENDS ***********************************/
     
     /******************  OMO AUCTION STARTS ENDS ***********************************/
-    
+    public static void hideOmoSections (IFormReference ifr){hideFields(ifr,allOmoSections);}
     //getters and setters
+    
     public static String getOmoSetupType(IFormReference ifr) {return (String) ifr.getValue(omoSetupType);}
     public static String getOmoBankName(IFormReference ifr) {return (String) ifr.getValue(omoBankName);}
     public static String getOmoCustAcctNo(IFormReference ifr) {return (String) ifr.getValue(omoCustAcctNo);}
@@ -1164,6 +1168,8 @@ public class Commons implements Constants {
     public static String getOmoRate(IFormReference ifr) {return (String) ifr.getValue(omoRate);}
     public static String getOmoSettlementDte(IFormReference ifr) {return (String) ifr.getValue(omoSettlementDte);}
     public static String getOmoSettlementValue(IFormReference ifr) {return (String) ifr.getValue(omoSettlementValue);}
+    public static String getOmoCategorydd(IFormReference ifr) {return (String) ifr.getValue(omoCategorydd);}
+
     //public static String getOmoFbnCustomer(IFormReference ifr) {return (String) ifr.getValue(omoFbnCustomer);}
    // public static String getOmoInterest(IFormReference ifr) {return (String) ifr.getValue(omoInterest);}
 

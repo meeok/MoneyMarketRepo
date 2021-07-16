@@ -847,7 +847,7 @@ public interface Constants {
 	
 	//String tbStandardCustodyFee = "0.01";
 
-	
+	String tbConfigfileName = "config/tbConfig.properties";
 	
 	/*************TREASURY BILLS ENDS HERE********************/
 	
@@ -862,12 +862,16 @@ public interface Constants {
 	String omoDecisionSection="tb_dec_section";
 	String omoLienSection ="omo_lien_section";
 	
+	String[] allOmoSections = {omoMarketSection,omoCustDetailsSection,omoBulkMandateSection,omoLienSection,omoDecisionSection};
+
 	//events
 	String omoSetupTypeChange = "omoSetupTypeChange";
 	String omoMandateTypeChanged ="omoMandateTypeChanged";
 	String omoOnDone ="omoOnDone";
 	String omofetchAcctDetails ="omofetchAcctDetails";
-
+	String omoCategoryChange ="omoCategoryChange";
+	String omoFbnCustChange = "omoFbnCustChange";
+	String omoFetchSingleActDtls ="omoFetchSingleActDtls";
 	
 	//MARKET SECTION
 	String omoMarketTypedd ="omo_select_market";

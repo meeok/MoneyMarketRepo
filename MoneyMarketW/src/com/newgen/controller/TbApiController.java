@@ -9,7 +9,11 @@ import com.newgen.utils.LogGen;
 import com.newgen.utils.XmlParser;
 import org.apache.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 public class TbApiController  extends Commons implements Constants{
@@ -365,13 +369,13 @@ public class TbApiController  extends Commons implements Constants{
                     if (isSuccess(status)) {
                         String txnId = xmlParser.getValueOf("TrnId");
                         if (!Commons.isEmpty(txnId.trim()))
-                            return txnId.trim();
+                            return apiSuccess +"(:)" +txnId.trim();
                     } else if (isFailed(status)) {
                         String errCode = xmlParser.getValueOf("ErrorCode");
                         String errDesc = xmlParser.getValueOf("ErrorDesc");
                         String errType = xmlParser.getValueOf("ErrorType");
                         logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
-                        return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
+                        return apiFailed + " ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
                     }
                 } else return apiNoResponse;
             }
@@ -380,6 +384,9 @@ public class TbApiController  extends Commons implements Constants{
         }
         return null;
     }
+    
+   
+    
 
 
     private boolean isSuccess(String data){
