@@ -844,14 +844,8 @@ public interface Constants {
 	String tbStandardCustodyRate="0.10";
 	
 	//accounting Enteries for tbills details for posting 
-	String actSol = "999";
-	String acctCurr="NGN";
-	String tbHOSuspenceAct ="99934389027101";
-	String tbCBNAct = "99910100000101";
-	String tbCommissionOnNTBAcct = "99955081000101";
-	String tbIncomeOnNTBSaleAcct  ="99955081000401";
-	String tbCusotdyTxnFeeSuspenceAcct ="99934206000501";
-	String tbStandardCustodyFee = "0.01";
+	
+	//String tbStandardCustodyFee = "0.01";
 
 	
 	

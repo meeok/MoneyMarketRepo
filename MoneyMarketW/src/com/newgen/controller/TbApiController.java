@@ -267,6 +267,120 @@ public class TbApiController  extends Commons implements Constants{
 
         return  "";
 	}
+	
+	public String getUserLimit(String postAmount) {
+        logger.info("Welcome to get user limit call");
+        try {
+            if (Integer.parseInt(postAmount) > 0) {
+                outputXml = Api.executeCall(fetchLimitServiceName, RequestXml.getUserLimitXml("SN022357"));
+                logger.info("outputXml limit call -- " + outputXml);
+                String currency;
+                String amount = empty;
+
+                if (!Commons.isEmpty(outputXml)) {
+                    xmlParser.setInputXML(outputXml);
+
+                    String status = xmlParser.getValueOf(apiStatus);
+
+                    if (isSuccess(status)) {
+                        Set<Map<String, String>> resultSet = xmlParser.getXMLData(outputXml, "DATA");
+
+                        for (Map<String, String> result : resultSet) {
+
+                            currency = result.get("CRNCYCODE");
+                            logger.info("limit currency-- " + currency);
+
+                            if (currency.equalsIgnoreCase(currencyNgn)) {
+                                amount = result.get("USERCASHDRLIM");
+                                logger.info("limit amount" + amount);
+                                break;
+                            }
+                        }
+
+                        if (Integer.parseInt(postAmount) <= Integer.parseInt(amount))
+                            return apiSuccess;
+                       else return apiLimitErrMsg;
+                    } else if (isFailed(status)) {
+                        String errCode = xmlParser.getValueOf("ErrorCode");
+                        String errDesc = xmlParser.getValueOf("ErrorDesc");
+                        String errType = xmlParser.getValueOf("ErrorType");
+                        logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
+                        return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
+                    }
+                } else return apiNoResponse;
+            }
+        } catch (Exception e){
+            logger.info("Exception occurred-- "+e.getMessage());
+            return e.getMessage();
+        }
+        return null;
+    }
+
+    public String getSearchTxn(String startDate, String endDate, String acctNo, String amount, String debitCredit, String transParts ){
+        logger.info("Welcome to search transaction call");
+        try {
+            outputXml = Api.executeCall(searchTranServiceName, RequestXml.searchRequestXml(startDate, endDate, acctNo, amount, debitCredit, transParts));
+            logger.info("outputXml-- "+outputXml);
+            final String noDuplicateMsg = "NO record exist for entered details";
+            if (!Commons.isEmpty(outputXml)) {
+                xmlParser.setInputXML(outputXml);
+                String respFlag = xmlParser.getValueOf(apiStatus);
+                if (isSuccess(respFlag)) {
+                    String message = xmlParser.getValueOf("Success_1");
+                    logger.info("message: " + message);
+                    String txnIdApi = xmlParser.getValueOf("tranId");
+                    logger.info("txnIdApi: " + txnIdApi);
+
+                    if (!Commons.isEmpty(txnIdApi))
+                        return "Duplicate record exist for this Transaction. Kindly Check Finacle";
+                    else if (message.trim().equalsIgnoreCase(noDuplicateMsg))
+                        return False;
+
+                } else if (isFailed(respFlag)) {
+                    String errCode = xmlParser.getValueOf("ErrorCode");
+                    String errDesc = xmlParser.getValueOf("ErrorDesc");
+                    String errType = xmlParser.getValueOf("ErrorType");
+                    logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
+                    return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
+
+                }
+            } else {
+                return apiNoResponse;
+            }
+        }catch (Exception e){
+            return e.getMessage();
+        }
+        return null;
+    }
+    public String getPostTxn(String acct1, String sol1, String amount, String transParticulars, String partTranRemarks, String acct2, String sol2){
+        logger.info("Welcome to post transaction call");
+        try {
+            if (Integer.parseInt(amount) > 0) {
+                outputXml = Api.executeCall(postServiceName, RequestXml.postTransactionXml(transType, transSubTypeC, acct1, sol1, debitFlag, amount, currencyNgn, transParticulars, partTranRemarks, Commons.getCurrentDate(), acct2, sol2, creditFlag, Commons.getLoginUser(ifr)));
+                logger.info("outputXml-- "+outputXml);
+                if (!Commons.isEmpty(outputXml)) {
+                    xmlParser.setInputXML(outputXml);
+                    String status = xmlParser.getValueOf(apiStatus);
+
+                    if (isSuccess(status)) {
+                        String txnId = xmlParser.getValueOf("TrnId");
+                        if (!Commons.isEmpty(txnId.trim()))
+                            return txnId.trim();
+                    } else if (isFailed(status)) {
+                        String errCode = xmlParser.getValueOf("ErrorCode");
+                        String errDesc = xmlParser.getValueOf("ErrorDesc");
+                        String errType = xmlParser.getValueOf("ErrorType");
+                        logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
+                        return "ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
+                    }
+                } else return apiNoResponse;
+            }
+        } catch (Exception e){
+            return e.getMessage();
+        }
+        return null;
+    }
+
 
     private boolean isSuccess(String data){
         return data.equalsIgnoreCase(apiSuccess);
