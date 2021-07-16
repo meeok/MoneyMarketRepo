@@ -39,7 +39,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                 case onLoad:
                 case cpApiCallEvent:{
                     switch (control) {
-                        case cpValidateAcctEvent: return new CpServiceHandler(ifr).validateAccountTest();
+                        case cpValidateAcctEvent: return new CpServiceHandler(ifr).validateAccount();
                         case cpFetchMandateEvent: return getCpAcctNo(ifr);
                         case cpValidateLienEvent: return new CpServiceHandler(ifr).validateLienTest();
                     }
