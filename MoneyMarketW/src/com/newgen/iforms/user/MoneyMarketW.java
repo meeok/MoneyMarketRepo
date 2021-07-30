@@ -61,6 +61,8 @@ private Logger logger = LogGen.getLoggerInstance(MoneyMarketW.class);
 
 			else if (activityName != null && activityName.trim().equalsIgnoreCase(treasuryOpsSuccessful))
 				objActivity = new TreasuryOpsSuccessful();
+			else if (activityName != null && activityName.trim().equalsIgnoreCase(treasuryUpload))
+				objActivity = new TreasuryUpload();
 			else if (activityName != null & activityName.trim().equalsIgnoreCase(utilityWs))
 				objActivity = new UtilityTemp();
 

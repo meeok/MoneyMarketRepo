@@ -236,6 +236,15 @@ public class Query {
         return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+tb90+"', REDISCOUNTRATELESS180 = '"+tb180+"',"
         		+ "REDISCOUNTRATELESS270 = '"+tb270+"', REDISCOUNTRATELESS364 = '"+tb364+"' where refid = '"+refid+"' and winame ='"+winame+"'";
     }
+    //update settlement dte
+    public String tbUpdateStlMntDteQuery(String refid, String sDte){
+        return "update mm_setup_tbl set SETTLEMENTDTE = '"+sDte+"', where refid = '"+refid+"'";
+    }
+  //get settlement dte
+    public String tbGetStlMntDteQuery(String refid){
+        return "select SETTLEMENTDTE from  mm_setup_tbl where refid = '"+refid+"'";
+    }
+    
     //update minimum principal
     public String getUpdateminPrincipalQuery(String refid, String minPrincipal){
         return "update mm_setup_tbl set MINPRINCIPALAMOUNT = '"+minPrincipal+"' where refid = '"+refid+"'";

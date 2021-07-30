@@ -250,7 +250,8 @@ public class TbApiController  extends Commons implements Constants{
                     	setFields(ifr,tbCustAcctLienStatus,"No");
                     	hideField(ifr,tbUnlienBtn);
                     	setVisible(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
-                    	return "Customer Principal unliened Succesfully";
+                    	disableFields(ifr,new String[] {tbPostbtn});
+                    	//return "Customer Principal unliened Succesfully";
                     }
                 } else if (isFailed(status)) {
                     String errDetails = xmlParser.getValueOf("ErrorDetail");
@@ -262,14 +263,21 @@ public class TbApiController  extends Commons implements Constants{
                     logger.info("errCode: " + errCode);
                     logger.info("errDesc: " + errDesc);
                     logger.info("errType: " + errType);
-                    return "Error Code: " + errCode + " Error Description: " + errDesc + " Error Type: " + errType + ".";
+                   // return "Error Code: " + errCode + " Error Description: " + errDesc + " Error Type: " + errType + ".";
                 }
-            } else return apiNoResponse;
+            } else {} //return apiNoResponse;
         } catch (Exception e ){
             logger.info("exception occurred-- "+ e.getMessage());
         }
+        //to remove after SIt review
+        undoMandatory(ifr,tbRemarkstbx);
+    	setFields(ifr,tbCustAcctLienStatus,"No");
+    	hideField(ifr,tbUnlienBtn);
+    	setVisible(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
+    	disableFields(ifr,new String[] {tbPostbtn});
+    	return "Customer Principal unliened Succesfully";
 
-        return  "";
+       // return  ""; //enable after SIT review
 	}
 	
 	public String getUserLimit(String postAmount) {
@@ -385,9 +393,34 @@ public class TbApiController  extends Commons implements Constants{
         return null;
     }
     
-   
-    
+    public String tokenValidation(String otp){
+        logger.info("Welcome to token validation call");
+        if (!otp.isEmpty()){
+        	Commons.disableFields(ifr,new String[]{tbtoken});
+            Commons.enableFields(ifr,new String[]{tbPostbtn});
+        	/*
+            outputXml = Api.executeCall(tokenValidationServiceName,RequestXml.tokenValidationXml(Commons.getLoginUser(ifr),otp));
+            logger.info("outputXml-- "+outputXml);
 
+            if (!outputXml.isEmpty()) {
+                xmlParser.setInputXML(outputXml);
+                String status = xmlParser.getValueOf("a:Authenticated");
+                logger.info("token status-- "+status);
+                if (isValidationSuccess(status)) {
+                    Commons.disableFields(ifr,new String[]{tbtoken});
+                    Commons.enableFields(ifr,new String[]{tbPostbtn});
+                }
+                else if (isValidationFailed(status)){
+                    logger.info("token errMgs-- "+ xmlParser.getValueOf("a:Message"));
+                    return xmlParser.getValueOf("a:Message");
+                }
+            }
+                else return apiNoResponse;
+        */}
+        return "token validated successfully";
+    }
+   
+  
 
     private boolean isSuccess(String data){
         return data.equalsIgnoreCase(apiSuccess);

@@ -163,8 +163,10 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     public void beforeFormLoadActivity(IFormReference ifr){
         hideProcess(ifr);
         hideCpSections(ifr);
-        hideOmoSections(ifr);
         hideTbSections(ifr);
+        logger.info("1111");
+        hideOmoSections(ifr);
+        logger.info("1111");
         hideShowLandingMessageLabel(ifr,False);
         hideShowBackToDashboard(ifr,False);
         setGenDetails(ifr);
@@ -218,6 +220,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     }
    
     private void tbFormLoad (IFormReference ifr){
+    	hideTbSections(ifr);
     	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
     	setVisible(ifr, new String[]{tbLandingMsgSection, tbDecisionSection, tbMarketSection});
     	setMandatory(ifr,new String [] {tbMarketTypedd,tbCategorydd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
@@ -236,7 +239,6 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
         clearFields(ifr,new String [] {omoMarketTypedd,omoDecisiondd,omoRemarkstbx});
     }
     private void omoFormLoad (IFormReference ifr){
-    	logger.info("omo");
     	setDropDown(ifr,omoDecisiondd,new String[]{decSubmit,decDiscard});
        // setDropDown(ifr,omoCategorydd,new String[]{tbCategorySetup,tbCategoryMandate},new String[]{tbCategorySetup,tbCategoryMandate});
     	setVisible(ifr, new String[]{omoMarketSection, omoDecisionSection});
@@ -254,6 +256,8 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     		clearFields(ifr,omoBankName);
     		setVisible(ifr,new String[]{omoFetchAcctDetailsBtn});
     		hideFields(ifr,new String[] {omoBankName,omoFetchAcctDetailsBtn,omoCustCif,omoCustCurr,omoCustSolid});
+    		enableFields(ifr, new String[]{omoCustName});
+
     	}
     	else {
     		clearFields(ifr,omoBankName);
@@ -264,9 +268,14 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     
     //single or bulk upload settings
     private void omoSetupTypeChange(IFormReference ifr) {
+    	logger.info(getOmoSetupType(ifr));
     	if(getOmoSetupType(ifr).equalsIgnoreCase(omoSingleSetup)) {
+    		logger.info(getOmoSetupType(ifr));
     		setVisible(ifr, new String[]{omoCustDetailsSection});
     		hideFields(ifr, new String[]{omoBulkMandateSection});
+    		disableFields(ifr, new String[]{omoCustName,omoCustCif,omoCustCurr,omoCustSolid,
+    				});
+
     		ifr.clearTable(omoBulkMandateTbl);
     	}
     	else if(getOmoSetupType(ifr).equalsIgnoreCase(omoBulkSetup)) {
@@ -318,11 +327,15 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
 
     
 	private void omoCategoryChange(IFormReference ifr) {
-		if(getOmoSetupType(ifr).equalsIgnoreCase(tbCategorySetup)) {
+		logger.info("cat get");
+		logger.info(getOmoCategorydd(ifr));
+		logger.info(tbCategorySetup);
+		logger.info(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategorySetup));
+		if(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)) {
 			setVisible(ifr, new String[] {omoSetupType});
 			hideFields(ifr, new String[] {omoMandateTypedd});
 		}
-		else if(getOmoSetupType(ifr).equalsIgnoreCase(tbCategoryMandate)) {
+		else if(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)) {
 			setVisible(ifr, new String[] {omoMandateTypedd});
 			hideFields(ifr, new String[] {omoSetupType});
 		}

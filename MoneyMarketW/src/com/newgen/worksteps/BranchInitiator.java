@@ -152,7 +152,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         case onChangeProcess: {
                             selectProcessSheet(ifr);
                             if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
+                            logger.info("test1");
                             if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) tbFormLoad(ifr);
+                            logger.info("test2");
                             break;
                         }
                         case cpOnSelectMarket:{
@@ -752,6 +754,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     }
 
     private void tbFormLoad(IFormReference ifr) {
+    	hideTbSections(ifr);
     	setDropDown(ifr,tbDecisiondd,new String[]{decSubmit,decDiscard});
         setVisible(ifr, new String[]{tbMarketSection, tbDecisionSection});
         enableFields(ifr,new String[]{tbMarketTypedd});
@@ -850,11 +853,12 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
 	    	if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)){		
 	    		 if(isTbWindowOpen(ifr,getTbPriWindownUnqNo(ifr))){//check if market is open
-	    			 logger.info("testingngnngn");
 		    		setVisible(ifr, new String[] {tbCustodyFeeSection,tbBrnchCusotmerDetails,tbBranchPriSection,tbDecisionSection});
 		    		setMandatory(ifr, new String[] {tbBrnchPriTenordd,tbBrnchPriRollovrdd,tbBrnchPriPrncplAmt,tbCustAcctNo,
 		    				tbCustAcctName,tbCustSchemeCode,tbCustAcctLienStatus,tbCustSolid,tbCustAcctCurrency});
 		    		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
+		    		hideFields(ifr, new String[] {tbSearchCustSection});
+		    		clearFields(ifr, new String[] {tbMandateTypedd}); //todo clear some sections ...
 		    		
 		    		if(isPBStaff(ifr,getFieldValue(ifr,solLocal))) {
 		    			setVisible(ifr, new String[] {tbPBCustDetailsSection,tbPBCustAcctNo,tbPBCustAcctName});
@@ -887,6 +891,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 	    		//disableFields(ifr, new String[] {tbBrnchCusotmerDetails,tbBranchPriSection});
 	    		enableFields(ifr,new String[] {tbMandateTypedd,tbDecisionSection});
 	    		setMandatory(ifr, new String[] {tbMandateTypedd});
+	    		hideFields(ifr, new String[] {tbCustodyFeeSection,tbSearchCustSection});
 	    	}
 	    	else {
 	    		clearFields(ifr, new String[] {tbMandateTypedd});
@@ -1178,7 +1183,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
              enableFields(ifr,new String[]{tbTerminationSection,tbPoiGenerateBtn});
              clearFields(ifr, new String[] {tbTermAdjustedPrncpal,tbTermCashValue,tbTermAmtDueCust,tbTermCashValue});
              hideFields(ifr, new String[] {termCustRefId,tbPoiGenerateBtn,tbTermAdjustedPrncpal,tbTermCashValue,tbTermAmtDueCust,tbTermCashValue,tbTermRediscountRate});
-            
+             disableFields(ifr, new String[] {tbTermPenaltyCharge,tbTermDate});
             // disableFields(ifr,new String[]{termCustRefId,tbPoiGenerateBtn});
           
         }
@@ -1191,9 +1196,11 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     }
 	 /*
      * Search customer and populate table with customer investments for POI
+     * --todo ensure bidding is successful and at awaiting mat.before performing premature termination
+     * --raise a flag when termination is successful and use new principal if its partial termination..
      */
     private String tbGetCustDetailsForPoi(IFormReference ifr){
-        clearTable(ifr,tbPoiCustDetailsTbl);
+    	clearTable(ifr,tbPoiCustDetailsTbl);
         String idqry = new Query().getTbCustMandate(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID));
         logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
         List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
@@ -1360,7 +1367,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
      * 
      */
     private void tbTerminateTypeChanged(IFormReference ifr) {
-    	clearFields(ifr, new String[] {tbTermAdjustedPrncpal,tbTermCashValue,tbTermAmtDueCust,tbTermCashValue});
+    	clearFields(ifr, new String[] {tbTermAdjustedPrncpal,tbTermCashValue,tbTermAmtDueCust,tbTermCashValue,tbTermPenaltyCharge});
     	hideFields(ifr, new String[] {tbTermVal,tbTermCashValue,tbTermbtn});
 		undoMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
 		if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(tbTerminationTypeFull)) {
@@ -1383,12 +1390,12 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
      */
     private String tbTerminate(IFormReference ifr, int rowIdex) {
     	//get customer unique refid
-		if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(cpTerminationTypeFull)) {
+		if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(tbTerminationTypeFull)) {
 			setVisible(ifr, new String[] {tbTermbtn});
 			hideFields(ifr, new String[] {tbTermVal,tbTermCashValue});
 			undoMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
 		}
-		else if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(cpTerminationTypePartial)) {
+		else if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(tbTerminationTypePartial)) {
 			setVisible(ifr, new String[] {tbTermVal,tbTermCashValue,tbTermbtn});
 			setMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
 		}

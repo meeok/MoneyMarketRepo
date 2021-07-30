@@ -125,6 +125,7 @@ public class Commons implements Constants {
             ifr.setTabStyle(processTabName, omoTab, visible, False);
         }
         else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) {
+        	logger.info("test1");
             ifr.setTabStyle(processTabName, treasuryTab, visible, True);
             ifr.setTabStyle(processTabName, commercialTab, visible, False);
             ifr.setTabStyle(processTabName, omoTab, visible, False);
@@ -1153,7 +1154,6 @@ public class Commons implements Constants {
     /******************  OMO AUCTION STARTS ENDS ***********************************/
     public static void hideOmoSections (IFormReference ifr){hideFields(ifr,allOmoSections);}
     //getters and setters
-    
     public static String getOmoSetupType(IFormReference ifr) {return (String) ifr.getValue(omoSetupType);}
     public static String getOmoBankName(IFormReference ifr) {return (String) ifr.getValue(omoBankName);}
     public static String getOmoCustAcctNo(IFormReference ifr) {return (String) ifr.getValue(omoCustAcctNo);}

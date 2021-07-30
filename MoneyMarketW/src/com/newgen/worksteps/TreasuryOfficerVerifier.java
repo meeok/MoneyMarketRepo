@@ -72,7 +72,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                         //****btreasury onclick start **********//
                         case tbPostFaceValue:{
                         	logger.info("post");
-                        	return tbPostFaceValue(ifr);
+                        	return tbPostFaceValue(ifr); //to change when SIT start //tbPost(ifr);
                         	//return tbPost(ifr);  
                         }
                         case tbUnLienCustFaceValue:{
@@ -83,7 +83,14 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                     }
                 }
                 break;
-                case onChange:{}
+                case onChange:{
+                	switch(controlName){
+                	case tbValidateToken:{
+                		return new TbApiController(ifr).tokenValidation(getFieldValue(ifr,tbtoken));
+                	}
+                	}
+                
+                }
                 break;
                 case custom:{}
                 break;
@@ -97,6 +104,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 		tbUpDateLndingMsgFlg(ifr);
                 		}
                 	break;
+                	
                 	/*** Treasury end****/
                 	}
                 }
@@ -535,20 +543,20 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
   		//verify token  --todo
   		//search txn  --todo
   		String retMsg ="";
-  		String acct1 ="";
-  		String sol1 ="";
+  		String acct2 ="";
+  		String sol2 ="";
   		
   		Properties prop = new Properties();
 		InputStream is = new FileInputStream(tbConfigfileName);
 		prop.load(is);
 		
-		acct1 = prop.getProperty("tbHOSuspenceAct");
-		logger.info("debit account>>"+acct1);
-		sol1 = prop.getProperty("actSol");
-		logger.info("debit sol>>"+sol1);
+		acct2 = prop.getProperty("tbHOSuspenceAct");
+		logger.info("debit account>>"+acct2);
+		sol2 = prop.getProperty("actSol");
+		logger.info("debit sol>>"+sol2);
 		
-  		String acct2 = getTbCustAcctNo(ifr);
-  		String sol2 = getTbCustSolid(ifr);
+  		String acct1 = getTbCustAcctNo(ifr);
+  		String sol1 = getTbCustSolid(ifr);
   		String amount = getTbBrnchPriPrncplAmt(ifr);
   		String transParticulars="NTB"+getTbBrnchPriTenordd(ifr)+getTbBrnchCustPriRefNo(ifr);;
   		String partTranRemarks ="TB/"+ getWorkItemNumber(ifr).toUpperCase()+"/FaceValue";

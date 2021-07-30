@@ -62,6 +62,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
                         /**** Treasury onClick Start ****/
                         case tbOnClickUpdateMsg:{tbUpdateLandingMsg(ifr);}
                         break;
+                        case tbSaveSettlementDte:{
+                        	return tbSaveSettlementDte(ifr);
+                        }
                         case tbSetupMarket:{ 
                         	return tbSetupMarket(ifr);
                         }
@@ -219,7 +222,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         return null;
     }
 
-    @Override
+
+	@Override
     public JSONArray validateSubmittedForm(FormDef formDef, IFormReference iFormReference, String s) {
         return null;
     }
@@ -636,8 +640,8 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     	//setVisible(ifr, new String[] {tbCategorydd});
     	disableFields(ifr, new String[]{tbMarketUniqueRefId});
     	setVisible(ifr,new String [] {tbDecisionSection});
-    	hideFields(ifr, new String[] {goBackDashboardSection,tbDecisiondd,tbRemarkstbx});//,tbPriSetupbtn
-    	
+    	//hideFields(ifr, new String[] {goBackDashboardSection,tbDecisiondd,tbRemarkstbx});//,tbPriSetupbtn
+    	hideFields(ifr, new String[] {goBackDashboardSection});
     	
         //tb primary Market
         if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
@@ -690,7 +694,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         		enableFields(ifr,new String[]{tbViewPriBidReportbtn,tbPrimaryBidSection,tbUpdateLandingMsgcbx,tbDecisionSection,tbMarketSection,tbCategorydd});
         		setMandatory(ifr,new String [] {});
                 disableFields(ifr, new String[]{tbLandingMsgSection,tbPriSetupSection,tbMarketTypedd,tbAssigndd,tbMarketUniqueRefId});
-                hideFields(ifr, new String[] {tbPriBidAllocationTable,tbPriBidCustRqstTable,tbPriBidReportTable});
+                hideFields(ifr, new String[] {tbPriBidAllocationTable,tbPriBidCustRqstTable,tbPriBidReportTable,tbSaveSettlementDteBtn});
                 //bid allocation
                 setDropDown(ifr,tbCategorydd,new String[]{tbCategoryBid,tbCategoryReDiscountRate,tbPoolManagerLabel},new String[]{tbCategoryBid,tbCategoryReDiscountRate,tbPoolManager});
         	}
@@ -1033,6 +1037,7 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
     		}
     		else if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){
         		//update the database with rediscount rates
+    			logger.info("Rediscount Rate");
         			retMsg =setUpRediscountrate(ifr);
         		}
     	}
@@ -1200,6 +1205,9 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
 	        enableFields(ifr,new String[]{tbSettlementDte,tbViewPriBidDwnldBidSmrybtn,tbPriBidViewCustRqstbtn});
 	        setMandatory(ifr,new String[]{tbSettlementDte});
 	        setTbPmtotalBidAllAmount(ifr,refid);
+	        
+	        //get the settlement date
+	        tbGetSettlementDte(ifr,refid);
         }
         else {//return a message of no bids for this window
         	}
@@ -1254,145 +1262,146 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
              setMandatory(ifr,new String[]{tbSettlementDte});
         }    
     }
-    //write general update without selecting index
-    //update the grid table with bulk data --update external table with the updates
+    /*
+     * write general update without selecting index
+     * update the grid table with bulk data --update external table with the updates
+     */
     private String tbupdatePriCustomerBids(IFormReference ifr, int rowIndex){
-		logger.info("tbupdatePriCustomerBids>>>");
+		
     	String retMsg ="";
-    	
-    	String gridcbnRate = getFieldValue(ifr,tbPriBidBlkCbnRate);//ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,6);
-        String gridbankRate =getFieldValue(ifr,tbPriBidBlkBankRate);//ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,7);
-        String newallocation = getFieldValue(ifr,tbPriBidBlkNewAll);//ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,9);
-        String gridpersonalRate =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,8); 
-        
-        if(gridpersonalRate.equalsIgnoreCase(rateTypeBank)) {
-        	if(isEmpty(gridcbnRate) || isEmpty(gridbankRate))
-        		retMsg = "CBN rate and Bank Rate Cannot be empty";
-        }
-        else {
-        	if(isEmpty(gridcbnRate))
-        		retMsg = "CBN rate Cannot be empty";
-        }
-    	
-        if(isEmpty(retMsg)) {
+		if(isEmpty(getFieldValue(ifr,tbSettlementDte))) {
+			retMsg = "Input Settlement date before allocating bids";
+			logger.info("Input Settlement date before allocating bids");
+		}
+		else {
+	    	//disable the settlement date field
+			disableFields(ifr,tbSettlementDte);
+	    	String gridcbnRate = getFieldValue(ifr,tbPriBidBlkCbnRate);//ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,6);
 	    	logger.info("gridcbnRate>>>"+gridcbnRate);
-	    	double cbnRate = 0;
-	    	try{cbnRate = Double.parseDouble(gridcbnRate);}
-	    	catch(Exception ex) {
-	    		retMsg = "parsing cbnrate error:>>>"+ ex.toString();
-	    		logger.info(retMsg);
-	    	}
-	    	logger.info("cbnRate>>>"+cbnRate);
-	    	
-	   
+	        String gridbankRate =getFieldValue(ifr,tbPriBidBlkBankRate);//ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,7);
 	        logger.info("gridbankRate>>>"+gridbankRate);
-	        double bankRate = 0;
-	    	try{bankRate = Double.parseDouble(gridbankRate);}
-	    	catch(Exception ex) {logger.info("parsing cbnrate error:>>>"+ ex.toString());}
-	    	logger.info("bankRate>>>"+bankRate);
-	    	
-	    	
-	         logger.info("newallocation>>>"+newallocation);
-	         double allocation = 100;
-	         try {allocation = Double.parseDouble(newallocation);}
-	         catch(Exception ex) {logger.info("parsing allocation error:>>>"+ ex.toString());}
-	         logger.info("allocation>>>"+allocation);
-	        
-	    	
-	    	String wino = ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,0);
-	    	logger.info("wino>>>"+wino);
-	    	
-	    	String tenor = ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,4);
-	    	logger.info("tenor>>>"+tenor);
-	    	//logger.info("tenor2>>>"+tenor.substring(0, tenor.indexOf(" ")));
-	    	
-	    	//update table and db
+	        String gridpersonalRate =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,8); 
 	        logger.info("gridpersonalRate>>>"+gridpersonalRate);
-	        double personalRate = 0;
-	    	try{personalRate = Double.parseDouble(gridpersonalRate);}
-	    	catch(Exception ex) {
-	    		retMsg = "parsing personal rate  error:>>>"+ ex.toString();
-	    		logger.info(retMsg);
-	    	}
-	    	logger.info("personalRate>>>"+personalRate);
-	    	
-	       
-	       // String defaultAll =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,10);
-	        String maturityDate =tbDBDteFormat(getMaturityDate(Integer.parseInt(tenor)));//.substring(0, tenor.indexOf(" "))));
-	        logger.info("maturityDate>>>"+maturityDate);
-	        String rateType =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,15);
-	        logger.info("rateType>>>"+rateType);
-	        //logger.info("(checkBidStatus(bankRate,cbnRate)>>>"+checkBidStatus(bankRate,cbnRate));
 	        
-	        if (rateType.equalsIgnoreCase(rateTypePersonal)) {
-	        	if (checkBidStatus(personalRate,cbnRate)) {
-	        		logger.info(checkBidStatus(personalRate,cbnRate));
-	        		//update gridview
-	            	ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
-	               // ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,11,maturityDate);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,9,newallocation);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidSuccess);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,statusAwaitingMaturity);
-	                
-	                //update DB table
-	        		String qry = new Query().getTbPmBidUpdatePersonalQuery(wino, cbnRate, maturityDate, allocation, bidSuccess, statusAwaitingMaturity);
-	        		logger.info("getTbPmBidUpdatePersonalQuery>>"+qry);
-	        		int dbr = new DbConnect(ifr, qry).saveQuery();
-	                logger.info("getTbPmBidUpdatePersonalQuery save db result>>>"+dbr);
-	                
-	        	}
-	        	else {
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,"");
-	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed,cbnRate);
-	            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
-	                int dbr = new DbConnect(ifr, qry).saveQuery();
-	                logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);
-	                if(dbr<0)
-	                	retMsg ="Update bidfailed Status failed for rowno: "+ String.valueOf(rowIndex);
-	            }
-	        	
+	        if(gridpersonalRate.equalsIgnoreCase(rateTypeBank)) {
+	        	if(isEmpty(gridcbnRate) || isEmpty(gridbankRate))
+	        		retMsg = "CBN rate and Bank Rate Cannot be empty";
 	        }
-	        else if (rateType.equalsIgnoreCase(rateTypeBank)){
-	            if (checkBidStatus(bankRate,cbnRate)){
-	            	logger.info("1");
-	            	//update gridview
-	            	ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,11,maturityDate);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,9,newallocation);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidSuccess);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,statusAwaitingMaturity);
-	                
-	            	//update db
-	            	String qry = new Query().getTbPmBidUpdateBankQuery(wino, cbnRate, bankRate, maturityDate, allocation, bidSuccess, statusAwaitingMaturity);
-	            	logger.info("getTbPmBidUpdateBankQuery>>"+ qry);
-	                int dbr = new DbConnect(ifr, qry).saveQuery();
-	                logger.info("getTbPmBidUpdateBankQuery save db result>>>"+dbr);
-	                if(dbr<0)
-	                	retMsg ="Update failed";
-	            }
-	            else {
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,"");
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,11,maturityDate);
-	                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,9,newallocation);
-	                
-	                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed,cbnRate,bankRate);
-	            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
-	                int dbr = new DbConnect(ifr, qry).saveQuery();
-	                logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);
-	                if(dbr<0)
-	                	retMsg ="Update failed";
-	            }
+	        else {
+	        	if(isEmpty(gridcbnRate))
+	        		retMsg = "CBN rate Cannot be empty";
 	        }
-        }
-        //get total bid...
-        //tbViewPriCustomerBids(ifr, rowIndex); // last resort if bid status is not updating.......
-        setTbPmtotalBidAllAmount(ifr,getTbMarketUniqueRefId(ifr));
+	    	
+	        if(isEmpty(retMsg)) {
+		    	logger.info("gridcbnRate>>>"+gridcbnRate);
+		    	double cbnRate = 0;
+		    	try{cbnRate = Double.parseDouble(gridcbnRate);}
+		    	catch(Exception ex) {
+		    		retMsg = "parsing cbnrate error:>>>"+ ex.toString();
+		    		logger.info(retMsg);
+		    	}
+		    	logger.info("cbnRate>>>"+cbnRate);
+		    	
+		   
+		        logger.info("gridbankRate>>>"+gridbankRate);
+		        double bankRate = 0;
+		    	try{bankRate = Double.parseDouble(gridbankRate);}
+		    	catch(Exception ex) {logger.info("parsing cbnrate error:>>>"+ ex.toString());}
+		    	logger.info("bankRate>>>"+bankRate);
+		    	
+		         double allocation = 100;
+		    	
+		    	String wino = ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,0);
+		    	logger.info("wino>>>"+wino);
+		    	
+		    	String tenor = ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,4);
+		    	logger.info("tenor>>>"+tenor);
+		    	//logger.info("tenor2>>>"+tenor.substring(0, tenor.indexOf(" ")));
+		    	
+		    	//update table and db
+		        logger.info("gridpersonalRate>>>"+gridpersonalRate);
+		        double personalRate = 0;
+		    	try{personalRate = Double.parseDouble(gridpersonalRate);}
+		    	catch(Exception ex) {
+		    		retMsg = "parsing personal rate  error:>>>"+ ex.toString();
+		    		logger.info(retMsg);
+		    	}
+		    	logger.info("personalRate>>>"+personalRate);
+		    	
+		        String maturityDate =tbDBDteFormat(getMaturityDate(Integer.parseInt(tenor)));//.substring(0, tenor.indexOf(" "))));
+		        logger.info("maturityDate>>>"+maturityDate);
+		        String rateType =ifr.getTableCellValue(tbPriBidCustRqstTable,rowIndex,15);
+		        logger.info("rateType>>>"+rateType);
+		        //logger.info("(checkBidStatus(bankRate,cbnRate)>>>"+checkBidStatus(bankRate,cbnRate));
+		        
+		        if (rateType.equalsIgnoreCase(rateTypePersonal)) {
+		        	if (checkBidStatus(personalRate,cbnRate)) {
+		        		logger.info(checkBidStatus(personalRate,cbnRate));
+		        		//update gridview
+		            	ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
+		               // ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,11,maturityDate);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidSuccess);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,statusAwaitingMaturity);
+		                
+		                //update DB table
+		        		String qry = new Query().getTbPmBidUpdatePersonalQuery(wino, cbnRate, maturityDate, allocation, bidSuccess, statusAwaitingMaturity);
+		        		logger.info("getTbPmBidUpdatePersonalQuery>>"+qry);
+		        		int dbr = new DbConnect(ifr, qry).saveQuery();
+		                logger.info("getTbPmBidUpdatePersonalQuery save db result>>>"+dbr);
+		                
+		        	}
+		        	else {
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,"");
+		                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed,cbnRate);
+		            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
+		                int dbr = new DbConnect(ifr, qry).saveQuery();
+		                logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);
+		                if(dbr<0)
+		                	retMsg ="Update bidfailed Status failed for rowno: "+ String.valueOf(rowIndex);
+		            }
+		        	
+		        }
+		        else if (rateType.equalsIgnoreCase(rateTypeBank)){
+		            if (checkBidStatus(bankRate,cbnRate)){
+		            	logger.info("1");
+		            	//update gridview
+		            	ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,11,maturityDate);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidSuccess);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,statusAwaitingMaturity);
+		                
+		            	//update db
+		            	String qry = new Query().getTbPmBidUpdateBankQuery(wino, cbnRate, bankRate, maturityDate, allocation, bidSuccess, statusAwaitingMaturity);
+		            	logger.info("getTbPmBidUpdateBankQuery>>"+ qry);
+		                int dbr = new DbConnect(ifr, qry).saveQuery();
+		                logger.info("getTbPmBidUpdateBankQuery save db result>>>"+dbr);
+		                if(dbr<0)
+		                	retMsg ="Update failed";
+		            }
+		            else {
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,14,bidFailed);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,13,"");
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,6,gridcbnRate);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,7,gridbankRate);
+		                ifr.setTableCellValue(tbPriBidCustRqstTable,rowIndex,11,maturityDate);
+		                
+		                String qry = new Query().getTbPmUpdateFailedBidsQuery(wino,bidFailed,cbnRate,bankRate);
+		            	logger.info("getTbPmUpdateFailedBidsQuery>>"+ qry);
+		                int dbr = new DbConnect(ifr, qry).saveQuery();
+		                logger.info("getTbPmUpdateFailedBidsQuery save db result>>>"+dbr);
+		                if(dbr<0)
+		                	retMsg ="Update failed";
+		            }
+		        }
+	        }
+	        //get total bid...
+	        //tbViewPriCustomerBids(ifr, rowIndex); // last resort if bid status is not updating.......
+	        setTbPmtotalBidAllAmount(ifr,getTbMarketUniqueRefId(ifr));
+		}
+		logger.info("retMsg>>>"+retMsg);
         return retMsg;   
     }
     
@@ -1526,6 +1535,36 @@ public class TreasuryOfficerMaker extends Commons implements IFormServerEventHan
         setFields(ifr,tbPmTotalAllocationAmt,String.valueOf(totalBidAmt));
       
    }
+    //get settlement date
+    private void tbGetSettlementDte(IFormReference ifr, String refid) {
+    	String sDteqry = new Query().tbGetStlMntDteQuery(refid);
+    	logger.info("getStlMntDteQuery>>"+sDteqry);
+    	List<List<String>> dbr = new DbConnect(ifr,sDteqry).getData();
+    	logger.info("getStlMntDteQuery>>"+dbr);
+    	if(dbr.size()>0) {
+    		setFields(ifr,tbSettlementDte, dbr.get(0).get(0));
+    		disableFields(ifr,new String [] {tbSettlementDte,tbSaveSettlementDteBtn});
+    	}
+    	else
+    		enableFields(ifr,new String [] {tbSettlementDte,tbSaveSettlementDteBtn});
+		
+	}
+  //save settlement date
+    private String tbSaveSettlementDte(IFormReference ifr) {
+    	String settlementDte = getFieldValue(ifr,tbSettlementDte);
+    	if(!isEmpty(settlementDte)) {
+    		String sDteqry = new Query().tbUpdateStlMntDteQuery(getTbMarketUniqueRefId(ifr),settlementDte);
+        	logger.info("getStlMntDteQuery>>"+sDteqry);
+        	int dbr = new DbConnect(ifr,sDteqry).saveQuery();
+        	if(dbr>0) {
+        		return "Settlement date updated succesfully";
+        	}
+    		return "Sorry could not update settlement date";
+    	}
+    	else
+    		return "Settlement date is empty";
+    	
+	}
     
     /******************  TREASURY BILL CODE ENDS *********************************/
 }

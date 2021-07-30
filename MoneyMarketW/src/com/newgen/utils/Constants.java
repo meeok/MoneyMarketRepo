@@ -21,6 +21,7 @@ public interface Constants {
 	String discardWs = "Discard";
 	String exit = "Exit";
 	String query = "Query";
+	String treasuryUpload = "Treasury_Upload";
 	// Please input workSteps between comment bracket
 
 	//general process Ids
@@ -465,6 +466,8 @@ public interface Constants {
 	String tbSpecialRateClicked ="tbSpecialRateClicked";
 	String tbLienTypeChange="tbLienTypeChange";
 	String tbGetMaturityDte= "tbGetMaturityDte";
+	String tbValidateToken="tbValidateToken";
+	String tbSaveSettlementDte ="tbSaveSettlementDte";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -519,7 +522,6 @@ public interface Constants {
 	
 	String tbBidRequestDte ="tb_bidRequestDte";
 	String tbBidRStatus ="tb_bidStatus";
-
 	String tbCustUniquerefId ="tb_custUniquerefId";
 	String tbCustPrincipalAmount ="tb_principalAmt";//"tb_custPrincipalAmount";
 	String tbMarketUniqueRefId ="tb_marketUniqueRefId";
@@ -571,6 +573,7 @@ public interface Constants {
 	String tbCalculateMaturityDtebtn="tb_calc_maturityDte";
 	String tbSettlementDte = "tb_settlement_dte";
 	String tbBidAllocationCloseFlg ="tb_bidAllocationCloseFlg";
+	String tbSaveSettlementDteBtn ="tbSaveSettlementDteBtn";
 
 	
 	
@@ -834,7 +837,8 @@ public interface Constants {
 	
 	String dbDteFormat = "dd-MMM-yy";
 	
-	String[] allTbSections = {tbCustodyFeeSection,tbUtilityFailedPostingSection,tbSearchCustSection,tbCustBidSection,tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
+	String[] allTbSections = {tbCustodyFeeSection,tbUtilityFailedPostingSection,tbSearchCustSection,tbCustBidSection,
+			tbBrnchCusotmerDetails,tbMarketSection,tbLandingMsgSection ,tbPriSetupSection, tbTreasurySecSection,
 			tbPrimaryBidSection,tbBranchPriSection, tbBranchSecSection,tbTerminationSection,tbProofOfInvestSection , tbDecisionSection ,
 			tbTreasuryOpsSection,tbLienSection,tbTreasurySecReportSection,tbPostSection,tbRediscountRate,tbPBCustDetailsSection};
 	
@@ -849,6 +853,7 @@ public interface Constants {
 
 	String tbConfigfileName = "config/tbConfig.properties";
 	
+	
 	/*************TREASURY BILLS ENDS HERE********************/
 	
 	
@@ -859,10 +864,14 @@ public interface Constants {
 	String omoMarketSection = "omo_market_section";
 	String omoCustDetailsSection ="omo_cust_details_section";
 	String omoBulkMandateSection ="omo_bulk_setup_section";
-	String omoDecisionSection="tb_dec_section";
+	String omoDecisionSection="omo_dec_section";
 	String omoLienSection ="omo_lien_section";
+	String omoPOISection ="omo_poi_section";
+	String omoCustodyFeeSection ="omo_custodyFee_section";
+	String omoRediscountRateSection ="omo_rediscount_section";
+	String omoSearchCustSection="omo_searchCust_section";
 	
-	String[] allOmoSections = {omoMarketSection,omoCustDetailsSection,omoBulkMandateSection,omoLienSection,omoDecisionSection};
+	String[] allOmoSections = {omoPOISection,omoCustodyFeeSection,omoSearchCustSection,omoRediscountRateSection,omoLienSection,omoMarketSection,omoCustDetailsSection,omoBulkMandateSection,omoLienSection,omoDecisionSection};
 
 	//events
 	String omoSetupTypeChange = "omoSetupTypeChange";
