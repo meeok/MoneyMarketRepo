@@ -49,7 +49,7 @@ public class TreasuryUpload extends Commons implements IFormServerEventHandler {
 				switch (control) {
 				case omoOnDone:{
 					//check if document has been uploaded
-					return isDocumentUploaded(ifr);
+					return checkDocumentUploaded(ifr);
 				}
 			}
 			}
@@ -107,17 +107,22 @@ public class TreasuryUpload extends Commons implements IFormServerEventHandler {
     	clearFields(ifr,new String[]{omoRemarkstbx});
     	setVisible(ifr,new String [] {omoDecisionSection,omoMarketSection,omoCustDetailsSection});
     	disableFields(ifr, new String[]{omoMarketSection,omoCustDetailsSection});
-    	setMandatory(ifr,new String [] {omoDecisionSection,omoRemarkstbx});
+    	setMandatory(ifr,new String [] {omoDecisiondd});
     	hideFields(ifr, new String[] {goBackDashboardSection});
-    	
     	setVisible(ifr, new String[]{omoMarketSection, omoDecisionSection});
     	hideFields(ifr,new String[] {omoBankName});
 	}
 	
 
-	private String isDocumentUploaded(IFormReference ifr) {
-		// TODO Auto-generated method stub
+	private String checkDocumentUploaded(IFormReference ifr) {
+		if(!isDocUploaded(ifr,getWorkItemNumber(ifr), suppDocName))
+			return "Kindly Attach Documents";
+		else
+			setFields(ifr,omoDecisiondd,decApprove);
 		return "";
+		
 	}
+	
+	
 
 }

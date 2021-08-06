@@ -429,7 +429,7 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     }  */
     //check if docs are uploaded
     private String tbOndone(IFormReference ifr) {
-    	return isTbDocUploaded(ifr,getWorkItemNumber(ifr),customers_instruction) ?"Kindly attach customers_instruction ":"";
+    	return isDocUploaded(ifr,getWorkItemNumber(ifr),customers_instruction) ?"Kindly attach customers_instruction ":"";
   	}
     /*
      * Decision will automatically be populated as �approve� 

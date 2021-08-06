@@ -221,7 +221,7 @@ public class Query {
 	            "FROM pdbdocument A, PDBDocumentContent B " +
 	            "WHERE A.DocumentIndex=B.DocumentIndex " +
 	            "AND B.ParentFolderIndex=(select FolderIndex from PDBFolder where name ='"+ winame + "') " +
-	            "AND upper(A.Name) like '"+docName+"%'";
+	            "AND upper(A.Name) like upper('"+docName+"%')";
       }
     
     //get rediscount rate from the setup table for a market

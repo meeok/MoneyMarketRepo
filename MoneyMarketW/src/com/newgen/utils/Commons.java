@@ -940,7 +940,7 @@ public class Commons implements Constants {
     /*
      * check if a document has been uploaded
      */
-    public boolean isTbDocUploaded(IFormReference ifr,String winame,String docName){
+    public boolean isDocUploaded(IFormReference ifr,String winame,String docName){
     	logger.info("isTbDocUploaded");
     	String qry = new Query().getUploadedDocQuery(winame, docName);
     	logger.info("isDocUploaded dbQuery: "+qry);

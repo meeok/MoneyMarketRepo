@@ -909,6 +909,7 @@ public interface Constants {
 	String omoSettlementValue="OMO_SETTLEMENT_VALUE";
 	String omoStatus="OMO_STATUS";
 	String omoFetchAcctDetailsBtn="omo_fetch_acct_details";
+	String omoFetchMandate ="omo_fetch_mandatebtn";
 	
 	//bulk setup section
 	String omoBulkMandateTbl = "table106";
@@ -945,6 +946,7 @@ public interface Constants {
 	String omoLiencustRefId ="omo_lien_cust_refid";
 	String omoLienStatus ="omo_lien_status";
 	
+	String suppDocName ="Supporting Docs";
 	/*************OMO AUCTION ENDS HERE********************/
 
 }

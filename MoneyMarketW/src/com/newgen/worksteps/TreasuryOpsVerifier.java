@@ -20,6 +20,8 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
         clearDecHisFlag(ifr);
         if (!isEmpty(getProcess(ifr))) showSelectedProcessSheet(ifr);
         if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
+        else if (getProcess(ifr).equalsIgnoreCase(omoProcess)) omoFormLoadActivity(ifr);
+
         //else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) tbFormLoadActivity(ifr);
 
     }
@@ -172,4 +174,27 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
             setFields(ifr,new String[]{cpTermTenorLocal,cpTermMaturityDateLocal,cpTermPenaltyChargeLocal,cpTermNoDaysDueLocal},new String[]{tenor,maturityDate,String.valueOf(penaltyCharge),String.valueOf(daysDue)});
         }
     }
+    
+  //*************** OMO AUCTION START *************************/
+  	private void omoFormLoadActivity(IFormReference ifr) {
+		setGenDetails(ifr);
+    	hideOmoSections(ifr);
+    	hideFields(ifr, new String[] {goBackDashboardSection});
+    	setDropDown(ifr,omoDecisiondd,new String[]{decApprove,decReject});
+    	clearFields(ifr,new String[]{omoRemarkstbx});
+    	if(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)) {
+        	setVisible(ifr,new String [] {omoDecisionSection,omoMarketSection,omoCustDetailsSection});
+        	disableFields(ifr, new String[]{omoMarketSection,omoCustDetailsSection});
+        	setVisible(ifr, new String[]{omoMarketSection, omoFetchMandate,omoDecisionSection});
+        	setVisible(ifr, new String[]{omoMarketSection, omoFetchMandate,omoDecisionSection});
+        	enableFields(ifr, new String[]{omoFetchMandate});
+        	setMandatory(ifr,new String [] {omoDecisiondd});
+        	hideFields(ifr,new String[] {omoBankName});
+		}
+		else if(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)) {
+		}
+    	
+	}
+  	 //*************** OMO AUCTION End *************************/
+
 }

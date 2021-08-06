@@ -27,6 +27,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         if (!isEmpty(getProcess(ifr))) showSelectedProcessSheet(ifr);
         if (getProcess(ifr).equalsIgnoreCase(commercialProcess)) cpFormLoadActivity(ifr);
         else if (getProcess(ifr).equalsIgnoreCase(treasuryProcess)) tbFormLoadActivity(ifr);
+        else if (getProcess(ifr).equalsIgnoreCase(omoProcess)) omoFormLoadActivity(ifr);
     }
 
     @Override
@@ -586,6 +587,21 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     }*/
     
     //*************** Treasury End *************************/
+  	
+  	//*************** OMO AUCTION START *************************/
+  	private void omoFormLoadActivity(IFormReference ifr) {
+		setGenDetails(ifr);
+    	hideOmoSections(ifr);
+    	setDropDown(ifr,omoDecisiondd,new String[]{decApprove,decReject});
+    	clearFields(ifr,new String[]{omoRemarkstbx});
+    	setVisible(ifr,new String [] {omoDecisionSection,omoMarketSection,omoCustDetailsSection});
+    	disableFields(ifr, new String[]{omoMarketSection,omoCustDetailsSection});
+    	setMandatory(ifr,new String [] {omoDecisiondd});
+    	hideFields(ifr, new String[] {goBackDashboardSection});
+    	setVisible(ifr, new String[]{omoMarketSection, omoDecisionSection});
+    	hideFields(ifr,new String[] {omoBankName});
+	}
+  	 //*************** OMO AUCTION End *************************/
 
     @Override
     public JSONArray validateSubmittedForm(FormDef formDef, IFormReference iFormReference, String s) {
