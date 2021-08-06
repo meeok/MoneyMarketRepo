@@ -22,6 +22,7 @@ public interface Constants {
 	String exit = "Exit";
 	String query = "Query";
 	String treasuryUpload = "Treasury_Upload";
+	String treasuryOpsOfficer ="TreasuryOps_Officer";
 	// Please input workSteps between comment bracket
 
 	//general process Ids

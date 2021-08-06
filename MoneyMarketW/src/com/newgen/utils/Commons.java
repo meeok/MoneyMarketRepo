@@ -570,7 +570,15 @@ public class Commons implements Constants {
         String remarks = (String)ifr.getValue(tbRemarkstbx);
         String entryDate = (String)ifr.getValue(entryDateLocal);
         String exitDate = getCurrentDateTime();
-        setDecisionHistory(ifr,getLoginUser(ifr),treasuryProcessName,marketType,getCpDecision(ifr),remarks,getActivityName(ifr),entryDate,exitDate,getTat(entryDate,exitDate));
+        setDecisionHistory(ifr,getLoginUser(ifr),treasuryProcessName,marketType,getTbDecision(ifr),remarks,getActivityName(ifr),entryDate,exitDate,getTat(entryDate,exitDate));
+        ifr.setValue(decHisFlagLocal,flag);
+    }
+    public void setOmoDecisionHistory (IFormReference ifr){
+        String marketType = getTbMarketName(ifr);
+        String remarks = (String)ifr.getValue(omoRemarkstbx);
+        String entryDate = (String)ifr.getValue(entryDateLocal);
+        String exitDate = getCurrentDateTime();
+        setDecisionHistory(ifr,getLoginUser(ifr),omoProcessName,marketType,getOmoDecision(ifr),remarks,getActivityName(ifr),entryDate,exitDate,getTat(entryDate,exitDate));
         ifr.setValue(decHisFlagLocal,flag);
     }
     public boolean getTbUpdateLandingMsg(IFormReference ifr){ 
@@ -1169,6 +1177,7 @@ public class Commons implements Constants {
     public static String getOmoSettlementDte(IFormReference ifr) {return (String) ifr.getValue(omoSettlementDte);}
     public static String getOmoSettlementValue(IFormReference ifr) {return (String) ifr.getValue(omoSettlementValue);}
     public static String getOmoCategorydd(IFormReference ifr) {return (String) ifr.getValue(omoCategorydd);}
+    public static String getOmoDecision (IFormReference ifr){return (String) ifr.getValue(omoDecisiondd);}
 
     //public static String getOmoFbnCustomer(IFormReference ifr) {return (String) ifr.getValue(omoFbnCustomer);}
    // public static String getOmoInterest(IFormReference ifr) {return (String) ifr.getValue(omoInterest);}
