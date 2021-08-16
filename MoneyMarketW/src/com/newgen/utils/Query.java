@@ -55,6 +55,11 @@ public class Query {
     public static String getCheckActiveWindowQuery(String process, String marketType) {
         return "select count(*) from mm_setup_tbl where process = '" + process + "' and markettype ='" + marketType + "' and  closeflag = 'N'";
     }
+    //get winame of active window
+    public static String getCheckActiveWindowWinameQuery(String process, String marketType) {
+        return "select winame from mm_setup_tbl where upper(process) = upper('" + process + ")' and upper(markettype)=upper('" + marketType + ")'"
+        		+ " and  closeflag = 'N'";
+    }
     public String getCheckActiveWindowQueryRefId(String process, String marketType) {
         return "select REFID from mm_setup_tbl where process = '" + process + "' and markettype ='" + marketType + "' and  closeflag = 'N'";
     }
@@ -76,7 +81,7 @@ public class Query {
     }
     //get window close date of a market
     public String getWinCloseDateQuery(String process, String marketType){
-        return "select CLOSEDATE from mm_setup_tbl where process = '"+process+"' and markettype ='"+marketType+"' and  closeflag = 'N'";
+        return "select CLOSEDATE from mm_setup_tbl where upper(process) = upper('"+process+"') and upper(markettype) =upper('"+marketType+"') and  closeflag = 'N'";
     }
     
     public String getWinCloseFlagById (String winRefId){
@@ -115,6 +120,7 @@ public class Query {
     public String getCustomerRefIdQuery(String cusRefId) {
         return "select * from MONEYMARKET_EXT where upper(refid) = upper('" + cusRefId + "')";
     }
+    
     public static String getCpPmBidsToProcessQuery () {
         return "select custrefid, tenor, rate, ratetype from mm_bid_tbl where process = 'Commercial Paper' and markettype= 'primary' and processflag ='N' and groupindexflag = 'N'";
     }
@@ -296,9 +302,10 @@ public class Query {
     	return "select sum(tb_pm_mpBr) as TotalAmount from moneymarket_ext where tb_pm_mpBr is not null and tb_uniqueNum in "
     			+ "(select refid from mm_setup_tbl where closeflag ='Y' and refid='"+refid+"') and upper(tb_bidStatus) = upper('Successful')";
       }
-    
-   
-  
+    //save generated code
+    public String tbSaveCustomerRefIdQuery(String winame,String cusRefId) {
+        return "update MONEYMARKET_EXT set refid ='"+cusRefId + "' where winame ='"+winame+"'";
+    }
     ////-----------------------treasury end -------------------------------------///////////////
     public static String getUpdateReDiscountRateQuery(String id,String redicsountless90, String rediscount91180, String rediscount181270, String rediscount271364){
         return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+redicsountless90+"', REDISCOUNTRATELESS180 = '"+rediscount91180+"', REDISCOUNTRATELESS270 = '"+rediscount181270+"', REDISCOUNTRATELESS364 = '"+rediscount271364+"' where  refid = '"+id+"'";

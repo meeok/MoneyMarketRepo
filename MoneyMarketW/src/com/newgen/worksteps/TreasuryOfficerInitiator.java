@@ -91,6 +91,18 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                                 return windowActiveErrMessage;
                             }
                         }
+                        /********** TREASURY START **********************/
+                        case tbMarketTypeddChange:{
+                        	//check if market has been set
+                        	return tbMarketTypeddChange(ifr);
+                        }
+                        case tbDecisionddChange:{
+                        	tbDecChange(ifr);
+                        }
+                        
+                        /********** TREASURY END **********************/
+
+                        /********** OMO Start **********************/
                         case omoSetupTypeChange:{
                         	omoSetupTypeChange(ifr);
                         	break;
@@ -104,6 +116,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                         case omoFbnCustChange:{
                         	omoFbnCustChange(ifr);
                         }
+                        /********** OMO End **********************/
                     }
                 }
                 break;
@@ -218,6 +231,21 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
         undoMandatory(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
         clearFields(ifr,new String [] {tbMarketTypedd,tbLandMsgtbx,tbDecisiondd,tbRemarkstbx});
     }
+    private String tbMarketTypeddChange(IFormReference ifr){
+    	String retMsg ="";
+    	if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+    		retMsg = tbGetWindowActiveWiname(ifr,getTbMarket(ifr));
+    		if(isEmpty(retMsg)){
+    			enableFields(ifr,new String[]{tbLandingMsgSection,tbDecisionSection});
+    		}
+    		else {
+    			retMsg = getTbMarket(ifr)+tbWindowActiveMessage +" WorkItem No is: "+retMsg;
+    			//hide or disable all fields
+    			disableFields(ifr, new String[]{tbDecisionSection,tbLandingMsgSection});
+    		}
+    	}
+    	return retMsg;
+    }
    
     private void tbFormLoad (IFormReference ifr){
     	hideTbSections(ifr);
@@ -228,6 +256,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     	hideFields(ifr,new String[]{tbUpdateLandingMsgcbx,tbCategorydd,tbAssigndd,tbMarketUniqueRefId});
         //setDropDown(ifr,tbAssigndd,new String[]{tbTreasuryUtilityLabel,tbTreasuryVerifierLable},new String[]{tbTreasuryUtility,tbTreasuryVerifier});
     }
+    
     public void tbSendMail(IFormReference ifr){
         String message = "A window open request for "+treasuryProcessName+" has been Initiated with ref number "+getWorkItemNumber(ifr)+".";
         new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
@@ -327,9 +356,6 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
 
     
 	private void omoCategoryChange(IFormReference ifr) {
-		logger.info("cat get");
-		logger.info(getOmoCategorydd(ifr));
-		logger.info(tbCategorySetup);
 		logger.info(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategorySetup));
 		if(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)) {
 			setVisible(ifr, new String[] {omoSetupType});

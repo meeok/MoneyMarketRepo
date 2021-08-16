@@ -337,7 +337,9 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbTranID});
 	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
 	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd,tbtoken});//setInvisible(ifr, new String[]{});
+	        	logger.info("hiding1 ");
 	        	hideFields(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
+	        	logger.info("hiding2 ");
 	          //  disableFields(ifr, new String[] {});
 	        	//set private banking control
                 setTbPBApprovalCntrls(ifr);

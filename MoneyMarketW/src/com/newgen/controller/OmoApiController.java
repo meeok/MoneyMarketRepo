@@ -115,13 +115,77 @@ public class OmoApiController extends Commons implements Constants {
             logger.info("exception occurred-- "+e.getMessage());
         }
         return "";
-	    }
+	}
     
+    public String tokenValidation(String otp){
+        logger.info("Welcome to token validation call");
+        logger.info("otp>>>>"+otp);
+        if (!otp.isEmpty()){
+        	Commons.disableFields(ifr,new String[]{omoToken});
+        	Commons.setVisible(ifr,new String[]{omoPostBtn,omoTranId});
+            Commons.enableFields(ifr,new String[]{omoPostBtn});
+            
+           /* outputXml = Api.executeCall(tokenValidationServiceName,RequestXml.tokenValidationXml(Commons.getLoginUser(ifr),otp));
+            logger.info("outputXml-- "+outputXml);
+
+            if (!outputXml.isEmpty()) {
+                xmlParser.setInputXML(outputXml);
+                String status = xmlParser.getValueOf("a:Authenticated");
+                logger.info("token status-- "+status);
+                if (status.equalsIgnoreCase(True)) {
+                    Commons.disableFields(ifr,new String[]{omoToken});
+                    Commons.enableFields(ifr,new String[]{omoPostBtn});
+                }
+                else if (status.equalsIgnoreCase(False)){
+                    logger.info("token errMgs-- "+ xmlParser.getValueOf("a:Message"));
+                    return xmlParser.getValueOf("a:Message");
+                }
+            }
+                else return apiNoResponse;
+       */ }
+        return "token validated successfully";
+    }
+    
+    
+    public String getPostTxn(String debitAcct, String debitSol, String amount, String transParticulars, String partTranRemarks, String creditAcct, String creditSol){
+        logger.info("Welcome to post transaction call");
+        try {
+            if (Integer.parseInt(amount) > 0) {
+            	String rqstXml = RequestXml.postTransactionXml(transType, transSubTypeC, debitAcct, debitSol, debitFlag, amount, currencyNgn, 
+            			transParticulars, partTranRemarks, Commons.getCurrentDate(), creditAcct, creditSol, creditFlag, Commons.getLoginUser(ifr));
+            	logger.info("Request XML-- "+rqstXml);
+            	outputXml = Api.executeCall(postServiceName, rqstXml);
+                logger.info("outputXml-- "+outputXml);
+                if (!Commons.isEmpty(outputXml)) {
+                    xmlParser.setInputXML(outputXml);
+                    String status = xmlParser.getValueOf(apiStatus);
+
+                    if (isSuccess(status)) {
+                        String txnId = xmlParser.getValueOf("TrnId");
+                        if (!Commons.isEmpty(txnId.trim())) {
+                            return apiSuccess +"(:)" +txnId.trim();
+                            }
+                        
+                    } else if (isFailed(status)) {
+                        String errCode = xmlParser.getValueOf("ErrorCode");
+                        String errDesc = xmlParser.getValueOf("ErrorDesc");
+                        String errType = xmlParser.getValueOf("ErrorType");
+                        logger.info("ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".");
+                        return apiFailed + " ErrorType : " + errType + " ErrorCode : " + errCode + " ErrorDesc : " + errDesc + ".";
+                    }
+                } else return apiNoResponse;
+            }
+        } catch (Exception e){
+            return e.getMessage();
+        }
+        return null;
+    }
     private boolean isSuccess(String data){
         return data.equalsIgnoreCase(apiSuccess);
     }
     private boolean isFailed(String data){
         return data.equalsIgnoreCase(apiFailed) || data.equalsIgnoreCase(apiFailure);
     }
+    
 
 }

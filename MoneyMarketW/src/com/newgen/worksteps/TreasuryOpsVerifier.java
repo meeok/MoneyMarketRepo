@@ -2,6 +2,8 @@ package com.newgen.worksteps;
 
 import com.newgen.api.customService.CpServiceHandler;
 import com.newgen.controller.CpController;
+import com.newgen.controller.OmoApiController;
+import com.newgen.controller.TbApiController;
 import com.newgen.iforms.EControl;
 import com.newgen.iforms.FormDef;
 import com.newgen.iforms.custom.IFormReference;
@@ -9,6 +11,10 @@ import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.utils.*;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,10 +65,26 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
                 case onLoad:
                 case onClick:{
                     switch (control){
-
+	                    case omoPostSettlementValue : {
+	                    	return omoPostSettlementValue(ifr);
+	                    }
                     }
+
+                    
                 }
-                case onChange:
+                case onChange:{
+                	switch(control) {
+	                	case omoValidateToken:{
+	                		logger.info("token>>>>"+getFieldValue(ifr,omoToken));
+	                		return new OmoApiController(ifr).tokenValidation(getFieldValue(ifr,omoToken));
+	                	}
+	                	case omoDecChange:{
+	                		omoDecChangeActivity(ifr);
+	                	}
+	                		
+	                	
+                	}
+                }
                 case custom:
                 case onDone:{
                     switch (control){
@@ -86,7 +108,8 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
         return null;
     }
 
-    @Override
+
+	@Override
     public JSONArray validateSubmittedForm(FormDef formDef, IFormReference iFormReference, String s) {
         return null;
     }
@@ -186,15 +209,75 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
         	setVisible(ifr,new String [] {omoDecisionSection,omoMarketSection,omoCustDetailsSection});
         	disableFields(ifr, new String[]{omoMarketSection,omoCustDetailsSection});
         	setVisible(ifr, new String[]{omoMarketSection, omoFetchMandate,omoDecisionSection});
-        	setVisible(ifr, new String[]{omoMarketSection, omoFetchMandate,omoDecisionSection});
-        	enableFields(ifr, new String[]{omoFetchMandate});
+        	enableField(ifr,omoFetchMandate);
         	setMandatory(ifr,new String [] {omoDecisiondd});
-        	hideFields(ifr,new String[] {omoBankName});
+        	hideFields(ifr,new String[] {omoBankName,omoPostBtn,omoTranId});
 		}
 		else if(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)) {
 		}
     	
 	}
+
+	private void omoDecChangeActivity(IFormReference ifr) {
+		if(getOmoDecision(ifr).equalsIgnoreCase(decApprove)) {
+			setVisible(ifr, new String[]{omoPostSection});
+			setMandatory(ifr,new String [] {omoToken});
+		}
+		else {
+			hideFields(ifr, new String[]{omoPostSection});
+		}
+		omoDecChange(ifr);
+	}
+  	
+  	 //post
+  	private String omoPostSettlementValue(IFormReference ifr) throws Exception{
+  		//verify token  --todo
+  		//search txn  --todo
+  		String retMsg ="";
+  		String creditAcct ="";
+  		String creditSol ="";
+  		
+  		Properties prop = new Properties();
+		InputStream is = new FileInputStream(tbConfigfileName);
+		prop.load(is);
+		
+		creditAcct = prop.getProperty("tbHOSuspenceAct");
+		logger.info("Creditaccount>>"+creditAcct);
+		creditSol = prop.getProperty("actSol");
+		logger.info("credit sol>>"+creditSol);
+		
+  		String debitAcct = getOmoCustAcctNo(ifr);
+  		logger.info("debit sol>>"+debitAcct);
+  		String debitSol = getOmoCustSolid(ifr);
+  		logger.info("debit sol>>"+debitSol);
+  		String amount = getOmoSettlementValue(ifr);
+  		logger.info("amount>>"+amount);
+  		String transParticulars="NTB"+getOmoCustRefId(ifr);;
+  		String partTranRemarks ="TB/"+ getWorkItemNumber(ifr).toUpperCase()+"/SettlementValue";
+  		logger.info((isEmpty(debitAcct)||isEmpty(debitSol) || isEmpty(creditAcct)||isEmpty(creditSol)));
+  		if(!(isEmpty(debitAcct)||isEmpty(debitSol) || isEmpty(creditAcct)||isEmpty(creditSol))) {
+  			retMsg = new OmoApiController(ifr).getPostTxn(debitAcct, debitSol, amount, transParticulars, partTranRemarks, creditAcct, creditSol);
+  	  		if(retMsg.substring(0, retMsg.indexOf(":")).equalsIgnoreCase(apiSuccess)) {
+  	  			String tranid = retMsg.substring(retMsg.indexOf(":"))+1;
+  	  			logger.info("trandid >>>"+tranid);
+  	  			setFields(ifr,omoTranId,tranid);
+  	      		disableFields(ifr,new String[] {omoDecisiondd,omoPostBtn});
+  	      		
+  	      		//post interest
+  	      		if(getFieldValue(ifr,omoInterestAtMat).equalsIgnoreCase(yes)) {
+  	      			//credit customer with residual amount and deduct from interest ...
+  	      			
+  	      			
+  	      		}
+  	  		}
+  		}
+  		else {
+  			retMsg="An account is empty";
+  			logger.info(retMsg);
+  		}
+  		
+      	return retMsg;
+  	}
   	 //*************** OMO AUCTION End *************************/
 
 }

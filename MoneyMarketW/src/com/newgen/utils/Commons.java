@@ -718,7 +718,8 @@ public class Commons implements Constants {
           return false;
       }
    /*
-    * return true is if window is closed
+    * check if there is an active window
+    * return true is if window is active(open)
     * else return false
     */
     public boolean isTbWindowActive(IFormReference ifr){
@@ -728,6 +729,18 @@ public class Commons implements Constants {
         logger.info("isTbWindowActive db output>>"+dbr);
         return dbr.size()>0 ? true:false;
     }
+    /*
+     * check if there is an active window
+     * return winame
+     */
+     public String tbGetWindowActiveWiname(IFormReference ifr, String marketType){
+     	String qry = new Query().getCheckActiveWindowWinameQuery(treasuryProcessName,getTbMarket(ifr));
+         logger.info("check tb window query --"+ qry);
+         List<List<String>> dbr = new DbConnect(ifr,qry).getData();
+         logger.info("isTbWindowActive db output>>"+dbr);
+         return dbr.size()>0 ? dbr.get(0).get(0):"";
+     }
+    
     //get refid from active window
     public static String getTbActiveWindowwithRefid(IFormReference ifr){
     	String qry = new Query().getCheckActiveWindowQueryRefId(treasuryProcessName,getTbMarket(ifr));
@@ -911,7 +924,8 @@ public class Commons implements Constants {
 		Date date =new Date();
 		String randNo = (getTbMarket(ifr).charAt(0)) + getUserSol(ifr) + 
 				new SimpleDateFormat("yyyy").format(date)+new SimpleDateFormat("MMM").format(date) + 
-				((int)(Math.random()*9000)+1000);
+				String.format("%05d",new Random().nextInt(99999));
+				//				((int)(Math.random()*90000)+1000);
 		
 		String qry = new Query().getCustomerRefIdQuery(randNo);
 		logger.info("getCustomerRefIdQuery>>"+qry);
@@ -921,6 +935,20 @@ public class Commons implements Constants {
 		logger.info("randNo>>>"+randNo);
 		return randNo.toUpperCase();
 	}
+	public String tbSaveGeneratedId(IFormReference ifr, String winame, String custrefid) {
+		String saveRefidQry = new Query().tbSaveCustomerRefIdQuery(winame,custrefid);
+		logger.info("saveRefidQry>>>"+saveRefidQry);
+		int insertVal = new DbConnect(ifr,saveRefidQry).saveQuery();
+		if (insertVal >= 0) {
+	           logger.info("record saved successfully");
+	    }
+		else {
+			logger.info("Record not saved");
+			return "Record not saved";
+		}
+		return "";
+	}
+	
 	
 	 //check if cutoff time has elapsed //change to use flag with utility is working
 	 public static boolean isTbWinValid(IFormReference ifr){
@@ -1155,6 +1183,21 @@ public class Commons implements Constants {
     //remove exponential from doubles
     public double getResidualAmt(double amt) {
     	return amt%1000;
+    }
+    
+    //make remarks mandatory if Decision is reject
+    public void tbDecChange(IFormReference ifr) {
+    	if(getTbDecision(ifr).equalsIgnoreCase(decReject)) 
+    		setMandatory(ifr,tbRemarkstbx);
+    		else
+    			undoMandatory(ifr,tbRemarkstbx);
+    }
+  //make remarks mandatory if Decision is reject
+    public void omoDecChange(IFormReference ifr) {
+    	if(getOmoDecision(ifr).equalsIgnoreCase(decReject)) 
+    		setMandatory(ifr,omoRemarkstbx);
+    		else
+    			undoMandatory(ifr,omoRemarkstbx);
     }
     
     /******************  TREASURY BILL CODE ENDS ***********************************/

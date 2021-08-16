@@ -29,17 +29,24 @@ public class TbApiController  extends Commons implements Constants{
     //get account output xml
     public void setFecthActDtlsInputXml(String accountNumber)
     {
-          if (accountNumber.startsWith("1"))
-              outputXml = Api.executeCall(fetchCaaAcctServiceName, RequestXml.fetchCaaRequestXml(accountNumber));
-          else if (accountNumber.startsWith("2"))
-              outputXml = Api.executeCall(fetchOdaAcctServiceName, RequestXml.fetchOdaRequestXml(accountNumber));
-          else if (accountNumber.startsWith("3"))
-              outputXml = Api.executeCall(fetchSbaAcctServiceName, RequestXml.fetchSbaRequestXml(accountNumber));
+    	String rqstxml ="";
+          if (accountNumber.startsWith("1")) {
+        	  rqstxml=RequestXml.fetchCaaRequestXml(accountNumber);
+              outputXml = Api.executeCall(fetchCaaAcctServiceName,rqstxml );
+          }
+          else if (accountNumber.startsWith("2")) {
+        	  rqstxml= RequestXml.fetchOdaRequestXml(accountNumber);
+              outputXml = Api.executeCall(fetchOdaAcctServiceName,rqstxml);
+          }
+          else if (accountNumber.startsWith("3")) {
+        	  rqstxml =RequestXml.fetchSbaRequestXml(accountNumber);
+              outputXml = Api.executeCall(fetchSbaAcctServiceName,rqstxml );
+          }
 	  
     }
     //check if schemecode is valid for treasury processing
     public boolean isValidSchemeCode(String schemeCode) {
-    	return  (schemeCode.equalsIgnoreCase(SA231) || schemeCode.equalsIgnoreCase(SA310) ||
+    	return  (schemeCode.equalsIgnoreCase(SA321) || schemeCode.equalsIgnoreCase(SA310) ||
     			schemeCode.equalsIgnoreCase(SA340) ||schemeCode.equalsIgnoreCase(SA327)) ? false: true;
     }
     
@@ -63,11 +70,10 @@ public class TbApiController  extends Commons implements Constants{
 		logger.info("account Number-- "+ accountNumber );
         try {
             logger.info("Fetch account details call");
-          
-            
             clearFields(ifr, new String[]{tbCustAcctEmail, tbCustAcctName, tbCustAcctLienStatus,tbCustSchemeCode,tbCustSolid,tbCustAcctCurrency});
             if (!accountNumber.isEmpty()) {
             	setFecthActDtlsInputXml(accountNumber);
+            	
                 logger.info("fetch account outputXml-- " + outputXml);
 
                 if (!isEmpty(outputXml)) {
@@ -78,6 +84,7 @@ public class TbApiController  extends Commons implements Constants{
                     if (isSuccess(status)) {
                         String schemeCode = xmlParser.getValueOf("SchmCode");
                         logger.info("schemeCode- "+ schemeCode);
+                        logger.info(isValidSchemeCode(schemeCode));
                         
                         if(!isValidSchemeCode(schemeCode)) {
                         	return "This account is not valid for TB processing";
@@ -250,7 +257,7 @@ public class TbApiController  extends Commons implements Constants{
                     	setFields(ifr,tbCustAcctLienStatus,"No");
                     	hideField(ifr,tbUnlienBtn);
                     	setVisible(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
-                    	disableFields(ifr,new String[] {tbPostbtn});
+                    	enableFields(ifr,new String[] {tbPostbtn});
                     	//return "Customer Principal unliened Succesfully";
                     }
                 } else if (isFailed(status)) {
@@ -376,8 +383,9 @@ public class TbApiController  extends Commons implements Constants{
 
                     if (isSuccess(status)) {
                         String txnId = xmlParser.getValueOf("TrnId");
-                        if (!Commons.isEmpty(txnId.trim()))
-                            return apiSuccess +"(:)" +txnId.trim();
+                        if (!Commons.isEmpty(txnId.trim())) {
+                            return apiSuccess +"(:)" +txnId.trim(); 
+                          }
                     } else if (isFailed(status)) {
                         String errCode = xmlParser.getValueOf("ErrorCode");
                         String errDesc = xmlParser.getValueOf("ErrorDesc");

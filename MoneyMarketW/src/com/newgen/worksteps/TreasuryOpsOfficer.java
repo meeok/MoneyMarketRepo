@@ -18,6 +18,7 @@ public class TreasuryOpsOfficer extends Commons implements IFormServerEventHandl
     @Override
     public void beforeFormLoad(FormDef formDef, IFormReference ifr) {
         clearDecHisFlag(ifr);
+        logger.info("load");
         if (!isEmpty(getProcess(ifr))) showSelectedProcessSheet(ifr);
         if (getProcess(ifr).equalsIgnoreCase(omoProcess)) omoFormLoadActivity(ifr);
 
@@ -167,20 +168,33 @@ public class TreasuryOpsOfficer extends Commons implements IFormServerEventHandl
     }
     
   //*************** OMO AUCTION START *************************/
-  	private void omoFormLoadActivity(IFormReference ifr) {
+  	private void omoFormLoadActivity(IFormReference ifr) { 
+  		hideShowLandingMessageLabel(ifr,False);
+        hideShowBackToDashboard(ifr,False);
 		setGenDetails(ifr);
     	hideOmoSections(ifr);
     	hideFields(ifr, new String[] {goBackDashboardSection});
     	setDropDown(ifr,omoDecisiondd,new String[]{decApprove,decReject});
     	clearFields(ifr,new String[]{omoRemarkstbx});
     	if(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategorySetup)) {
+    		
         	setVisible(ifr,new String [] {omoDecisionSection,omoMarketSection,omoCustDetailsSection});
         	disableFields(ifr, new String[]{omoMarketSection,omoCustDetailsSection});
         	setVisible(ifr, new String[]{omoMarketSection, omoFetchMandate,omoDecisionSection});
-        	setVisible(ifr, new String[]{omoMarketSection, omoFetchMandate,omoDecisionSection});
+        	setVisible(ifr, new String[]{omoMarketSection, omoFetchMandate,omoDecisionSection,omoResidualInterest});
         	enableFields(ifr, new String[]{omoFetchMandate});
         	setMandatory(ifr,new String [] {omoDecisiondd});
         	hideFields(ifr,new String[] {omoBankName});
+        	//calculate residual interest
+    		logger.info("Residual interest>>"+getOmoInterest(ifr)+" ; "+getResidualAmt(Double.parseDouble(getOmoInterest(ifr))));
+    		try {
+    			String residualInterest = String.valueOf(getResidualAmt(Double.parseDouble(getOmoInterest(ifr))));
+    			logger.info("Residual interest >>>"+residualInterest);
+        		setFields(ifr,omoResidualInterest,residualInterest);
+    		}
+    		catch(Exception e) {
+    		}
+    		
 		}
 		else if(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)) {
 		}

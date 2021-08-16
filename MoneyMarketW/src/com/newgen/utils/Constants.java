@@ -469,6 +469,7 @@ public interface Constants {
 	String tbGetMaturityDte= "tbGetMaturityDte";
 	String tbValidateToken="tbValidateToken";
 	String tbSaveSettlementDte ="tbSaveSettlementDte";
+	String tbDecisionddChange ="tbDecisionddChange";
 	
 	// treasury bills control ids
 	String tbPrimaryMarket = "primary";
@@ -629,7 +630,7 @@ public interface Constants {
 	String tbBrnchPriRtBanKRate ="Bank";
 	String tbBrnchPriRtPersonal ="Personal";
 	//schemecodes not allowed
-	String SA231 ="SA231";
+	String SA321 ="SA321";
 	String SA310 ="SA310";
 	String SA340 ="SA340";
 	String SA327 ="SA327";
@@ -852,7 +853,8 @@ public interface Constants {
 	
 	//String tbStandardCustodyFee = "0.01";
 
-	String tbConfigfileName = "config/tbConfig.properties";
+	String tbConfigfileName = "/was/IBM/WebSphere/AppServer/profiles/AppSrv01/INTEGRATION_Properties/tbConfig.properties";
+	//"config/tbConfig.properties";
 	
 	
 	/*************TREASURY BILLS ENDS HERE********************/
@@ -871,8 +873,10 @@ public interface Constants {
 	String omoCustodyFeeSection ="omo_custodyFee_section";
 	String omoRediscountRateSection ="omo_rediscount_section";
 	String omoSearchCustSection="omo_searchCust_section";
+	String omoPostSection ="omo_post_section";
+	String omoCreditInterest="omoCreditInterest";
 	
-	String[] allOmoSections = {omoPOISection,omoCustodyFeeSection,omoSearchCustSection,omoRediscountRateSection,omoLienSection,omoMarketSection,omoCustDetailsSection,omoBulkMandateSection,omoLienSection,omoDecisionSection};
+	String[] allOmoSections = {omoPostSection,omoPOISection,omoCustodyFeeSection,omoSearchCustSection,omoRediscountRateSection,omoLienSection,omoMarketSection,omoCustDetailsSection,omoBulkMandateSection,omoLienSection,omoDecisionSection};
 
 	//events
 	String omoSetupTypeChange = "omoSetupTypeChange";
@@ -882,6 +886,9 @@ public interface Constants {
 	String omoCategoryChange ="omoCategoryChange";
 	String omoFbnCustChange = "omoFbnCustChange";
 	String omoFetchSingleActDtls ="omoFetchSingleActDtls";
+	String omoPostSettlementValue ="omoPostSettlementValue";
+	String omoValidateToken ="omoValidateToken";
+	String omoDecChange = "omoDecChange";
 	
 	//MARKET SECTION
 	String omoMarketTypedd ="omo_select_market";
@@ -911,6 +918,7 @@ public interface Constants {
 	String omoStatus="OMO_STATUS";
 	String omoFetchAcctDetailsBtn="omo_fetch_acct_details";
 	String omoFetchMandate ="omo_fetch_mandatebtn";
+	String omoResidualInterest ="omo_residual_interest";
 	
 	//bulk setup section
 	String omoBulkMandateTbl = "table106";
@@ -937,6 +945,14 @@ public interface Constants {
 	String omoCustCifCol ="CIF";
 	String omoCustCurrCol ="Currency";
 	//String omoFetchAcctDtlsStatusCol ="FetchAcctDtlsStatus";
+	
+	//post section
+	String omoTranId ="omo_tran_id";
+	String omoToken ="textbox685";
+	String omoPostBtn ="omo_post_btn";
+	String omoCreditInterestBtn ="omo_credit_interest_btn";
+	String omoInterestTranid ="textbox687 ";
+	
 	
 	//Decision
 	String omoDecisiondd = "omo_decision";

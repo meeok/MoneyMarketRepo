@@ -86,6 +86,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         }
                         //****************Treasurry Starts here *********************//
                         case tbValidateCustomer:{
+                        	logger.info("tbValidateCustomer");
                         	return  new TbApiController(ifr).fetchAcctDetails();
                         }
                         case tbSmApplyBid:{
@@ -255,6 +256,10 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	                case tbApplyNSCustodyFee:{
     	                	tbApplyNSCustodyFee(ifr);
     	                }
+    	                case tbDecisionddChange:{
+    	                	tbDecChangeActivities(ifr);
+                        	
+                        }
     	              
                         //****************Treasurry Ends here *********************//
     	              
@@ -312,6 +317,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     }
 
 	
+
 
 
 	@Override
@@ -813,6 +819,8 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     private void tbBrnchPriRollovrddChange(IFormReference ifr){
     	if(getTbBrnchPriRollovrdd(ifr).equalsIgnoreCase(tbBrnchPriRoTermteatMaturity))
     		setMandatory(ifr,tbBrnchPriTermTypedd);
+    	else
+    		undoMandatory(ifr,tbBrnchPriTermTypedd);
     }
     
     private String tbBrcnhPriRateTypeddChange(IFormReference ifr){
@@ -859,6 +867,9 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
 		    		setTbBrnchPriRqsttype(ifr,tbBidRqstType);
 		    		hideFields(ifr, new String[] {tbSearchCustSection});
 		    		clearFields(ifr, new String[] {tbMandateTypedd}); //todo clear some sections ...
+		    		
+		    		//generate a unique id and save in db
+		    		setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
 		    		
 		    		if(isPBStaff(ifr,getFieldValue(ifr,solLocal))) {
 		    			setVisible(ifr, new String[] {tbPBCustDetailsSection,tbPBCustAcctNo,tbPBCustAcctName});
@@ -1039,6 +1050,25 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     		setFields(ifr,new String[] {tbMaturityDte}, new String[] {matDte});
     	}
     }
+    
+    /*
+     * generate customer unique ref for bid and save in db
+     */
+	private String tbDecChangeActivities(IFormReference ifr) {
+		tbDecChange(ifr);
+	  	if(getTbDecision(ifr).equalsIgnoreCase(decSubmit)) {
+	  		 if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
+	     		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid) && isEmpty(getTbBrnchCustPriRefNo(ifr)) ){//generate customer unique ref
+	     			setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
+	     			setFields(ifr,tbCustUniquerefId, getTbBrnchCustPriRefNo(ifr));
+	     			return tbSaveGeneratedId(ifr, getWorkItemNumber(ifr), getTbBrnchCustPriRefNo(ifr));
+	 	    	}
+	  		 }
+	  	}
+	  	
+	  	return"";
+		
+	}
     /*
      * generate customer unique ref for bid
      */
@@ -1050,8 +1080,13 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     	//if(getTbDecision(ifr).equalsIgnoreCase(decSubmit)) {
     	 if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
     		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid) ){//generate customer unique ref
-    			setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
-    			setFields(ifr,new String[] {tbCustUniquerefId,tbBidRequestDte,tbMaturityDte}, new String[] {getTbBrnchCustPriRefNo(ifr),getCurrentDate(),getMaturityDate(tenor)});
+    			if(isEmpty(getTbBrnchCustPriRefNo(ifr))){
+    				setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
+	     			setFields(ifr,tbCustUniquerefId, getTbBrnchCustPriRefNo(ifr));
+    			}
+    					
+    			//setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
+    			setFields(ifr,new String[] {tbBidRequestDte,tbMaturityDte}, new String[] {getCurrentDate(),getMaturityDate(tenor)});
     			logger.info(getTbBrnchCustPriRefNo(ifr)+", "+getCurrentDate()+", "+getMaturityDate(tenor));
     			logger.info(getFieldValue(ifr,tbCustUniquerefId)+", "+getFieldValue(ifr,tbBidRequestDte)+", "+getFieldValue(ifr,tbMaturityDte));
 	    	}
