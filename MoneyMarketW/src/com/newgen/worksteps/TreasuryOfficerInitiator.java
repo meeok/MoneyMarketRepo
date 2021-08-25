@@ -358,7 +358,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     }
     
     /*
-     * Search customer and populate termination table with customer investments
+     * Search customer and populate termination table with customer investments 
      */
     private String omoGetCustDetailsForTermination(IFormReference ifr){
         clearTable(ifr,tbTerminationMandateTbl);
