@@ -103,6 +103,11 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                             cpCheckDecision(ifr);
                             break;
                         }
+                      //****treasury onChange start **********//
+                        case tbDecisionddChange:{
+                        	tbDecChange(ifr);
+                        }
+                      //****btreasury onChange end **********//
                     }
                 }
                 break;
@@ -335,6 +340,12 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
                 
                 //set private banking control
                 setTbPBApprovalCntrls(ifr);
+                
+                //check if account has been liened
+                if(getFieldValue(ifr,tbCustAcctLienStatus).equalsIgnoreCase(yes) && !isEmpty(getFieldValue(ifr,tb_BrnchPri_LienID))) { //lien already set
+                	setFields(ifr,tbDecisiondd,decApprove);
+                	disableFields(ifr,new String[] {tbLienPrincipalbtn,tbDecisiondd});
+                }	
             }
             //populate table with the customer details ...
             else  if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryMandate)) { 
@@ -429,9 +440,18 @@ public class BranchVerifier extends Commons implements IFormServerEventHandler ,
     }  */
     //check if docs are uploaded
     private String tbOndone(IFormReference ifr) {
+    	
+    	if(isEmpty(getFieldValue(ifr,tb_BrnchPri_LienID)) && getTbDecision(ifr).equalsIgnoreCase(decApprove))
+    		return "Amount is not Liened. Kindly lien Account";
     	return isDocUploaded(ifr,getWorkItemNumber(ifr),customers_instruction) ?"Kindly attach customers_instruction ":"";
   	}
-    /*
+   
+    private boolean tbGetDecision(IFormReference ifr) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/*
      * Decision will automatically be populated as �approve� 
      * when posting status is successful
      */

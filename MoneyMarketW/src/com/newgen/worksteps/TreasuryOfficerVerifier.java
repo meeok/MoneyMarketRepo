@@ -86,9 +86,14 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
                 break;
                 case onChange:{
                 	switch(controlName){
+                	 //****btreasury onChange start **********//
                 	case tbValidateToken:{
-                		return new TbApiController(ifr).tokenValidation(getFieldValue(ifr,tbtoken));
+                		return tbValidateToken(ifr);
                 	}
+                	case tbDecisionddChange:{
+                    	tbDecChange(ifr);
+                    }
+                	//****btreasury onChange end **********//
                 	}
                 
                 }
@@ -127,6 +132,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     }
 
     
+
+	
 
 	@Override
     public void cpSendMail(IFormReference ifr) {
@@ -318,6 +325,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         disableTbSections(ifr);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{tbRemarkstbx});
+        setDropDown(ifr,tbDecisiondd,new String[]{decApprove,decReject});
      	if(getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)) {
 	        //set controls for task to be performed
 	        //approving of landing message 
@@ -329,11 +337,11 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	            setMandatory(ifr, new String[]{tbDecisiondd,tbRemarkstbx});
 	            hideFields(ifr,new String[]{tbMarketUniqueRefId});
 	        }
-	      
-	        else if(getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){  //bid has been approved by branch verifier and customer's account has been liened.assign to verifier
+	        // bid has been approved by branch verifier and customer's account has been liened.assign to verifier
+	        else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid)) {//getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){ 	
 	        	setVisible(ifr, new String[] {tbMarketSection,tbCategorydd,tbBrnchCusotmerDetails,tbBranchPriSection,
-	        	tbDecisionSection,tbFetchMandatebtn,tbLienPrincipalbtn,tb_BrnchPri_LienID,tbPostSection,tbUnlienBtn}); 
-	        	enableFields(ifr,new String[] {tbDecisionSection,tbLienPrincipalbtn,tbValidatebtn,tbFetchMandatebtn,tbPostSection});
+	        	tbDecisionSection,tbFetchMandatebtn,tbUnlienBtn,tb_BrnchPri_LienID,tbPostSection}); 
+	        	enableFields(ifr,new String[] {tbDecisionSection,tbValidatebtn,tbUnlienBtn,tbFetchMandatebtn,tbPostSection});
 	        	disableFields(ifr, new String[] {tbMarketSection,tbCustAcctNo,tbCustAcctLienStatus,tbBranchPriSection,tbTranID});
 	        	setDecision(ifr,tbDecisiondd,new String[]{decApprove,decReturnLabel}, new String[]{decApprove,decReturn});
 	        	setMandatory(ifr, new String[] {tbRemarkstbx,tbDecisiondd,tbtoken});//setInvisible(ifr, new String[]{});
@@ -343,7 +351,19 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	          //  disableFields(ifr, new String[] {});
 	        	//set private banking control
                 setTbPBApprovalCntrls(ifr);
-	           
+                //check if customer status has been unliened
+                if(getFieldValue(ifr,tbCustAcctLienStatus).equalsIgnoreCase(no)) { //lien already removed
+                	setVisible(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
+                	hideField(ifr,tbUnlienBtn);
+                	disableFields(ifr,tbPostbtn);
+                }
+                //check if post has been done
+                if(!isEmpty(getFieldValue(ifr,tbTranID))) { //lien already removed
+                	setVisible(ifr,new String[] {tbPostbtn,tbtoken,tbTranID});
+                	hideFields(ifr,new String[] {tbUnlienBtn});
+                	setTbDecisiondd(ifr,decApprove);
+                	disableFields(ifr,new String[] {tbDecisiondd,tbPostbtn,tbUnlienBtn,tbtoken});
+                }
 	        }
 	        else if(getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryReDiscountRate)){// Approving rediscount rate
 	 	    	   logger.info("here");
@@ -356,7 +376,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	        else {//Modification of Primary Market Cut-off Time 
 	        	
 	        }
-	        setDropDown(ifr,tbDecisiondd,new String[]{decApprove,decReject});
+	       
      	}
      	
         //secondary Market
@@ -426,6 +446,14 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
     }
     }
     
+    //validate token
+    private String tbValidateToken(IFormReference ifr) {
+    	if(getFieldValue(ifr,tbtoken).length() ==8)
+    		return new TbApiController(ifr).tokenValidation(getFieldValue(ifr,tbtoken));
+    	else
+    		return "Invalid Token";
+	}
+    
     private String tbOnDone(IFormReference ifr) {
     	logger.info("tbOnDone>>");
     	String retMsg="";
@@ -439,9 +467,8 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
 	    			 setFields(ifr,tbBidRStatus,statusAwaitingTreasury);
 	    			 logger.info(getFieldValue(ifr,tbBidRStatus));
 	    		 }
-	    		 else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) {//discard workflow and unlien account
-	    			 //todo ....
-	    			 //unlien customer account before moving to exit
+	    		 else if (getTbDecision(ifr).equalsIgnoreCase(decReject)) { //returning to branch exception
+	    			 
 	    		 }
 	    	    }
     		 
@@ -546,29 +573,31 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
   		//verify token  --todo
   		//search txn  --todo
   		String retMsg ="";
-  		String acct2 ="";
-  		String sol2 ="";
+  		String creditAcct ="";
+  		String creditSol ="";
   		
   		Properties prop = new Properties();
 		InputStream is = new FileInputStream(tbConfigfileName);
 		prop.load(is);
 		
-		acct2 = prop.getProperty("tbHOSuspenceAct");
-		logger.info("debit account>>"+acct2);
-		sol2 = prop.getProperty("actSol");
-		logger.info("debit sol>>"+sol2);
+		creditAcct = prop.getProperty("tbHOSuspenceAct");
+		logger.info("debit account>>"+creditAcct);
+		creditSol = prop.getProperty("actSol");
+		logger.info("debit sol>>"+creditSol);
 		
-  		String acct1 = getTbCustAcctNo(ifr);
-  		String sol1 = getTbCustSolid(ifr);
+  		String debitAcct = getTbCustAcctNo(ifr);
+  		String debitSol = getTbCustSolid(ifr);
   		String amount = getTbBrnchPriPrncplAmt(ifr);
-  		String transParticulars="NTB"+getTbBrnchPriTenordd(ifr)+getTbBrnchCustPriRefNo(ifr);;
-  		String partTranRemarks ="TB/"+ getWorkItemNumber(ifr).toUpperCase()+"/FaceValue";
-  		if(!(isEmpty(acct1)||isEmpty(sol1))) {
-  			retMsg = new TbApiController(ifr).getPostTxn(acct1, sol1, amount, transParticulars, partTranRemarks, acct2, sol2);
+  		String transParticulars="NTB"+getTbBrnchPriTenordd(ifr)+getTbBrnchCustPriRefNo(ifr);
+  		String partTranRemarks ="TB/"+ getWorkItemNumber(ifr).toUpperCase()+"/FV";
+  		if(!(isEmpty(creditAcct)||isEmpty(creditSol))) {
+  			retMsg = new TbApiController(ifr).getPostTxn(debitAcct, debitSol, amount, transParticulars, partTranRemarks, creditAcct, creditSol);
+  			logger.info("retMsg>>>>"+retMsg);
   	  		if(retMsg.substring(0, retMsg.indexOf(":")).equalsIgnoreCase(apiSuccess)) {
-  	  			String tranid = retMsg.substring(retMsg.indexOf(":"))+1;
+  	  			String tranid = retMsg.substring(retMsg.indexOf(":")+1);
   	  			logger.info("trandid >>>"+tranid);
   	  			setFields(ifr,tbTranID,tranid);
+  	  			if(!isEmpty(getFieldValue(ifr,tbTranID)))
   	      		setTbDecisiondd(ifr,decApprove);
   	      		disableFields(ifr,new String[] {tbDecisiondd,tbPostbtn});
   	  		}

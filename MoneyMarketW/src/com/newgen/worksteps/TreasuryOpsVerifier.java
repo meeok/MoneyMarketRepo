@@ -253,29 +253,46 @@ public class TreasuryOpsVerifier extends Commons implements IFormServerEventHand
   		String amount = getOmoSettlementValue(ifr);
   		logger.info("amount>>"+amount);
   		String transParticulars="NTB"+getOmoCustRefId(ifr);;
-  		String partTranRemarks ="TB/"+ getWorkItemNumber(ifr).toUpperCase()+"/SettlementValue";
+  		String partTranRemarks ="OMO/"+ getWorkItemNumber(ifr).toUpperCase()+"/SV";
   		logger.info((isEmpty(debitAcct)||isEmpty(debitSol) || isEmpty(creditAcct)||isEmpty(creditSol)));
   		if(!(isEmpty(debitAcct)||isEmpty(debitSol) || isEmpty(creditAcct)||isEmpty(creditSol))) {
   			retMsg = new OmoApiController(ifr).getPostTxn(debitAcct, debitSol, amount, transParticulars, partTranRemarks, creditAcct, creditSol);
+  			logger.info(retMsg+" <<< " +retMsg.substring(0, retMsg.indexOf(":")));
   	  		if(retMsg.substring(0, retMsg.indexOf(":")).equalsIgnoreCase(apiSuccess)) {
-  	  			String tranid = retMsg.substring(retMsg.indexOf(":"))+1;
+  	  			//to do save post details in a DB
+  	  			String tranid = retMsg.substring(retMsg.indexOf(":")+1);
   	  			logger.info("trandid >>>"+tranid);
   	  			setFields(ifr,omoTranId,tranid);
   	      		disableFields(ifr,new String[] {omoDecisiondd,omoPostBtn});
   	      		
   	      		//post interest
   	      		if(getFieldValue(ifr,omoInterestAtMat).equalsIgnoreCase(yes)) {
-  	      			//credit customer with residual amount and deduct from interest ...
-  	      			
-  	      			
+  	      			//credit customer with residual amount cntrls to do>>> and deduct from interest ...
+  	      			if(!(isEmpty(getFieldValue(ifr,omoResidualInterest)))){
+  	      				setVisible(ifr,new String[] {omoInterestTranid,omoCreditInterestBtn});
+  	      				enableFields(ifr,new String[] {omoToken,omoCreditInterestBtn});
+  	      				setMandatory(ifr,omoToken);
+  	      				clearFields(ifr,omoToken);
+  	      			}
+  	      			else {//raise post successfull flg{
+  	      				logger.info("2");
+  	      				setFields(ifr,omoPostSttlemntValFlg,yesFlag);
+  	      			}
+  	      				
+  	      		}
+  	      		else if(getFieldValue(ifr,omoInterestAtMat).equalsIgnoreCase(no)) {
+  	      			//credit customer with  interest ...controls
+    				setVisible(ifr,new String[] {omoToken,omoCreditInterestBtn,omoInterestTranid});
+    				enableFields(ifr,new String[] {omoToken,omoCreditInterestBtn});
+    				setMandatory(ifr,omoToken);
   	      		}
   	  		}
   		}
   		else {
   			retMsg="An account is empty";
-  			logger.info(retMsg);
-  		}
   		
+  		}
+  		logger.info(retMsg);
       	return retMsg;
   	}
   	 //*************** OMO AUCTION End *************************/

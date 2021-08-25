@@ -117,7 +117,7 @@ public class RequestXml {
 
     }
 
-    public static String placeLienRequestXml (String acctNumber, String amount, String currency, String startDate, String endDate, String remarks){
+    public static String placeLienRequestXmlOld(String acctNumber, String amount, String currency, String startDate, String endDate, String remarks){
 
         return "<ngXmlRequest>"
                 +		"<AcctLienAddRequest>"
@@ -144,8 +144,57 @@ public class RequestXml {
 
 
     }
+    public static String placeLienRequestXml(String acctNumber, String amount, String currency, String lienReason,String lienId){
 
-    public static String removeLienRequestXml (String acctNumber, String lienId, String amount, String currency, String startDate, String endDate, String remarks){
+        return "<lienReason>"+lienReason+"</lienReason>"
+                +"<lienReasonCode>TRB</lienReasonCode>"
+                +"<uniqueref>"+lienId+"</uniqueref>"
+                +"<accountCurrency>"+currency+"</accountCurrency>"
+                +"<processLien>PLACE</processLien>"
+                +"<account>"+acctNumber+"</account>"
+                +"<lienAmount>"+amount+"</lienAmount>";
+    }
+    
+    public static String removeLienRequestXml(String acctNumber, String amount, String currency, String lienReason,String lienId){
+
+        return "<lienReason>"+lienReason+"</lienReason>"
+                +"<lienReasonCode>TRB</lienReasonCode>"
+                +"<uniqueref>"+lienId+"</uniqueref>"
+                +"<accountCurrency>"+currency+"</accountCurrency>"
+                +"<processLien>LIFTLIEN</processLien>"
+                +"<account>"+acctNumber+"</account>"
+                +"<lienAmount>"+amount+"</lienAmount>";
+    }
+    
+    public static String modifyLienRequestXml (String acctNumber, String amount, String currency, String startDate, String endDate, String remarks){
+
+        return "<ngXmlRequest>"
+                +		"<AcctLienModRequest>"
+                +			"<AcctLienModRq>"
+                +				"<AcctId>"
+                +					"<AcctId>"+acctNumber+"</AcctId>"
+                +				"</AcctId>"
+                +				"<ModuleType>ULIEN</ModuleType>"
+                +				"<LienDtls>"
+                +					"<NewLienAmt>"
+                +						"<amountValue>"+amount+"</amountValue>"
+                +						"<currencyCode>"+currency+"</currencyCode>"
+                +					"</NewLienAmt>"
+                +					"<LienDt>"
+                +						"<StartDt>"+startDate+"T00:00:00.000</StartDt>"
+                +						"<EndDt>"+endDate+"T00:00:00.000</EndDt>"
+                +					"</LienDt>"
+                +					"<ReasonCode>999</ReasonCode>"
+                +					"<Rmks>"+remarks+"</Rmks>"
+                +				"</LienDtls>"
+                +			"</AcctLienModRq>"
+                +		"</AcctLienModRequest>"
+                +	"</ngXmlRequest>";
+
+
+    }
+
+    public static String removeLienRequestXmlOld (String acctNumber, String lienId, String amount, String currency, String startDate, String endDate, String remarks){
         return "<ngXmlRequest>"
                 +		"<AcctLienModRequest>"
                 +			"<AcctLienModRq>"

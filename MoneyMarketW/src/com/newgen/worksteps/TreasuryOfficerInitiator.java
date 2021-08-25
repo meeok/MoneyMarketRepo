@@ -8,12 +8,16 @@ import com.newgen.iforms.custom.IFormReference;
 import com.newgen.iforms.custom.IFormServerEventHandler;
 import com.newgen.utils.Commons;
 import com.newgen.utils.CommonsI;
+import com.newgen.utils.DbConnect;
 import com.newgen.utils.LogGen;
 import com.newgen.utils.MailSetup;
+import com.newgen.utils.Query;
 import com.newgen.utils.XmlParser;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,6 +66,7 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                             clearFields(ifr,new String[] {selectProcessLocal});
                             break;
                         }
+                        //-----  Omo onclick starts------//
                         case omofetchAcctDetails:{
                         	omofetchAcctDetails(ifr,data); 
                         }
@@ -69,6 +74,12 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                         case omoFetchSingleActDtls:{
                         	
                         }
+                        break;
+                        case omoSpecialRateClicked: {
+                        	omoSpecialRateClicked(ifr);
+                        }
+                        break;
+                        //-------omo onclick ends -------//
                     }
                 }
                 break;
@@ -83,6 +94,20 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                             	omoFormLoad(ifr);
                             break;
                         }
+                        //omo onchnage starts here---------//
+                        case omoTerminateTypeChanged:{
+                        	 omoTermTypeChanged(ifr);
+                        }
+                        case tbGetCustInvestmentDetails:{
+                        	if(getFieldValue(ifr,omoMandateTypedd).equalsIgnoreCase(proofofinvestmentVal)) {
+                        		return omoGetCustDetailsForPoi(ifr);
+                        	}
+                        	else if(getFieldValue(ifr,omoMandateTypedd).equalsIgnoreCase(terminationVal)) {
+                        		return omoGetCustDetailsForTermination(ifr);
+                        	}
+                        	
+                        }
+                        //------omo onchange ends here----//
                         case cpOnSelectMarket:{
                             if (isCpWindowActive(ifr)){
                                 disableCpSections(ifr);
@@ -116,6 +141,9 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
                         case omoFbnCustChange:{
                         	omoFbnCustChange(ifr);
                         }
+                        case omoDecChange:{
+	                		omoDecChange(ifr);
+	                	}
                         /********** OMO End **********************/
                     }
                 }
@@ -156,8 +184,38 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     }
 
 
-
+	private void omoTermTypeChanged(IFormReference ifr) {
+		clearFields(ifr, new String[] {tbTermAdjustedPrncpal,tbTermCashValue,tbTermAmtDueCust,tbTermCashValue,tbTermPenaltyCharge});
+    	hideFields(ifr, new String[] {tbTermVal,tbTermCashValue,tbTermbtn});
+		undoMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
+		if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(tbTerminationTypeFull)) {
+			setVisible(ifr, new String[] {tbTermbtn});
+			hideFields(ifr, new String[] {tbTermVal,tbTermCashValue,tbTermAdjustedPrncpal});
+			undoMandatory(ifr, new String[] {tbTermVal,tbTermCashValue});
+		}
+		else if(getFieldValue(ifr,tbTermtypedd).equalsIgnoreCase(tbTerminationTypePartial)) {
+			setVisible(ifr, new String[] {tbTermCashValue,tbTermbtn});
+			setMandatory(ifr, new String[] {tbTermCashValue});
+		}
+		/*else {
+			
+			//clear all termfiels
+			//clearFields(ifr, new String[] {tbTermAdjustedPrncpal,tbTermCashValue,tbTermAmtDueCust,tbTermCashValue});
+		}*/
+	}
 	
+	   private void omoSpecialRateClicked(IFormReference ifr) {
+   		logger.info("special rate clicked: "+getFieldValue(ifr,tbSpecialRate));
+   		if(getFieldValue(ifr,tbSpecialRate).equalsIgnoreCase("true")) {
+   			setVisible(ifr,tbSpecialRateValue);
+   			setMandatory(ifr,tbSpecialRateValue);
+   		}
+   		else {
+   			hideField(ifr,tbSpecialRateValue);
+   			undoMandatory(ifr,tbSpecialRateValue);
+   		}
+   		
+   	}
 
 	@Override
     public void cpSendMail(IFormReference ifr){
@@ -260,6 +318,92 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
     public void tbSendMail(IFormReference ifr){
         String message = "A window open request for "+treasuryProcessName+" has been Initiated with ref number "+getWorkItemNumber(ifr)+".";
         new MailSetup(ifr,getWorkItemNumber(ifr),getUsersMailsInGroup(ifr,groupName),empty,mailSubject,message);
+    }
+    
+    /*
+     * Search customer and populate table with customer investments for POI
+     * --todo ensure bidding is successful and at awaiting mat.before performing premature termination
+     * --raise a flag when termination is successful and use new principal if its partial termination..
+     */
+    private String omoGetCustDetailsForPoi(IFormReference ifr){
+    	clearTable(ifr,omoPoiCustDetailsTbl);
+        String idqry = new Query().getTbCustMandate(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID));
+        logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
+        List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
+        logger.info("getTbCustMandateDetailsQuery db result>>>"+iddbr);
+        if (iddbr.size()>0) {
+        	 for (List<String> ls : iddbr){
+                 String date = ls.get(0);
+                 String refNo = ls.get(1);
+                 String accountNo = ls.get(2);
+                 String accountName = ls.get(3);
+                 String principalamt = ls.get(4);
+                 String status = ls.get(5);
+                 String maturityDte = ls.get(6);
+                 String custid = ls.get(7);
+                 
+                 setTableGridData(ifr,tbPoiCustDetailsTbl,new String[]{tbDateCol,tbRefNoCol,tbAcctNoCol,tbCustNameCol,tbAmountCol,tbStatusCol},
+                         new String[]{date,custid,accountNo,accountName,principalamt,status});
+             }
+        	 disableFields(ifr,new String[]{tbPoiCustDetailsTbl});
+        	 setVisible(ifr,new String[]{tbProofOfInvestSection});
+             enableFields(ifr,new String[]{tbProofOfInvestSection});
+        }
+        else {
+       	 hideFields(ifr,new String[]{tbProofOfInvestSection});
+       	return "No Details found for this Mandate";
+       	
+       }
+        return "";
+    }
+    
+    /*
+     * Search customer and populate termination table with customer investments
+     */
+    private String omoGetCustDetailsForTermination(IFormReference ifr){
+        clearTable(ifr,tbTerminationMandateTbl);
+        String idqry = new Query().getTbCustMandate(getTbMarket(ifr), getFieldValue(ifr,tbCustAcctOrRefID));
+        logger.info("getTbCustMandateDetailsQuery>>>"+idqry);
+        List<List<String>> iddbr= new DbConnect(ifr,idqry).getData();
+        logger.info("getTbCustMandateDetailsQuery db result>>>"+iddbr);
+        if (iddbr.size()>0) {
+        	 for (List<String> ls : iddbr){
+        		 String daystoMaturity ="";
+        		 String date = ls.get(0);
+                 String refNo = ls.get(1);
+                 String accountNo = ls.get(2);
+                 String accountName = ls.get(3);
+                 String principalamt = ls.get(4);
+                 String status = ls.get(5);
+                 String maturityDte = ls.get(6);
+                 logger.info("maturityDte>>"+maturityDte);
+                 String custid = ls.get(7);
+                 String winRefId =ls.get(8);
+                 try {
+                	 daystoMaturity =  String.valueOf(getDaysToMaturity(maturityDte.substring(0,maturityDte.indexOf(" "))));
+                	 logger.info("maturityDte>>"+maturityDte);
+                 }
+                 catch(Exception ex) {
+                	 logger.info("Maturity date may be null contact Admin");
+                 }
+
+                 setTableGridData(ifr,tbTerminationMandateTbl,new String[]{tbDateCol,tbRefNoCol,tbAcctNoCol,tbCustNameCol,tbAmountCol,tbDaysToMaturityCol,tbStatusCol,tbMarketWinRefIDCol,tbMaturityDtCol},
+                         new String[]{date,custid,accountNo,accountName,principalamt,daystoMaturity,status,winRefId,maturityDte});
+             }
+             setVisible(ifr,new String[]{tbTerminationSection,tbPoiGenerateBtn,tbPoiCustDetailsTbl});
+             enableFields(ifr,new String[]{tbTerminationSection,tbPoiGenerateBtn});
+             clearFields(ifr, new String[] {tbTermAdjustedPrncpal,tbTermCashValue,tbTermAmtDueCust,tbTermCashValue});
+             hideFields(ifr, new String[] {termCustRefId,tbPoiGenerateBtn,tbTermAdjustedPrncpal,tbTermCashValue,tbTermAmtDueCust,tbTermCashValue,tbTermRediscountRate});
+             disableFields(ifr, new String[] {tbTermPenaltyCharge,tbTermDate});
+            // disableFields(ifr,new String[]{termCustRefId,tbPoiGenerateBtn});
+          
+        }
+        else {
+        	 hideFields(ifr,new String[]{tbTerminationSection});
+        	return "No Details found for this Mandate";
+        	
+        }
+        return "";
     }
     
     /******************  OMO AUCTION CODE ENDS ***********************************/
@@ -434,7 +578,24 @@ public class TreasuryOfficerInitiator extends Commons implements IFormServerEven
 		}
 		return retMsg;
 	}
-
+	
+	 /*
+     * generate customer unique ref for bid and save in db
+     */
+	private String omoDecChangeActivities(IFormReference ifr) {
+		omoDecChange(ifr);
+	  	if(getOmoDecision(ifr).equalsIgnoreCase(decSubmit)) {
+	  		if(getOmoCategorydd(ifr).equalsIgnoreCase(tbCategorySetup) && isEmpty(getOmoCustRefId(ifr)) ){//generate customer unique ref
+	     			setFields(ifr,omoCustRefId,omoGenerateCustRefNo(ifr));
+	     			return tbSaveGeneratedId(ifr, getWorkItemNumber(ifr), getTbBrnchCustPriRefNo(ifr));
+	 	    	}
+	  		 
+	  	}
+	  	
+	  	return"";
+		
+	}
+	
 	private String createWorkitems(IFormReference ifr, String gridcnt) {
 		int mandateCount = 0;
 		if(getOmoSetupType(ifr).equalsIgnoreCase(omoBulkSetup)) {

@@ -1075,20 +1075,26 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
     private String tbOnDone(IFormReference ifr) {
     	logger.info("tbOnDone>>");
     	String retMsg="";
-    	int tenor = Integer.parseInt(getFieldValue(ifr,tbBrnchPriTenordd));
-    	logger.info("tenor>>" + tenor);
+    
     	//if(getTbDecision(ifr).equalsIgnoreCase(decSubmit)) {
     	 if (getTbMarket(ifr).equalsIgnoreCase(tbPrimaryMarket)){
-    		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid) ){//generate customer unique ref
-    			if(isEmpty(getTbBrnchCustPriRefNo(ifr))){
+    		if (getTbCategorydd(ifr).equalsIgnoreCase(tbCategoryBid) ){
+    			if(!isTbWindowOpen(ifr,getTbPriWindownUnqNo(ifr))){
+    				setTbDecisiondd(ifr,decDiscard);
+    				return "No window is opened; Would you like to discard the workitem?";
+    			 }
+    			//generate customer unique ref
+    			else if(isEmpty(getTbBrnchCustPriRefNo(ifr))){
     				setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
 	     			setFields(ifr,tbCustUniquerefId, getTbBrnchCustPriRefNo(ifr));
     			}
     					
     			//setTbBrnchCustPriRefNo(ifr,tbGenerateCustRefNo(ifr));
-    			setFields(ifr,new String[] {tbBidRequestDte,tbMaturityDte}, new String[] {getCurrentDate(),getMaturityDate(tenor)});
-    			logger.info(getTbBrnchCustPriRefNo(ifr)+", "+getCurrentDate()+", "+getMaturityDate(tenor));
-    			logger.info(getFieldValue(ifr,tbCustUniquerefId)+", "+getFieldValue(ifr,tbBidRequestDte)+", "+getFieldValue(ifr,tbMaturityDte));
+    			setFields(ifr,new String[] {tbBidRequestDte}, new String[] {getCurrentDate()});
+
+    			//setFields(ifr,new String[] {tbBidRequestDte,tbMaturityDte}, new String[] {getCurrentDate(),getMaturityDate(tenor)});
+    		//	logger.info(getTbBrnchCustPriRefNo(ifr)+", "+getCurrentDate()+", "+getMaturityDate(tenor));
+    			//logger.info(getFieldValue(ifr,tbCustUniquerefId)+", "+getFieldValue(ifr,tbBidRequestDte)+", "+getFieldValue(ifr,tbMaturityDte));
 	    	}
     	
     		

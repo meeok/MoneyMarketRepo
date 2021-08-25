@@ -875,8 +875,10 @@ public interface Constants {
 	String omoSearchCustSection="omo_searchCust_section";
 	String omoPostSection ="omo_post_section";
 	String omoCreditInterest="omoCreditInterest";
+	String omoTermSection ="omo_termination_section";
 	
-	String[] allOmoSections = {omoPostSection,omoPOISection,omoCustodyFeeSection,omoSearchCustSection,omoRediscountRateSection,omoLienSection,omoMarketSection,omoCustDetailsSection,omoBulkMandateSection,omoLienSection,omoDecisionSection};
+	
+	String[] allOmoSections = {omoTermSection,omoPostSection,omoPOISection,omoCustodyFeeSection,omoSearchCustSection,omoRediscountRateSection,omoLienSection,omoMarketSection,omoCustDetailsSection,omoBulkMandateSection,omoLienSection,omoDecisionSection};
 
 	//events
 	String omoSetupTypeChange = "omoSetupTypeChange";
@@ -889,6 +891,8 @@ public interface Constants {
 	String omoPostSettlementValue ="omoPostSettlementValue";
 	String omoValidateToken ="omoValidateToken";
 	String omoDecChange = "omoDecChange";
+	String omoTerminateTypeChanged ="omoTerminateTypeChanged";
+	String omoSpecialRateClicked = "omoSpecialRateClicked";
 	
 	//MARKET SECTION
 	String omoMarketTypedd ="omo_select_market";
@@ -950,9 +954,9 @@ public interface Constants {
 	String omoTranId ="omo_tran_id";
 	String omoToken ="textbox685";
 	String omoPostBtn ="omo_post_btn";
-	String omoCreditInterestBtn ="omo_credit_interest_btn";
+	String omoCreditInterestBtn ="omo_post_interest_btn";
 	String omoInterestTranid ="textbox687 ";
-	
+	String omoPostSttlemntValFlg = "omo_post_sv_flg";
 	
 	//Decision
 	String omoDecisiondd = "omo_decision";
@@ -962,6 +966,21 @@ public interface Constants {
 	String omoLienType="omo_lien_type";
 	String omoLiencustRefId ="omo_lien_cust_refid";
 	String omoLienStatus ="omo_lien_status";
+	
+	//termination section
+	String omoTerminationType ="omo_termination_type";
+	String omoTermCashValue ="omo_term_cash_value";
+	String omoSpecialRate = "omo_special_rate";
+	String omoSpecialRateVal = "omo_special_rate_val";
+	String omoTermCustomerRefID = "omo_term_ust_refid";
+	String omoRediscountRate ="omo_rediscount_rate";
+	String omoAdjustedPrincipal = "omo_adjusted_prncpal";
+	String omoTermAmtDueCust = "omo_cust_term_amt";
+	String omoTermDte = "omo_term_dte";
+	String omoPoiCustDetailsTbl ="table109 ";
+	String omoCustAcctOrRefID = "textbox668 "; //for searching
+	String omoPoiSeacrchCustBtn = "omoPoiSeacrchCustBtn";
+	
 	
 	String suppDocName ="Supporting Docs";
 	/*************OMO AUCTION ENDS HERE********************/

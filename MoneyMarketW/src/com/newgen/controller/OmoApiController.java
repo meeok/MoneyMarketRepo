@@ -163,7 +163,7 @@ public class OmoApiController extends Commons implements Constants {
                     if (isSuccess(status)) {
                         String txnId = xmlParser.getValueOf("TrnId");
                         if (!Commons.isEmpty(txnId.trim())) {
-                            return apiSuccess +"(:)" +txnId.trim();
+                            return apiSuccess +":" +txnId.trim();
                             }
                         
                     } else if (isFailed(status)) {
@@ -178,7 +178,7 @@ public class OmoApiController extends Commons implements Constants {
         } catch (Exception e){
             return e.getMessage();
         }
-        return null;
+        return "";
     }
     private boolean isSuccess(String data){
         return data.equalsIgnoreCase(apiSuccess);

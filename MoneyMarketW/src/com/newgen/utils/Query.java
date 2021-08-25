@@ -57,7 +57,7 @@ public class Query {
     }
     //get winame of active window
     public static String getCheckActiveWindowWinameQuery(String process, String marketType) {
-        return "select winame from mm_setup_tbl where upper(process) = upper('" + process + ")' and upper(markettype)=upper('" + marketType + ")'"
+        return "select winame from mm_setup_tbl where upper(process) = upper('" + process + "') and upper(markettype)=upper('" + marketType + ")'"
         		+ " and  closeflag = 'N'";
     }
     public String getCheckActiveWindowQueryRefId(String process, String marketType) {
@@ -118,7 +118,7 @@ public class Query {
         return "select * from MONEYMARKET_EXT where upper(refid) = upper('" + custrefId + "')";
     }*/
     public String getCustomerRefIdQuery(String cusRefId) {
-        return "select * from MONEYMARKET_EXT where upper(refid) = upper('" + cusRefId + "')";
+        return "select * from MONEYMARKET_EXT where upper(tb_pm_custId) = upper('" + cusRefId + "')";
     }
     
     public static String getCpPmBidsToProcessQuery () {
@@ -304,9 +304,30 @@ public class Query {
       }
     //save generated code
     public String tbSaveCustomerRefIdQuery(String winame,String cusRefId) {
+        return "update MONEYMARKET_EXT set tb_pm_custId ='"+cusRefId + "' where winame ='"+winame+"'";
+    }
+    //save lien Status
+    public String tbSaveLienStatusQuery(String winame,String lienStatus) {
+        return "update MONEYMARKET_EXT set tb_CustAcctLienStatus ='"+lienStatus + "' where winame ='"+winame+"'";
+    }
+  //save tranid
+    public String tbSaveTranidQuery(String winame,String tranid) {
+        return "update MONEYMARKET_EXT set tb_trn ='"+tranid + "' where winame ='"+winame+"'";
+    }
+  //save lien id
+    public String tbSaveLienDetailsQuery(String winame,String lienStatus , String lienid) {
+        return "update MONEYMARKET_EXT set tb_BrnchPri_LienID ='"+lienid + "', tb_CustAcctLienStatus ='"+lienStatus + "' where winame ='"+winame+"'";
+    }
+    
+    ////-----------------------treasury end -------------------------------------///////////////
+    
+    //--------------- Omo Start -------------------------------------------////
+  //save generated code
+    public String omoSaveCustomerRefIdQuery(String winame,String cusRefId) {
         return "update MONEYMARKET_EXT set refid ='"+cusRefId + "' where winame ='"+winame+"'";
     }
-    ////-----------------------treasury end -------------------------------------///////////////
+    //-------------------------------omo End --------------------////////
+    
     public static String getUpdateReDiscountRateQuery(String id,String redicsountless90, String rediscount91180, String rediscount181270, String rediscount271364){
         return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+redicsountless90+"', REDISCOUNTRATELESS180 = '"+rediscount91180+"', REDISCOUNTRATELESS270 = '"+rediscount181270+"', REDISCOUNTRATELESS364 = '"+rediscount271364+"' where  refid = '"+id+"'";
     }

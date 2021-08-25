@@ -935,6 +935,8 @@ public class Commons implements Constants {
 		logger.info("randNo>>>"+randNo);
 		return randNo.toUpperCase();
 	}
+	
+	
 	public String tbSaveGeneratedId(IFormReference ifr, String winame, String custrefid) {
 		String saveRefidQry = new Query().tbSaveCustomerRefIdQuery(winame,custrefid);
 		logger.info("saveRefidQry>>>"+saveRefidQry);
@@ -1131,7 +1133,10 @@ public class Commons implements Constants {
     	return Math.round(val*100.0)/100.0;
     	
     }
-    
+    //get only numeric values of the workitem number
+    public static String getLienWorkitemNo(IFormReference ifr) {
+    	return getWorkItemNumber(ifr).replace("[^0-9]", "");
+    }
     public boolean isPBStaff(IFormReference ifr,String solid) {
     	String qry = new Query().getPBSolQuery(solid);
     	logger.info("getPBSol>>>"+qry);
@@ -1229,6 +1234,39 @@ public class Commons implements Constants {
     	clearFields(ifr, new String[] {omoBankName,omoCustAcctNo,omoCustCif,omoCustCurr,omoCustRefId,omoCustSolid,omoDealDate,omoFbnCustomer,omoInterest,omoInterestAtMat,omoMaturityDte,
     			omoRate,omoSettlementDte,omoSettlementValue,omoStatus,omoFetchAcctDetailsBtn});
     }
+    
+  //OMO generate ref no.
+  	public String omoGenerateCustRefNo(IFormReference ifr) {
+  		Date date =new Date();
+  		String randNo = "OMO" + getUserSol(ifr) + 
+  				new SimpleDateFormat("yyyy").format(date)+new SimpleDateFormat("MMM").format(date) + 
+  				String.format("%05d",new Random().nextInt(99999));
+  				//				((int)(Math.random()*90000)+1000);
+  		
+  		String qry = new Query().getCustomerRefIdQuery(randNo);
+  		logger.info("getCustomerRefIdQuery>>"+qry);
+  		if(new DbConnect(ifr,qry).getData().size()>0)
+  			omoGenerateCustRefNo(ifr);
+  		//else save in db
+  		logger.info("randNo>>>"+randNo);
+  		return randNo.toUpperCase();
+  	}
+  	
+  	//save generated refid in db
+  	public String omoSaveGeneratedId(IFormReference ifr, String winame, String custrefid) {
+		String saveRefidQry = new Query().tbSaveCustomerRefIdQuery(winame,custrefid);
+		logger.info("saveRefidQry>>>"+saveRefidQry);
+		int insertVal = new DbConnect(ifr,saveRefidQry).saveQuery();
+		if (insertVal >= 0) {
+	           logger.info("record saved successfully");
+	    }
+		else {
+			logger.info("Record not saved");
+			return "Record not saved";
+		}
+		return "";
+	}
+  	
     
     /******************  OMO AUCTION ENDS ENDS ***********************************/
 }
