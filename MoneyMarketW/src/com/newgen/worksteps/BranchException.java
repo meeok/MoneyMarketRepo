@@ -102,7 +102,7 @@ public class BranchException extends Commons implements IFormServerEventHandler 
                                 return cpPmCheckPrincipal(ifr);
                             }
                             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
-                                return cpSmCheckPrincipal(ifr,Integer.parseInt(data));
+                                return cpSmCheckPrincipal(ifr);
                             }
                         }
                         break;
@@ -137,11 +137,11 @@ public class BranchException extends Commons implements IFormServerEventHandler 
                     switch (control){
                         case validateWindowEvent:{
                             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                                if (!cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr)))
+                                if (!cpCheckWindowStateById(ifr, getCpWinRefId(ifr)))
                                     return cpValidateWindowErrorMsg;
                             }
                             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
-                                if (!cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr)))
+                                if (!cpCheckWindowStateById(ifr, getCpWinRefId(ifr)))
                                     return cpValidateWindowErrorMsg;
                             }
                         }
@@ -219,10 +219,11 @@ public class BranchException extends Commons implements IFormServerEventHandler 
         hideShowLandingMessageLabel(ifr,False);
         hideShowBackToDashboard(ifr,False);
         clearFields(ifr,new String[]{cpRemarksLocal,cpDecisionLocal});
+        clearCpFlag(ifr);
         setVisible(ifr,new String[]{cpDecisionSection});
         setMandatory(ifr, new String[]{cpDecisionLocal,cpRemarksLocal});
         enableFields(ifr, new String[]{cpDecisionLocal,cpRemarksLocal,cpMarketSection});
-        if (getPrevWs(ifr).equalsIgnoreCase(branchVerifier)){
+        if (isPrevWs(ifr,branchVerifier)){
             if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
                 if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
                     setVisible(ifr, new String[]{cpBranchPriSection, cpCustomerDetailsSection,cpServiceSection, landMsgLabelLocal});
@@ -234,9 +235,10 @@ public class BranchException extends Commons implements IFormServerEventHandler 
             }
             else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
                 if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)){
-                    setVisible(ifr,new String[]{cpBranchSecSection,landMsgLabelLocal});
+                    setVisible(ifr,new String[]{cpWindowDetailsSection,cpCustomerIdLocal,cpBranchSecSection,landMsgLabelLocal});
                     enableFields(ifr,new String[]{cpApplyBtn, cpSmInvestmentTypeLocal});
                     setMandatory(ifr,new String[]{cpSmInvestmentTypeLocal});
+                    setCpSmInvestmentGrid(ifr);
                 }
             }
         }
@@ -254,15 +256,22 @@ public class BranchException extends Commons implements IFormServerEventHandler 
         if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
             if (isCpWindowActive(ifr)) {
                 if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                    setVisible(ifr, new String[]{cpBranchPriSection, cpCustomerDetailsSection,cpServiceSection, landMsgLabelLocal});
+
+                    setVisible(ifr, new String[]{cpWindowDetailsSection,cpBranchPriSection,cpPmIssuerSection, cpCustomerDetailsSection,cpServiceSection, landMsgLabelLocal,cpChargesSection,cpCustomerIdLocal});
                     setMandatory(ifr, new String[]{cpCustomerAcctNoLocal, cpPmTenorLocal, cpPmPrincipalLocal, cpPmRateTypeLocal});
-                    enableFields(ifr, new String[]{cpCustomerAcctNoLocal, cpPmTenorLocal, cpPmPrincipalLocal, cpPmRateTypeLocal,cpAcctValidateBtn});
+                    enableFields(ifr, new String[]{cpCustomerAcctNoLocal, cpPmTenorLocal, cpPmPrincipalLocal, cpPmRateTypeLocal,cpAcctValidateBtn,cpIsStdCustodyFeeLocal});
                     setDropDown(ifr, cpPmReqTypeLocal, new String[]{cpPmReqFreshLabel}, new String[]{cpPmReqFreshValue});
-                    setFields(ifr, new String[]{cpPmReqTypeLocal, cpPmInvestmentTypeLocal}, new String[]{cpPmReqFreshValue, cpPmInvestmentPrincipal});
+                    setFields(ifr, new String[]{cpPmReqTypeLocal, cpPmInvestmentTypeLocal,cpCustodyFeeLocal}, new String[]{cpPmReqFreshValue, cpPmInvestmentPrincipal,LoadProp.custodyFee});
+                    if(getPbFlag(ifr).equalsIgnoreCase(flag)) {
+                        setVisible(ifr, new String[]{cpPbBeneDetailsSection});
+                        enableFields(ifr,new String []{cpPbBeneAcctNo,cpPbBeneName,cpCustomerNameLocal});
+                        setInvisible(ifr,new String []{cpAcctValidateBtn});
+                        setMandatory(ifr,new String []{cpPbBeneAcctNo,cpPbBeneName,cpCustomerNameLocal});
+                    }
                     setCpPmWindowDetails(ifr);
                 }
                 else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
-                    setVisible(ifr,new String[]{cpBranchSecSection,landMsgLabelLocal});
+                    setVisible(ifr,new String[]{cpBranchSecSection,landMsgLabelLocal,cpWindowDetailsSection,cpCustomerIdLocal});
                     enableFields(ifr,new String[]{cpApplyBtn, cpSmInvestmentTypeLocal});
                     setMandatory(ifr,new String[]{cpSmInvestmentTypeLocal});
                     setCpSmWindowDetails(ifr);
@@ -281,27 +290,6 @@ public class BranchException extends Commons implements IFormServerEventHandler 
         return null;
     }
 
-    private void setCpSmInvestmentGrid(IFormReference ifr){
-        logger.info("query-- "+ new Query().getCpSmInvestmentsQuery(commercialProcessName,getCpMarket(ifr)));
-        resultSet = new DbConnect(ifr,new Query().getCpSmInvestmentsQuery(commercialProcessName,getCpMarket(ifr))).getData();
-        logger.info("resultSet-- "+ resultSet);
-        for (List<String> result : resultSet){
-            String id = result.get(0);
-            String corporateName = result.get(1);
-            String description = result.get(2);
-            String maturityDate = result.get(3);
-            String dtm = result.get(4);
-            String status = result.get(5);
-            String availableAmount = result.get(6);
-            String rate = result.get(7);
-            String amountSold = result.get(8);
-            String mandates = result.get(9);
-
-            setTableGridData(ifr,cpSmInvestmentBrTbl,new String[]{cpSmBidInvestmentIdCol,cpSmBidIssuerCol,cpSmBidDescCol,cpSmBidMaturityDateCol,cpSmBidDtmCol,cpSmBidStatusCol,cpSmBidAvailableAmountCol,cpSmBidRateCol,cpSmBidAmountSoldCol,cpSmBidMandatesCol},
-                    new String[]{id,corporateName,description,maturityDate,dtm,status,availableAmount,rate,amountSold,mandates});
-
-        }
-    }
     private void cpSmInvestmentApply (IFormReference ifr, int rowIndex){
         clearFields(ifr,new String[]{cpCustomerAcctNoLocal,cpCustomerNameLocal,cpCustomerEmailLocal,cpLienStatusLocal,cpSmInvestmentIdLocal,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal});
         String id = ifr.getTableCellValue(cpSmInvestmentBrTbl,rowIndex,0);
@@ -330,17 +318,7 @@ public class BranchException extends Commons implements IFormServerEventHandler 
         }
         return empty;
     }
-    private String cpSmCheckPrincipal(IFormReference ifr,int rowIndex){
-        String availableAmount = ifr.getTableCellValue(cpSmInvestmentBrTbl,rowIndex,6);
-        logger.info("available amount-- "+availableAmount);
 
-        if (Double.parseDouble(getCpSmPrincipalBr(ifr)) < Double.parseDouble(getCpSmWindowMinPrincipal(ifr)) ||
-                Double.parseDouble(getCpSmPrincipalBr(ifr)) > Double.parseDouble(availableAmount)) {
-            clearFields(ifr,cpSmPrincipalBrLocal);
-            return cpSmMinPrincipalErrorMsg;
-        }
-        return empty;
-    }
     private String cpSmCheckMaturityDate(IFormReference ifr ,int rowIndex){
         String maturityDateInvestmentTbl = ifr.getTableCellValue(cpSmInvestmentBrTbl,rowIndex,3).trim();
         String maturityDate = getFieldValue(ifr,cpSmMaturityDateBrLocal);

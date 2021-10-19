@@ -222,13 +222,7 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         return "Window already setup.";
     }
     private String cpUpdateCutOffTime(IFormReference ifr){
-        String id = null;
-
-        if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
-            id = getCpPmWinRefNo(ifr);
-        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
-            id = getCpSmWinRefNo(ifr);
-
+       String id = getCpWinRefId(ifr);
       int validate = new DbConnect(ifr,Query.getUpdateCutoffTimeQuery(id,getCpCloseDate(ifr))).saveQuery();
         if (validate >=0 ) {
             setFields(ifr,cpDecisionLocal,decApprove);
@@ -238,17 +232,14 @@ public class TreasuryOfficerVerifier extends Commons implements IFormServerEvent
         return "Unable to update cut off time. Contact iBPS support";
     }
     private String cpUpdateReDiscountRate(IFormReference ifr){
-        String id = null;
+        String id = getCpWinRefId(ifr);
 
         String reDiscount90 = getFieldValue(ifr,cpReDiscountRateLess90Local);
         String reDiscount91180 = getFieldValue(ifr, cpReDiscountRate91To180Local);
         String reDiscount181270 = getFieldValue(ifr,cpReDiscountRate181To270Local);
         String reDiscount271364 = getFieldValue(ifr,cpReDiscountRate271To364Local);
 
-        if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket))
-            id = getCpPmWinRefNo(ifr);
-        else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket))
-            id = getCpSmWinRefNo(ifr);
+
 
         int validate = new DbConnect(ifr,Query.getUpdateReDiscountRateQuery(id,reDiscount90,reDiscount91180,reDiscount181270,reDiscount271364)).saveQuery();
         if (validate >=0 ) {

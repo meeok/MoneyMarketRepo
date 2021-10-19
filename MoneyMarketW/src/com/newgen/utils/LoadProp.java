@@ -12,6 +12,10 @@ public class LoadProp implements  Constants {
     public static String serverPort;
     public static String serverIp;
     public static String templatePort;
+    public static String vat;
+    public static String custodyFee;
+    public static String txnFee;
+    public static String commission;
     static {
         try {
             logger.info("Start loading properties file");
@@ -22,12 +26,12 @@ public class LoadProp implements  Constants {
             processDefId = properties.getProperty(processDefIdField);
             mailFrom = properties.getProperty(mailFromField);
             serverPort = properties.getProperty(serverPortField);
-            logger.info("serverPort-- "+serverPort);
             serverIp = properties.getProperty(serverIpField);
-            logger.info("serverIp-- "+serverIp);
             templatePort = properties.getProperty(templatePortField);
-            logger.info("templatePort-- "+templatePort);
-
+            vat = properties.getProperty(vatField);
+            custodyFee = properties.getProperty(custodyFeeField);
+            txnFee = properties.getProperty(txnField);
+            commission = properties.getProperty(commissionField);
         }
         catch  (UnsupportedEncodingException ex){
             ex.printStackTrace();

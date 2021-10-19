@@ -49,8 +49,12 @@ public class Query {
                 " values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','"+minimumPrincipal+"','" + openDate + "','" + closeDate + "')";
     }
     public String getSetupMarketWindowQuery(String refId, String wiName, String process, String marketType, String landingMessage, String openDate, String closeDate) {
-        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,OPENDATE,CLOSEDATE)" +
+        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE)" +
                 "values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','" + openDate + "','" + closeDate + "')";
+    }
+    public String getSetupMarketWindowQuery(String refId, String wiName, String process, String marketType, String landingMessage,String minimumPrincipal,String issuerName, String openDate, String closeDate) {
+        return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,MINPRINCIPALAMOUNT,CPISSUERNAME,OPENDATE,CLOSEDATE)" +
+                "values ('" + refId + "','" + wiName + "','" + process + "','" + marketType + "','" + landingMessage + "','"+minimumPrincipal+"','"+issuerName+"','" + openDate + "','" + closeDate + "')";
     }
     public static String getCheckActiveWindowQuery(String process, String marketType) {
         return "select count(*) from mm_setup_tbl where process = '" + process + "' and markettype ='" + marketType + "' and  closeflag = 'N'";
@@ -59,7 +63,7 @@ public class Query {
         return "select REFID from mm_setup_tbl where process = '" + process + "' and markettype ='" + marketType + "' and  closeflag = 'N'";
     }
     public String getActiveWindowDetailsQuery(String process, String markType) {
-        return "select refid, landingmessage, minprincipalamount from mm_setup_tbl where process = '" + process + "' and markettype ='" + markType + "' and  closeflag = 'N'";
+        return "select refid, landingmessage, minprincipalamount,CPISSUERNAME from mm_setup_tbl where process = '" + process + "' and markettype ='" + markType + "' and  closeflag = 'N'";
     }
     public String getClosedMarketWinRefIDQuery(String process, String marketType,String refid){
         return "select REFID from mm_setup_tbl where process = '"+process+"' "
@@ -95,16 +99,19 @@ public class Query {
     public static String getCheckActiveWindowByIdQuery(String winRefId) {
         return "select COUNT(closeflag) from mm_setup_tbl where refid = '" + winRefId + "' and closeflag = 'N'";
     }
-    public static String getSetupCpPmBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rateType, String rate, String investmentType) {
-        return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rateType,rate,investmenttype) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rateType + "','" + rate + "','"+investmentType+"')";
+    public static String getSetupCpPmBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rateType, String rate, String investmentType,String issuerName,String custodyFee) {
+        return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rateType,rate,investmenttype,CPISSUERNAME,CUSTODYFEE) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rateType + "','" + rate + "','"+investmentType+"','"+issuerName+"','"+custodyFee+"')";
+    }
+    public static String getSetupCpPmBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rateType, String rate, String investmentType,String issuerName,String custodyFee,String pbBeneName, String pbBeneAcctNo) {
+        return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rateType,rate,investmenttype,CPISSUERNAME,CUSTODYFEE,PBBENENAME,PBBENEACCTNO,PBFLAG) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rateType + "','" + rate + "','"+investmentType+"','"+issuerName+"','"+custodyFee+"','"+pbBeneName+"','"+pbBeneAcctNo+"','Y')";
     }
 
     public String getSetupCpSmBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rate,String maturityDate) {
         return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rate,maturitydate) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "',"
         		+ " '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rate + "', '"+maturityDate+"')";
     }
-    public String getSetupCpSmBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rate,String maturityDate, String investmentType, String interest, String principalAtMaturity) {
-        return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rate,maturitydate,investmentType,interest,principalatmaturity) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rate + "', '"+maturityDate+"','"+investmentType+"','"+interest+"','"+principalAtMaturity+"')";
+    public String getSetupCpSmBidQuery(String reqDate, String custRefId, String winRefId, String wiName, String process, String marketType, String custAcctNo, String custName, String custEmail, String custPrincipal, String tenor, String rate,String maturityDate, String investmentType, String interest, String principalAtMaturity,String investmentId) {
+        return "insert into mm_bid_tbl (reqDate,custRefId,winRefId,bidwiname,process,marketType,custAcctNo,custName,custEmail,custPrincipal,tenor,rate,maturitydate,investmentType,interest,principalatmaturity,SMINVESTMENTID) values ('" + reqDate + "','" + custRefId + "','" + winRefId + "','" + wiName + "', '" + process + "', '" + marketType + "', '" + custAcctNo + "','" + custName + "','" + custEmail + "','" + custPrincipal + "','" + tenor + "','" + rate + "', '"+maturityDate+"','"+investmentType+"','"+interest+"','"+principalAtMaturity+"','"+investmentId+"')";
     }
     public String getTBInsertSetupQuery() {
     return "insert into mm_setup_tbl (REFID,WINAME,PROCESS,MARKETTYPE,LANDINGMESSAGE,OPENDATE,CLOSEDATE,CLOSEFLAG) values (values)";
@@ -125,32 +132,30 @@ public class Query {
         return "select tenor , rate , sum(custprincipal) as TotalAmount ,ratetype, count(*) as TransactionCount, groupindex from mm_bid_tbl where utilitywiname = '" + utilityWiName + "' group by tenor, rate ,ratetype,groupindex";
     }
     public String getCpPmGroupBidsQuery(String groupIndex){
-        return "select custrefid,custacctno, custname, tenor, rate, custprincipal  from mm_bid_tbl where groupindex = '"+groupIndex+"'";
+        return "select custrefid,custacctno, custname, tenor, rate, custprincipal, status, maturitydate , bidstatus,rateType , cprate from mm_bid_tbl where groupindex = '"+groupIndex+"'";
     }
     public String getCpPmBidDetailByIdQuery(String id, String detail){
         return "select "+detail+" from mm_bid_tbl where custrefid = '"+id+"'";
     }
-    public String getCpPmBidUpdateBankQuery(String id, String cpRate,String bankRate, String maturityDate, String allocationPercent, String bidStatus, String status){
-        return "update mm_bid_tbl set cprate = '"+cpRate+"', rate = '"+bankRate+"', maturitydate = '"+maturityDate+"', allocationpercentage = '"+allocationPercent+"', bidstatus = '"+bidStatus+"', status = '"+status+"', failedflag = 'N', terminateflag = 'N' where custrefid = '"+id+"' ";
+    public String getCpPmBidUpdateBankQuery(String id, String cpRate, String bankRate, String maturityDate, String bidStatus, String status){
+        return "update mm_bid_tbl set cprate = '"+cpRate+"', rate = '"+bankRate+"', maturitydate = '"+maturityDate+"', bidstatus = '"+bidStatus+"', status = '"+status+"', failedflag = 'N', terminateflag = 'N' where custrefid = '"+id+"' ";
     }
-    public String getCpPmBidUpdatePersonalQuery(String id, String cpRate, String maturityDate, String allocationPercent, String bidStatus, String status){
-        return "update mm_bid_tbl set cprate = '"+cpRate+"', maturitydate = '"+maturityDate+"', allocationpercentage = '"+allocationPercent+"', bidstatus = '"+bidStatus+"', status = '"+status+"', failedflag = 'N', terminateflag = 'N' where custrefid = '"+id+"' ";
+    public String getCpPmBidUpdatePersonalQuery(String id, String cpRate, String maturityDate, String bidStatus, String status){
+        return "update mm_bid_tbl set cprate = '"+cpRate+"', maturitydate = '"+maturityDate+"', bidstatus = '"+bidStatus+"', status = '"+status+"', failedflag = 'N', terminateflag = 'N' where custrefid = '"+id+"' ";
     }
     public String getCpPmUpdateFailedBidsQuery(String id, String bidStatus){
-        return "update mm_bid_tbl set bidstatus = '"+bidStatus+"', cprate = '', allocationpercentage = '', maturitydate = ''  , status = 'Awaiting Reversal', failedflag = 'Y', terminateflag = 'Y' where custrefid = '"+id+"'";
+        return "update mm_bid_tbl set bidstatus = '"+bidStatus+"', cprate = '', maturitydate = ''  , status = 'Awaiting Reversal', failedflag = 'Y', terminateflag = 'Y' where custrefid = '"+id+"'";
     }
     public String getSetSmInvestmentQuery(String id, String wiName, String process, String marketType, String winRef,String corporateName,String description,String maturityDate,String billAmount,String availableAmount,String rate,String tenor,String dtm,String status,String guaranteedCp,String openDate, String closeDate, String date){
         return "insert into mm_sminvestments_tbl (investmentid,winame,process,marketType,windowrefno,corporateissuername,description,maturitydate,billamount,availableamount,rate,tenor,dtm,status,guaranteedcp,openDate,closeDate,investmentdate) values" +
                 " ('"+id+"','"+wiName+"','"+process+"','"+marketType+"','"+winRef+"','"+corporateName+"','"+description+"','"+maturityDate+"','"+billAmount+"','"+availableAmount+"','"+rate+"','"+tenor+"','"+dtm+"', '"+status+"','"+guaranteedCp+"','"+openDate+"','"+closeDate+"','"+date+"')";
     }
-    public String getCpSmInvestmentsQuery(String process, String marketType){
-        return "select investmentid,corporateissuername, description, maturitydate,dtm,status, availableamount,rate, totalamountsold, mandates  from mm_sminvestments_tbl " +
-                "where process = '"+process+"' and  markettype= '"+marketType+"' and closedflag = 'N' and maturedflag = 'N' and cancelledflag = 'N'";
+    public String getCpSmInvestmentsQuery(String windowRefNo ){
+        return "select investmentid,corporateissuername, description, maturitydate,dtm,status, availableamount,rate, totalamountsold, mandates from mm_sminvestments_tbl " +
+                "where windowrefno = '"+windowRefNo+"'  and closedflag = 'N' and maturedflag = 'N' and cancelledflag = 'N'";
     }
-    public String getCpSmInvestmentsUpdateQuery (String id,String availableAmount, String totalAmountSold, String mandate ){
-        return "update mm_sminvestments_tbl set availableamount = "+availableAmount+", totalamountsold = "+totalAmountSold+", mandates = "+mandate+" where investmentid = '"+id+"'";
-    }
-    public String getCpSmInvestmentsSelectQuery(String id){
+
+    public static String getCpSmInvestmentsSelectQuery(String id){
         return "select tenor, rate,availableamount,totalamountsold,mandates  from mm_sminvestments_tbl where investmentid = '"+id+"'";
     }
     public static String getUpdateCutoffTimeQuery(String id, String closeDate){
@@ -294,8 +299,7 @@ public class Query {
     public static String getUpdateReDiscountRateQuery(String id,String redicsountless90, String rediscount91180, String rediscount181270, String rediscount271364){
         return "update mm_setup_tbl set REDISCOUNTRATELESS90 = '"+redicsountless90+"', REDISCOUNTRATELESS180 = '"+rediscount91180+"', REDISCOUNTRATELESS270 = '"+rediscount181270+"', REDISCOUNTRATELESS364 = '"+rediscount271364+"' where  refid = '"+id+"'";
     }
-    
-  
+
     public static String getBidForTerminationQuery(String process, String marketType, String data){
         return "SELECT reqdate,custrefid,custprincipal,custacctno,custname,maturitydate,status,winrefid FROM MM_BID_TBL where process = '"+process+"' and markettype = '"+marketType+"' and  awaitingmaturityflag = 'Y' and (custrefid = '"+data+"' or custacctno = '"+data+"' )";
     }
@@ -323,14 +327,58 @@ public class Query {
     public static String getCpTermDetailsQuery(String id){
         return "select tenor,maturitydate,custprincipal from mm_bid_tbl where custrefid = '"+id+"'";
     }
-    public static String getCpUpdatePmSuccessBidQuery(String utilityWiName){
-        return "update mm_bid_tbl set allocatedflag = 'Y' where utilitywiname = '"+utilityWiName+"' and failedflag = 'N'";
+    public static String getCpUpdatePmSuccessBidQuery(String utilityWiName,String vat,String commission, String txnFee){
+        return "update mm_bid_tbl set allocatedflag = 'Y' , VAT = '"+vat+"', COMMISION = '"+commission+"', TXNFEE = '"+txnFee+"' where utilitywiname = '"+utilityWiName+"' and failedflag = 'N'";
     }
     public static String getCpPmAllocatedBids(String utilityWiName){
         return "select custrefid,custprincipal,tenor,rate,maturitydate from mm_bid_tbl where utilitywiname = '"+utilityWiName+"' and allocatedflag = 'Y'";
     }
-    public static String getCpPmUpdateAllocatedBids(String interest,String principalAtMaturity, String id){
+    public static String getCpPmUpdateAllocatedBids(float interest,float principalAtMaturity, String id){
         return "update mm_bid_tbl set interest = "+interest+" , principalatmaturity = "+principalAtMaturity+" where custrefid = '"+id+"'";
     }
+    public static String getCpPmCheckUnallocatedBids(String wiName){
+        return "select count(*) from mm_bid_tbl where status is null and utilitywiname = '"+wiName+"'";
+    }
+    public static String getCpPmUpdateTotalAllocation(String wiName,String totalAllocation){
+        return "update moneymarket_ext set cppmtotalalloc = "+totalAllocation+" where winame = '"+wiName+"'";
+    }
+    public static String getCpPmTotalAllocation(String wiName){
+        return "select nvl(sum(custprincipal),0) as totalAllocation from mm_bid_tbl where  bidstatus = 'Successful' and utilitywiname = '"+wiName+"'";
+    }
 
+    public static String getCpPmFailUnallocatedBids(String wiName){
+        return "update mm_bid_tbl set bidstatus = 'Failed', cprate = '', maturitydate = ''  , status = 'Awaiting Reversal', failedflag = 'Y', terminateflag = 'Y' where utilitywiname = '"+wiName+"' and status is null";
+    }
+
+    public static String getCpPmUpdateSettlementDate(String wiName,String date){
+        return "update moneymarket_ext set cppmsettldate = to_date('"+date+"','yyyy-mm-dd') where winame = '"+wiName+"'";
+    }
+    public static String getIsPbSol(String sol){
+        return "select count(sol_id) from PRIVATEBANKING_SOL_TBL where sol_id = '"+sol+"' and isactive = 'Y'";
+    }
+    public static String setPbFlag(String wiName){
+        return "update moneymarket_ext set pbflag = 'Y' where winame = '"+wiName+"'";
+    }
+    public static String getCpSmIsAmountAvailable(String investmentId,String amount){
+        return "select count(*) from mm_sminvestments_tbl where availableamount >=  "+amount+" and investmentid = '"+investmentId+"'";
+    }
+    public static String getCpSmUpdateInvestment(String investmentId,String amount){
+        return "update mm_sminvestments_tbl set availableamount = availableamount - "+amount+"  , mandates = mandates + 1, totalamountsold = totalamountsold + "+amount+" where availableamount >= "+amount+" and investmentid = '"+investmentId+"'";
+    }
+    public static String getCpSmUpdateRefundInvestment(String investmentId,String amount){
+        return "update mm_sminvestments_tbl set availableamount = availableamount + "+amount+"  , mandates = mandates - 1, totalamountsold = totalamountsold - "+amount+" where availableamount + "+amount+" <= billamount and investmentid = '"+investmentId+"'";
+    }
+    public static String getCpSmAvailableAmount(String investmentId){
+        return "select availableamount from mm_sminvestments_tbl where investmentid = '"+investmentId+"'";
+    }
+    public static String getSetCpFlag(String wiName){
+        return "update moneymarket_ext set cpflag = 'Y' where winame = '"+wiName+"'";
+    }
+    public static String getClearCpFlag(String wiName){
+        return "update moneymarket_ext set cpflag = '' where winame = '"+wiName+"'";
+    }
+    public static String getCpSmInvestmentQuery(String investmentId ){
+        return "select investmentid,corporateissuername, description, maturitydate,dtm,status, availableamount,rate, totalamountsold, mandates  from mm_sminvestments_tbl " +
+                "where investmentid = '"+investmentId+"'";
+    }
 }

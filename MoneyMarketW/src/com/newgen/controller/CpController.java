@@ -192,6 +192,7 @@ public class CpController implements Constants {
                     }
                 } else return apiNoResponse;
             }
+            else return "Please enter account number";
         } catch (Exception e){
             logger.info("exception occurred-- "+e.getMessage());
         }

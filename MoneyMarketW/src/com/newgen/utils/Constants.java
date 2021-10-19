@@ -79,9 +79,32 @@ public interface Constants {
 	String cpMandateTypeSection = "cp_mandatetypesection";
 	String cpLienSection = "cpLienSection";
 	String cpServiceSection = "cpServiceSection";
+	String cpPmIssuerSection = "cpPmIssuerSection";
+	String cpPbBeneDetailsSection ="cpPbBeneDetailsSection";
+	String cpChargesSection = "CPCHARGESSECTION";
+	String cpWindowDetailsSection = "CPWINDOWDTLSECTION";
+	String cpCustomerIncomeSection = "CPCUSTOMERINCOMESECTION";
     // end of cp sections
 
 	// commercial Paper process ids
+	String cpSmTenorLocal = "CPSMTENOR";
+	String cpSmRateLocal = "CPSMRATE";
+	String cpPrincipalAtMaturityLocal = "CPPRINCATMATURITY";
+	String cpResidualInterestLocal = "CPRESIDUALINTEREST";
+	String cpInterestAtMaturityLocal = "CPINTERESTATMATURITY";
+	String cpResidualInterestFlagLocal = "CPRESIDUALINTERESTFLAG";
+	String cpCustomerIdLocal = "CPCUSTOMERID";
+	String cpVatLocal = "CPVAT";
+	String cpTxnFeeLocal = "CPTXNFEE";
+	String cpPbBeneName = "CPPBBENENAME";
+	String cpPbBeneAcctNo = "CPPBBENEACCTNO";
+	String cpChargesBtn ="CPCHARGESBTN";
+	String cpCommissionLocal = "CPCOMMISSION";
+	String cpCustodyFeeLocal ="CPCUSTODYFEE";
+	String cpIsStdCustodyFeeLocal = "CPISSTDCUSTODYFEE";
+	String cpPmSettlementDateLocal = "CPPMSETTLDATE";
+	String cpPmTotalAllocLocal ="CPPMTOTALALLOC";
+	String cpPmIssuerNameLocal = "CP_PM_ISSUERNAME";
 	String cpSelectMarketLocal = "cp_select_market";
 	String cpRemarksLocal = "cp_remarks";
 	String cpDecisionLocal = "cp_decision";
@@ -254,6 +277,10 @@ public interface Constants {
 	String cpFileNameLocal = "CPFILENAME";
 	String cpFetchMandateBtn = "cpFetchMandateBtn";
 	String cpCheckLienBtn = "cpCheckLienBtn";
+	String pbFlagLocal = "PBFLAG";
+	String cpDownloadXlsTempBtn = "DOWNLOADXLSTEMPLATEBTN";
+	String cpWinRefNoLocal = "CPWINREFNO";
+	String cpFlagLocal = "CPFLAG";
 
 	//common variables
 	String omoProcess = "omo_market";
@@ -275,6 +302,7 @@ public interface Constants {
 	String decReturnLabel ="Return to Initiator";
 	String decReturn ="Return";
 	String dbDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+	String dbDateFormat = "yyyy-MM-dd";
 	String flag = "Y";
 	String endMail = "@firstbanknigeria.com";
 	String groupName = "T_USERS";
@@ -346,6 +374,9 @@ public interface Constants {
 	String transSubTypeB = "BI";
 	String apiNoResponse = "No Response Found";
 	String apiLimitErrMsg = "This transaction is above your limit to Post. Kindly increase your limit and try again";
+	String principalNotInThousandMsg = "Principal must be in thousands";
+	String cpSmInvestmentTypePrincipal ="Principal";
+	String cpSmInvestmentTypePrincipalInterest="PrincipalInterest";
 
 	//eventName/controlName
 	String formLoad = "formLoad";
@@ -397,8 +428,13 @@ public interface Constants {
 	String cpFetchMandateEvent = "cpFetchMandate";
 	String cpValidateAcctEvent = "cpValidateAcct";
 	String cpValidateLienEvent = "cpValidateLien";
-	String cpPmProcessSuccessBidsEvent = "cpPmProcessSuccessBids";
+	String cpPmProcessAllocatedBidsEvent = "cpPmProcessAllocatedBids";
+	String cpPmCheckUnAllocatedBidsEvent = "cpCheckUnAllocatedBids";
 	String cpCheckDecisionEvent = "cpCheckDecision";
+	String cpConfigureChargesEvent = "cpConfigureCharges";
+	String cpFailUnallocatedBidsEvent= "cpFailUnallocatedBids";
+	String cpUpdateSmInvestmentEvent ="cpUpdateSmInvestment";
+	String cpSmReverseInvestmentEvent = "cpSmReverseInvestment";
 
 
 	//config
@@ -410,6 +446,10 @@ public interface Constants {
 	String serverPortField = "SERVERPORT";
 	String serverIpField = "SERVERIP";
 	String templatePortField = "TEMPLATEPORT";
+	String vatField ="VAT";
+	String custodyFeeField ="CUSTODYFEE";
+	String txnField ="TRANSACTIONFEE";
+	String commissionField ="COMMISSION";
 
 	//API SERVICENAME
 

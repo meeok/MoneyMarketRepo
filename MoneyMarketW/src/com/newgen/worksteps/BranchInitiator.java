@@ -41,7 +41,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                 case onLoad:
                 case cpApiCallEvent:{
                     switch (control) {
-                        case cpValidateAcctEvent: return new CpServiceHandler(ifr).validateAccount();
+                        case cpValidateAcctEvent: return new CpServiceHandler(ifr).validateAccountTest();
                         case cpFetchMandateEvent: return getCpAcctNo(ifr);
                         case cpValidateLienEvent: return new CpServiceHandler(ifr).validateLienTest();
                     }
@@ -183,11 +183,11 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                         }
                         break;
                         case cpCheckPrincipalEvent:{
-                            if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)){
+                            if (isCpPrimaryMarket(ifr)){
                                 return cpPmCheckPrincipal(ifr);
                             }
-                            else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
-                                return cpSmCheckPrincipal(ifr,Integer.parseInt(data));
+                            else if (isCpSecondaryMarket(ifr)){
+                                return cpSmCheckPrincipal(ifr);
                             }
                         }
                         break;
@@ -264,28 +264,19 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
                 case onDone:{
                     switch (control){
                         case validateWindowEvent:{
-                                if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                                    if (cpCheckWindowStateById(ifr, getCpPmWinRefNoBr(ifr)))
-                                        setFields(ifr, cpPmCustomerIdLocal, cpGenerateCustomerId(ifr));
-                                    else return cpValidateWindowErrorMsg;
-                                }
-                                else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)) {
-                                    if (cpCheckWindowStateById(ifr, getCpSmWinRefNoBr(ifr)))
-                                         setFields(ifr, cpSmCustIdLocal, cpGenerateCustomerId(ifr));
-                                    else return cpValidateWindowErrorMsg;
-                                }
+                            if (cpCheckWindowStateById(ifr, getCpWinRefId(ifr))) {
+                                 cpGenerateCustomerId(ifr);
+                                 if(isCpSecondaryMarket(ifr)) return cpUpdateSmInvestment(ifr);
+                            }
+                            else return cpValidateWindowErrorMsg;
                         }
-                        
-                        //****************Treasurry on Change Starts here *********************//
+                        break;
+                        //****************Treasury on Change Starts here *********************//
                         case tbOnDone:{
                         	return tbOnDone(ifr); 
                         }
-                       
                         //****************Treasury on Change Starts here *********************//
-    	                
-                        
                         //****************Treasury on Change Ends here *********************//
-
                     }
                 }
                 break;
@@ -371,6 +362,7 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         setMandatory(ifr, new String[]{selectProcessLocal});
         setFields(ifr, new String[]{currWsLocal,prevWsLocal},new String[]{getCurrentWorkStep(ifr),na});
         setWiName(ifr);
+        isPbSol(ifr,getSol(ifr));
     }
 
     @Override
@@ -393,15 +385,22 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
             if (getCpCategory(ifr).equalsIgnoreCase(cpCategoryBid)) {
                 if (isCpWindowActive(ifr)) {
                     if (getCpMarket(ifr).equalsIgnoreCase(cpPrimaryMarket)) {
-                        setVisible(ifr, new String[]{cpBranchPriSection, cpCustomerDetailsSection,cpServiceSection, landMsgLabelLocal});
+
+                        setVisible(ifr, new String[]{cpWindowDetailsSection,cpBranchPriSection,cpPmIssuerSection, cpCustomerDetailsSection,cpServiceSection, landMsgLabelLocal,cpChargesSection,cpCustomerIdLocal});
                         setMandatory(ifr, new String[]{cpCustomerAcctNoLocal, cpPmTenorLocal, cpPmPrincipalLocal, cpPmRateTypeLocal});
-                        enableFields(ifr, new String[]{cpCustomerAcctNoLocal, cpPmTenorLocal, cpPmPrincipalLocal, cpPmRateTypeLocal,cpAcctValidateBtn});
+                        enableFields(ifr, new String[]{cpCustomerAcctNoLocal, cpPmTenorLocal, cpPmPrincipalLocal, cpPmRateTypeLocal,cpAcctValidateBtn,cpIsStdCustodyFeeLocal});
                         setDropDown(ifr, cpPmReqTypeLocal, new String[]{cpPmReqFreshLabel}, new String[]{cpPmReqFreshValue});
-                        setFields(ifr, new String[]{cpPmReqTypeLocal, cpPmInvestmentTypeLocal}, new String[]{cpPmReqFreshValue, cpPmInvestmentPrincipal});
+                        setFields(ifr, new String[]{cpPmReqTypeLocal, cpPmInvestmentTypeLocal,cpCustodyFeeLocal}, new String[]{cpPmReqFreshValue, cpPmInvestmentPrincipal,LoadProp.custodyFee});
+                        if(getPbFlag(ifr).equalsIgnoreCase(flag)) {
+                            setVisible(ifr, new String[]{cpPbBeneDetailsSection});
+                            enableFields(ifr,new String []{cpPbBeneAcctNo,cpPbBeneName,cpCustomerNameLocal});
+                            setInvisible(ifr,new String []{cpAcctValidateBtn});
+                            setMandatory(ifr,new String []{cpPbBeneAcctNo,cpPbBeneName,cpCustomerNameLocal});
+                        }
                         setCpPmWindowDetails(ifr);
                     }
                     else if (getCpMarket(ifr).equalsIgnoreCase(cpSecondaryMarket)){
-                        setVisible(ifr,new String[]{cpBranchSecSection,landMsgLabelLocal});
+                        setVisible(ifr,new String[]{cpBranchSecSection,landMsgLabelLocal,cpWindowDetailsSection,cpCustomerIdLocal});
                         enableFields(ifr,new String[]{cpApplyBtn, cpSmInvestmentTypeLocal});
                         setMandatory(ifr,new String[]{cpSmInvestmentTypeLocal});
                         setCpSmWindowDetails(ifr);
@@ -420,34 +419,20 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         return null;
     }
 
-    private void setCpSmInvestmentGrid(IFormReference ifr){
-        logger.info("query-- "+ new Query().getCpSmInvestmentsQuery(commercialProcessName,getCpMarket(ifr)));
-        resultSet = new DbConnect(ifr,new Query().getCpSmInvestmentsQuery(commercialProcessName,getCpMarket(ifr))).getData();
-        logger.info("resultSet-- "+ resultSet);
-        for (List<String> result : resultSet){
-            String id = result.get(0);
-            String corporateName = result.get(1);
-            String description = result.get(2);
-            String maturityDate = result.get(3);
-            String dtm = result.get(4);
-            String status = result.get(5);
-            String availableAmount = result.get(6);
-            String rate = result.get(7);
-            String amountSold = result.get(8);
-            String mandates = result.get(9);
 
-            setTableGridData(ifr,cpSmInvestmentBrTbl,new String[]{cpSmBidInvestmentIdCol,cpSmBidIssuerCol,cpSmBidDescCol,cpSmBidMaturityDateCol,cpSmBidDtmCol,cpSmBidStatusCol,cpSmBidAvailableAmountCol,cpSmBidRateCol,cpSmBidAmountSoldCol,cpSmBidMandatesCol},
-                    new String[]{id,corporateName,description,maturityDate,dtm,status,availableAmount,rate,amountSold,mandates});
-
-        }
-    }
     private void cpSmInvestmentApply (IFormReference ifr, int rowIndex){
-        clearFields(ifr,new String[]{cpCustomerAcctNoLocal,cpCustomerNameLocal,cpCustomerEmailLocal,cpLienStatusLocal,cpSmInvestmentIdLocal,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal});
+        clearFields(ifr,new String[]{cpCustomerAcctNoLocal,cpCustomerNameLocal,cpCustomerEmailLocal,cpLienStatusLocal,cpSmInvestmentIdLocal,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmConcessionRateValueLocal,cpSmTenorLocal,cpSmRateLocal});
         String id = ifr.getTableCellValue(cpSmInvestmentBrTbl,rowIndex,0);
-        setFields(ifr, new String[]{cpSmInvestmentIdLocal},new String[]{id});
-        setVisible(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpServiceSection});
-        setMandatory(ifr,new String[]{cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal});
-        enableFields(ifr,new String []{cpCustomerAcctNoLocal,cpAcctValidateBtn});
+        String maturityDate = getTableCellValue(ifr,cpSmInvestmentBrTbl,rowIndex,3);
+        setFields(ifr, new String[]{cpSmInvestmentIdLocal,cpSmMaturityDateBrLocal},new String[]{id,maturityDate});
+        resultSet = new DbConnect(ifr,Query.getCpSmInvestmentsSelectQuery(getSelectedCpSmInvestmentId(ifr))).getData();
+        String tenor = resultSet.get(0).get(0);
+        String rate = resultSet.get(0).get(1);
+
+        setFields(ifr, new String[]{cpSmTenorLocal,cpSmRateLocal},new String[]{tenor,rate});
+        setVisible(ifr,new String[]{cpCustomerDetailsSection,cpSmMaturityDateBrLocal,cpSmPrincipalBrLocal,cpSmConcessionRateLocal,cpSmTenorLocal,cpSmRateLocal,cpServiceSection});
+        setMandatory(ifr,new String[]{cpSmPrincipalBrLocal,cpSmConcessionRateLocal});
+        enableFields(ifr,new String []{cpCustomerAcctNoLocal,cpAcctValidateBtn,cpSmConcessionRateLocal,cpSmPrincipalBrLocal});
     }
     private void cpSmSetConcessionRate(IFormReference ifr){
         clearFields(ifr,cpSmConcessionRateValueLocal);
@@ -463,23 +448,18 @@ public class BranchInitiator extends Commons implements IFormServerEventHandler,
         }
     }
     private String cpPmCheckPrincipal (IFormReference ifr){
-        if (getCpPmCustomerPrincipal(ifr) < getCpPmWinPrincipalAmt(ifr)) {
+        if (isAmountNotInThousands(getCpPmCustomerPrincipal(ifr))) {
+            clearFields(ifr,cpPmPrincipalLocal);
+            return principalNotInThousandMsg;
+        }
+
+        else if (getCpPmCustomerPrincipal(ifr) < getCpPmWinPrincipalAmt(ifr)) {
             clearFields(ifr,cpPmPrincipalLocal);
             return minPrincipalErrorMsg;
         }
         return empty;
     }
-    private String cpSmCheckPrincipal(IFormReference ifr,int rowIndex){
-        String availableAmount = ifr.getTableCellValue(cpSmInvestmentBrTbl,rowIndex,6);
-        logger.info("available amount-- "+availableAmount);
 
-        if (Double.parseDouble(getCpSmPrincipalBr(ifr)) < Double.parseDouble(getCpSmWindowMinPrincipal(ifr)) ||
-                Double.parseDouble(getCpSmPrincipalBr(ifr)) > Double.parseDouble(availableAmount)) {
-            clearFields(ifr,cpSmPrincipalBrLocal);
-            return cpSmMinPrincipalErrorMsg;
-        }
-        return empty;
-    }
     private String cpSmCheckMaturityDate(IFormReference ifr ,int rowIndex){
         String maturityDateInvestmentTbl = ifr.getTableCellValue(cpSmInvestmentBrTbl,rowIndex,3).trim();
         String maturityDate = getFieldValue(ifr,cpSmMaturityDateBrLocal);
